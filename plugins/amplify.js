@@ -31,7 +31,6 @@ awsconfig.oauth.redirectSignIn              = process.env.ENVVAL_AWS_EXPORTS_oau
 awsconfig.oauth.redirectSignOut             = process.env.ENVVAL_AWS_EXPORTS_oauth_redirectSignOut;
 Amplify.configure(awsconfig)
 console.log(awsconfig.aws_cognito_identity_pool_id)
-console.log(process.env.your_var)
 console.log('88888')
 
 Vue.use(Amplify)

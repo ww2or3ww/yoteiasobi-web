@@ -75,4 +75,12 @@ export default {
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {},
+  env: {
+    ENVVAL_AWS_EXPORTS_aws_cognito_identity_pool_id: process.env.ENVVAL_AWS_EXPORTS_aws_cognito_identity_pool_id,
+    ENVVAL_AWS_EXPORTS_aws_user_pools_id: process.env.ENVVAL_AWS_EXPORTS_aws_user_pools_id,
+    ENVVAL_AWS_EXPORTS_aws_user_pools_web_client_id: process.env.ENVVAL_AWS_EXPORTS_aws_user_pools_web_client_id,
+    ENVVAL_AWS_EXPORTS_oauth_domain: process.env.ENVVAL_AWS_EXPORTS_oauth_domain,
+    ENVVAL_AWS_EXPORTS_oauth_redirectSignIn: process.env.ENVVAL_AWS_EXPORTS_oauth_redirectSignIn,
+    ENVVAL_AWS_EXPORTS_oauth_redirectSignOut: process.env.ENVVAL_AWS_EXPORTS_oauth_redirectSignOut,
+  },
 }
