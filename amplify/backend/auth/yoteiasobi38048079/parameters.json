@@ -1,8 +1,8 @@
 {
-    "identityPoolName": "yoteiasobieabe39b5_identitypool_eabe39b5",
+    "identityPoolName": "yoteiasobi38048079_identitypool_38048079",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "yoteiaeabe39b5",
-    "userPoolName": "yoteiasobieabe39b5_userpool_eabe39b5",
+    "resourceNameTruncated": "yoteia38048079",
+    "userPoolName": "yoteiasobi38048079_userpool_38048079",
     "autoVerifiedAttributes": [
         "email"
     ],
@@ -28,10 +28,10 @@
     "userpoolClientReadAttributes": [
         "email"
     ],
-    "userpoolClientLambdaRole": "yoteiaeabe39b5_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "yoteia38048079_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "eabe39b5",
-    "resourceName": "yoteiasobieabe39b5",
+    "sharedId": "38048079",
+    "resourceName": "yoteiasobi38048079",
     "authSelections": "identityPoolAndUserPool",
     "authRoleArn": {
         "Fn::GetAtt": [
@@ -47,14 +47,14 @@
     },
     "useDefault": "defaultSocial",
     "hostedUI": true,
-    "userPoolGroupList": [],
-    "serviceName": "Cognito",
-    "usernameCaseSensitive": false,
-    "dependsOn": [],
     "hostedUIDomainName": "yoteiasobi-domain-name",
     "authProvidersUserPool": [
         "Google"
     ],
     "hostedUIProviderMeta": "[{\"ProviderName\":\"Google\",\"authorize_scopes\":\"openid email profile\",\"AttributeMapping\":{\"email\":\"email\",\"username\":\"sub\"}}]",
-    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"https://production.d14bq4c33p3tiz.amplifyapp.com/\",\"https://dev.d14bq4c33p3tiz.amplifyapp.com/\",\"https://603fdf18d44a4e24a688f57074c10c7b.vfs.cloud9.ap-northeast-1.amazonaws.com/\"],\"LogoutURLs\":[\"https://603fdf18d44a4e24a688f57074c10c7b.vfs.cloud9.ap-northeast-1.amazonaws.com/\",\"https://dev.d14bq4c33p3tiz.amplifyapp.com/\",\"https://production.d14bq4c33p3tiz.amplifyapp.com/\"]}"
+    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"https://603fdf18d44a4e24a688f57074c10c7b.vfs.cloud9.ap-northeast-1.amazonaws.com/\"],\"LogoutURLs\":[\"https://603fdf18d44a4e24a688f57074c10c7b.vfs.cloud9.ap-northeast-1.amazonaws.com/\"]}",
+    "userPoolGroupList": [],
+    "serviceName": "Cognito",
+    "usernameCaseSensitive": false,
+    "dependsOn": []
 }

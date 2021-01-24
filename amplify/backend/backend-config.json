@@ -1,11 +1,10 @@
 {
   "auth": {
-    "yoteiasobieabe39b5": {
+    "yoteiasobi38048079": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],
       "customAuth": false
     }
-  },
-  "hosting": {}
+  }
 }
