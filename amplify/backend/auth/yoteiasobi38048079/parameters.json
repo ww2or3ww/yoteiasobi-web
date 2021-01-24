@@ -52,9 +52,9 @@
         "Google"
     ],
     "hostedUIProviderMeta": "[{\"ProviderName\":\"Google\",\"authorize_scopes\":\"openid email profile\",\"AttributeMapping\":{\"email\":\"email\",\"username\":\"sub\"}}]",
-    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"https://603fdf18d44a4e24a688f57074c10c7b.vfs.cloud9.ap-northeast-1.amazonaws.com/\"],\"LogoutURLs\":[\"https://603fdf18d44a4e24a688f57074c10c7b.vfs.cloud9.ap-northeast-1.amazonaws.com/\"]}",
     "userPoolGroupList": [],
     "serviceName": "Cognito",
     "usernameCaseSensitive": false,
-    "dependsOn": []
+    "dependsOn": [],
+    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"https://603fdf18d44a4e24a688f57074c10c7b.vfs.cloud9.ap-northeast-1.amazonaws.com/\",\"https://main.d35m2sllzlvtx4.amplifyapp.com/\",\"https://dev.d35m2sllzlvtx4.amplifyapp.com/\"],\"LogoutURLs\":[\"https://603fdf18d44a4e24a688f57074c10c7b.vfs.cloud9.ap-northeast-1.amazonaws.com/\",\"https://main.d35m2sllzlvtx4.amplifyapp.com/\",\"https://dev.d35m2sllzlvtx4.amplifyapp.com/\"]}"
 }
