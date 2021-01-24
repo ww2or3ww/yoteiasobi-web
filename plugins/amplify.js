@@ -22,7 +22,7 @@ const awsconfig = {
     },
     "federationTarget": "COGNITO_USER_POOLS"
 };
-
+console.log(awsconfig.aws_cognito_identity_pool_id)
 awsconfig.aws_cognito_identity_pool_id      = process.env.ENVVAL_AWS_EXPORTS_aws_cognito_identity_pool_id;
 awsconfig.aws_user_pools_id                 = process.env.ENVVAL_AWS_EXPORTS_aws_user_pools_id;
 awsconfig.aws_user_pools_web_client_id      = process.env.ENVVAL_AWS_EXPORTS_aws_user_pools_web_client_id;
@@ -30,5 +30,6 @@ awsconfig.oauth.domain                      = process.env.ENVVAL_AWS_EXPORTS_oau
 awsconfig.oauth.redirectSignIn              = process.env.ENVVAL_AWS_EXPORTS_oauth_redirectSignIn;
 awsconfig.oauth.redirectSignOut             = process.env.ENVVAL_AWS_EXPORTS_oauth_redirectSignOut;
 Amplify.configure(awsconfig)
+console.log(awsconfig.aws_cognito_identity_pool_id)
 
 Vue.use(Amplify)
