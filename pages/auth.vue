@@ -7,7 +7,7 @@
 import { Auth } from 'aws-amplify'
 export default {
   methods: {
-    signin: function() {
+    signin() {
       Auth.federatedSignIn({ provider: 'Google' })
     }
   }

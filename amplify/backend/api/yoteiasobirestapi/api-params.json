@@ -1,0 +1,38 @@
+{
+    "paths": [
+        {
+            "name": "/items",
+            "lambdaFunction": "yoteiasobirestapiitems",
+            "privacy": {
+                "private": true,
+                "auth": [
+                    "/GET"
+                ]
+            },
+            "policyResourceName": "/items"
+        }
+    ],
+    "resourceName": "yoteiasobirestapi",
+    "apiName": "yoteiasobirestapi",
+    "functionArns": [
+        {
+            "lambdaFunction": "yoteiasobirestapiitems"
+        }
+    ],
+    "privacy": {
+        "auth": 1,
+        "unauth": 0,
+        "authRoleName": "amplify-yoteiasobi-dev-52943-authRole",
+        "unAuthRoleName": "amplify-yoteiasobi-dev-52943-unauthRole"
+    },
+    "dependsOn": [
+        {
+            "category": "function",
+            "resourceName": "yoteiasobirestapiitems",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
+        }
+    ]
+}

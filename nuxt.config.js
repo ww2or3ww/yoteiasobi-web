@@ -35,6 +35,8 @@ export default {
     ENVVAL_AWS_EXPORTS_oauth_domain: process.env.ENVVAL_AWS_EXPORTS_oauth_domain,
     ENVVAL_AWS_EXPORTS_oauth_redirectSignIn: process.env.ENVVAL_AWS_EXPORTS_oauth_redirectSignIn,
     ENVVAL_AWS_EXPORTS_oauth_redirectSignOut: process.env.ENVVAL_AWS_EXPORTS_oauth_redirectSignOut,
+    ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_name: process.env.ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_name,
+    ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_endpoint: process.env.ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_endpoint,
   },
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
