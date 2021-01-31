@@ -24,7 +24,7 @@ export default {
       const response = await API.get(resName, '/items', myInit).then(response =>{
         console.log(response)
       }).catch(error =>{
-        console.log('error occurred!!')
+        console.log('error occurred!!!')
         console.log(error)
       })
       console.log(response)
