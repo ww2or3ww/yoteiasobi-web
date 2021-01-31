@@ -1,6 +1,6 @@
 {
   "auth": {
-    "yoteiasobi38048079": {
+    "yoteiasobic8fff745": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],
