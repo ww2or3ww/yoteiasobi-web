@@ -35,8 +35,8 @@ awsconfig.aws_user_pools_web_client_id          = process.env.ENVVAL_AWS_EXPORTS
 awsconfig.oauth.domain                          = process.env.ENVVAL_AWS_EXPORTS_oauth_domain;
 awsconfig.oauth.redirectSignIn                  = process.env.ENVVAL_AWS_EXPORTS_oauth_redirectSignIn;
 awsconfig.oauth.redirectSignOut                 = process.env.ENVVAL_AWS_EXPORTS_oauth_redirectSignOut;
-//awsconfig.aws_cloud_logic_custom[0].name        = process.env.ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_name;
-//awsconfig.aws_cloud_logic_custom[0].endpoint    = process.env.ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_endpoint;
+awsconfig.aws_cloud_logic_custom[0].name        = process.env.ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_name;
+awsconfig.aws_cloud_logic_custom[0].endpoint    = process.env.ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_endpoint;
 
 Amplify.configure(awsconfig)
 Vue.use(Amplify)
