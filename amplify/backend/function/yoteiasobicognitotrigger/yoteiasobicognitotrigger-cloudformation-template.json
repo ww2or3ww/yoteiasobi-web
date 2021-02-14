@@ -33,12 +33,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "yoteiasobirestapiitems",
+            "yoteiasobicognitotrigger",
             {
               "Fn::Join": [
                 "",
                 [
-                  "yoteiasobirestapiitems",
+                  "yoteiasobicognitotrigger",
                   "-",
                   {
                     "Ref": "env"
@@ -68,8 +68,8 @@
         "Layers": [],
         "Timeout": "25",
         "Code": {
-          "S3Bucket": "amplify-yoteiasobi-dev-52943-deployment",
-          "S3Key": "amplify-builds/yoteiasobirestapiitems-695376462b3649396b71-build.zip"
+          "S3Bucket": "amplify-yoteiasobi-prod-10453-deployment",
+          "S3Key": "amplify-builds/yoteiasobicognitotrigger-3231716a667863533651-build.zip"
         }
       }
     },
@@ -79,12 +79,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "yoteiasobiLambdaRolee02da9fe",
+            "yoteiasobiLambdaRoleefd1c7dc",
             {
               "Fn::Join": [
                 "",
                 [
-                  "yoteiasobiLambdaRolee02da9fe",
+                  "yoteiasobiLambdaRoleefd1c7dc",
                   "-",
                   {
                     "Ref": "env"

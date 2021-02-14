@@ -1,8 +1,21 @@
 import { Auth } from 'aws-amplify'
 
-export default async ({ redirect }) => {
-  let signedIn = false
-  await Auth.currentUserInfo()
-    .then(data => (signedIn = Boolean(data)))
-    .then(() => signedIn || redirect('/auth'))
+const NEED_AUTHENTICATED_PAGES = ['/user', '/inspire']
+
+export default async ({ route, redirect, store }) => {
+  if (store.state.authdata.user == null) {
+    let isSignedIn = false
+    await Auth.currentUserInfo()
+      .then(data => {
+        isSignedIn = Boolean(data)
+        store.commit('authdata/setUser', data)
+      })
+      .then(() => {
+        if (!isSignedIn) {
+          if (NEED_AUTHENTICATED_PAGES.indexOf(route.path) >= 0) {
+            redirect('/login')
+          }
+        }
+      })
+  }
 }

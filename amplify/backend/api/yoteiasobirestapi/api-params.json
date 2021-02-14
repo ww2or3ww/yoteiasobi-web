@@ -1,22 +1,26 @@
 {
     "paths": [
         {
-            "name": "/items",
-            "lambdaFunction": "yoteiasobirestapiitems",
+            "name": "/process",
+            "lambdaFunction": "yoteiasobirestapiprocess",
             "privacy": {
                 "private": true,
                 "auth": [
-                    "/GET"
+                    "/POST",
+                    "/GET",
+                    "/PUT",
+                    "/PATCH",
+                    "/DELETE"
                 ]
             },
-            "policyResourceName": "/items"
+            "policyResourceName": "/process"
         }
     ],
     "resourceName": "yoteiasobirestapi",
     "apiName": "yoteiasobirestapi",
     "functionArns": [
         {
-            "lambdaFunction": "yoteiasobirestapiitems"
+            "lambdaFunction": "yoteiasobirestapiprocess"
         }
     ],
     "privacy": {
@@ -28,7 +32,7 @@
     "dependsOn": [
         {
             "category": "function",
-            "resourceName": "yoteiasobirestapiitems",
+            "resourceName": "yoteiasobirestapiprocess",
             "attributes": [
                 "Name",
                 "Arn"
