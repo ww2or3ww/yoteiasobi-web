@@ -68,8 +68,8 @@
         "Layers": [],
         "Timeout": "25",
         "Code": {
-          "S3Bucket": "amplify-yoteiasobi-prod-10453-deployment",
-          "S3Key": "amplify-builds/yoteiasobicognitotrigger-3231716a667863533651-build.zip"
+          "S3Bucket": "amplify-yoteiasobi-dev-52943-deployment",
+          "S3Key": "amplify-builds/yoteiasobicognitotrigger-5061324731364336546d-build.zip"
         }
       }
     },

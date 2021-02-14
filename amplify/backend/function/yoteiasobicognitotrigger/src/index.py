@@ -10,6 +10,7 @@ COGNITO_CLIENT = boto3.client('cognito-idp')
 
 def handler(event, context):
   try:
+    logger.info('=== START ===')
     logger.info(json.dumps(event, ensure_ascii=False, indent=2))
 
     userPoolId = event["userPoolId"]
@@ -21,13 +22,13 @@ def handler(event, context):
     logger.info(response)
 
     attributes = response['Users'][0]['Attributes']
-    name = get_value_from_ttributes(attributes, 'name')
-    email = get_value_from_ttributes(attributes, 'email')
-    picture = get_value_from_ttributes(attributes, 'picture')
+    name = get_value_from_attributes(attributes, 'name')
+    email = get_value_from_attributes(attributes, 'email')
+    picture = get_value_from_attributes(attributes, 'picture')
 
-    custom_name = get_value_from_ttributes(attributes, 'custom:name')
-    custom_email = get_value_from_ttributes(attributes, 'custom:email')
-    custom_picture = get_value_from_ttributes(attributes, 'custom:picture')
+    custom_name = get_value_from_attributes(attributes, 'custom:name')
+    custom_email = get_value_from_attributes(attributes, 'custom:email')
+    custom_picture = get_value_from_attributes(attributes, 'custom:picture')
     
     update_attributes = []
     if not custom_name and name:
@@ -59,7 +60,7 @@ def handler(event, context):
 
   return event
 
-def get_value_from_ttributes(attributes, name):
+def get_value_from_attributes(attributes, name):
   attr = list(filter(lambda data: data['Name'] == name , attributes))
   if attr and len(attr) == 1:
     return attr[0]['Value']

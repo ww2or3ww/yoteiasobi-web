@@ -42,7 +42,6 @@ export default {
   components: {
     Card,
   },
-  mounted() {},
   data() {
     return {
       message: '',
@@ -77,19 +76,18 @@ export default {
           },
           response: true,
         };
-        console.log(process.env.ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_name)
         const response = await API.post(
           process.env.ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_name, 
           '/process', 
           myInit
         ).then(response => {
-          console.log(response)
           this.isComplete = true
         }).catch(error => {
           console.log(error)
           this.message = error.message + 'が発生しました。'
         })
       } catch (error) {
+        console.log(error)
         this.message = error.message + 'が発生しました。'
       }
     },
