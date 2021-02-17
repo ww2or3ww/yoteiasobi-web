@@ -1,6 +1,6 @@
 import { Auth } from 'aws-amplify'
 
-const NEED_AUTHENTICATED_PAGES = ['/user', '/inspire']
+const NEED_AUTHENTICATED_PAGES = ['/user', '/profile']
 
 export default async ({ route, redirect, store }) => {
   if (store.state.authdata.user == null) {

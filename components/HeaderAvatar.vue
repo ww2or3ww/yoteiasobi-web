@@ -29,7 +29,7 @@
 
       <v-divider />
       
-      <v-list-item v-if="isAuthed" to="/user">
+      <v-list-item v-if="isAuthed" to="/profile">
         <div class="list_item_icon">
           <v-icon>mdi-account-edit</v-icon>
         </div>
@@ -64,7 +64,7 @@ export default {
     return {
       isAuthed: true,
       name: "Guest", 
-      mailAddress: "---",
+      mailAddress: "",
       pictureAddress: "", 
     }
   },

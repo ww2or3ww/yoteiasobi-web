@@ -13,6 +13,16 @@ export default (context, inject) => {
     Auth.signOut()
   }
   
+  const reloadUserFunc = (callback) => {
+    Auth.currentUserInfo()
+      .then(data => {
+        context.store.commit('authdata/setUser', data)
+        if (callback) {
+          callback()
+        }
+      })
+  }
+  
   const isAuthedFunc = () => {
     return context.store.state.authdata.user != null
   }
@@ -41,10 +51,20 @@ export default (context, inject) => {
     return user.attributes["custom:picture"]
   }
 
+  const getCommentFunc = () => {
+    const user = JSON.parse(JSON.stringify(context.store.state.authdata.user))
+    if (user == null) {
+      return null
+    }
+    return user.attributes["custom:comment"]
+  }
+
   inject('auth_signin', signinFunc)
   inject('auth_signout', signoutFunc)
+  inject('auth_reload_user', reloadUserFunc)
   inject('auth_is_authed', isAuthedFunc)
   inject('auth_get_name', getNameFunc)
   inject('auth_get_email', getEMailFunc)
   inject('auth_get_picture', getPictureFunc)
+  inject('auth_get_comment', getCommentFunc)
 }

@@ -125,9 +125,9 @@ export default {
       margin-top: 12px;
     }
     .info-area {
-      background-color: #D5EBE7;
+      background-color: #455A64;
       padding: 16px;
-      color: #064739;
+      color: #CFD8DC;
       .name {
         font-size: 24px;
         text-align: center;
@@ -138,7 +138,7 @@ export default {
       }
       .stripe-area {
         .stripe {
-          border-bottom: dashed 2px #064739;
+          border-bottom: dashed 2px #CFD8DC;
         }
       }
       .message {
@@ -149,8 +149,8 @@ export default {
         text-align: center;
         .button {
           cursor: pointer;
-          background-color: #D5EBE7;
-          color: #064739;
+          background-color: #455A64;
+          color: #CFD8DC;
           border: 0;
           border-radius: 4px;
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);

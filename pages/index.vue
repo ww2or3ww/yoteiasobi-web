@@ -19,9 +19,7 @@
 export default {
   methods: {
     test1() {
-      console.log('888888888888')
       console.log(this.$store.state.authdata.user)
-      console.log(this.$cookie_get_certified_flg())
     },
   },
 }
