@@ -33,12 +33,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "yoteiasobirestapiprofile",
+            "yoteiasobistoragetrigger",
             {
               "Fn::Join": [
                 "",
                 [
-                  "yoteiasobirestapiprofile",
+                  "yoteiasobistoragetrigger",
                   "-",
                   {
                     "Ref": "env"
@@ -69,7 +69,7 @@
         "Timeout": "25",
         "Code": {
           "S3Bucket": "amplify-yoteiasobi-dev-52943-deployment",
-          "S3Key": "amplify-builds/yoteiasobirestapiprofile-46313848783875593850-build.zip"
+          "S3Key": "amplify-builds/yoteiasobistoragetrigger-624158773165344e4432-build.zip"
         }
       }
     },
@@ -79,12 +79,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "yoteiasobiLambdaRolec957e5da",
+            "yoteiasobiLambdaRole3c0be6fb",
             {
               "Fn::Join": [
                 "",
                 [
-                  "yoteiasobiLambdaRolec957e5da",
+                  "yoteiasobiLambdaRole3c0be6fb",
                   "-",
                   {
                     "Ref": "env"

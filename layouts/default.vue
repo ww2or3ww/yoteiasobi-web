@@ -25,3 +25,10 @@ export default {
   }
 }
 </script>
+
+<style>
+.main {
+  background-color: #757575;
+  padding: 8px;
+}
+</style>

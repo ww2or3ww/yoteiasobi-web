@@ -1,7 +1,10 @@
 <template>
   <div class="main">
     <section class="section_avatar">
-      <SelectableAvatarImage :image_src="picture" />
+      <SelectableAvatarImage
+        :propsImageSrc="picture"
+        :callbackSelectedPicture="onSelectedPicture"
+      />
     </section>
     
     <v-form v-model="isFormValid">
@@ -97,6 +100,7 @@ export default {
       this.email = this.$auth_get_email()
       this.comment = this.$auth_get_comment()
       this.picture = this.$auth_get_picture()
+      this.selectedPicture = null
       
       this.name_org = this.name
       this.email_org = this.email
@@ -106,6 +110,10 @@ export default {
     },
     isEdited(){
       return this.name != this.name_org || this.comment != this.comment_org
+    },
+    onSelectedPicture(file) {
+      this.selectedPicture = file
+      this.picture = URL.createObjectURL(file)
     },
     onUpdate() {
       this.updateProcess()
@@ -133,7 +141,7 @@ export default {
           '/profile', 
           postdata
         ).then(response => {
-          setTimeout(this.onUpdateCompleted, 3000)
+          this.onUpdateCompleted()
         })
       } catch (error) {
         console.log(error)
@@ -145,10 +153,6 @@ export default {
 }
 </script>
 <style>
-.main {
-  background-color: #757575;
-  padding: 8px;
-}
 .section_avatar {
   text-align: center;
   margin: 24px;

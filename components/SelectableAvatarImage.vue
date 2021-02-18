@@ -15,20 +15,25 @@
       accept="image/jpeg, image/jpg, image/png"
       @change="selectedInput"
     >
-    <v-img :src="image_src" />
+    <v-img :src="propsImageSrc" />
   </v-avatar>
 </template>
 
 <script>
 export default {
   props: {
-    image_src: {
+    propsImageSrc: {
       type: String, 
       required: true
-    }
+    },
+    callbackSelectedPicture: {
+      type: Function, 
+      required: true
+    },
   },
   data() {
     return {
+      selectedImage: null,
       avatarStyle:{
         border: '2px solid #000'
       },
@@ -50,11 +55,16 @@ export default {
     dropFileAvatar() {
       this.avatarStyle.border = '2px solid #000'
       const file = [...event.dataTransfer.files][0]
-      console.log(file)
+      this.setImageToAvatar(file)
     },
     selectedInput() {
       const file = this.$refs.input.files[0]
-      console.log(file)
+      this.setImageToAvatar(file)
+    },
+    setImageToAvatar(file) {
+      if (file) {
+        this.callbackSelectedPicture(file)
+      }
     }
   },
 }

@@ -1,6 +1,6 @@
 {
     "identityPoolName": "yoteiasobi8e9669f8_identitypool_8e9669f8",
-    "allowUnauthenticatedIdentities": false,
+    "allowUnauthenticatedIdentities": true,
     "resourceNameTruncated": "yoteia8e9669f8",
     "userPoolName": "yoteiasobi8e9669f8_userpool_8e9669f8",
     "autoVerifiedAttributes": [
