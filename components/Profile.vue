@@ -64,8 +64,9 @@
   </div>
 </template>
 <script>
-import { API } from 'aws-amplify'
+import { API, Storage } from 'aws-amplify'
 import SelectableAvatarImage from '~/components/SelectableAvatarImage.vue'
+import imageResize from '~/static/imageResize.js'
 export default {
   components: {
     SelectableAvatarImage,
@@ -101,7 +102,6 @@ export default {
       this.comment = this.$auth_get_comment()
       this.picture = this.$auth_get_picture()
       this.selectedPicture = null
-      
       this.name_org = this.name
       this.email_org = this.email
       this.comment_org = this.comment
@@ -109,7 +109,9 @@ export default {
       this.isProcessing = false
     },
     isEdited(){
-      return this.name != this.name_org || this.comment != this.comment_org
+      return this.name != this.name_org ||
+        this.comment != this.comment_org ||
+        this.selectedPicture != null
     },
     onSelectedPicture(file) {
       this.selectedPicture = file
@@ -118,9 +120,6 @@ export default {
     onUpdate() {
       this.updateProcess()
     },
-    onUpdateCompleted() {
-      this.$auth_reload_user(this.dataInitialize)
-    },
     onCancel() {
       this.name = this.name_org
       this.comment = this.comment_org
@@ -128,27 +127,43 @@ export default {
     async updateProcess() {
       this.isProcessing = true
       try {
-        const postdata = {
-          headers: {},
-          body: {
-            'name': this.name,
-            'comment': this.comment
-          },
-          response: true,
-        };
-        const response = await API.post(
-          process.env.ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_name, 
-          '/profile', 
-          postdata
-        ).then(response => {
-          this.onUpdateCompleted()
-        })
+        let pictureKey = null
+        if (this.selectedPicture) {
+          pictureKey = this.$auth_create_picture_key(this.selectedPicture.name)
+          await this.processUploadFile(pictureKey)
+        }
+        await this.processUpdateUser(pictureKey)
+
+        this.$auth_reload_user(this.dataInitialize)
       } catch (error) {
-        console.log(error)
         this.isProcessing = false
-        this.message = error.message + 'が発生しました。'
+        this.message = "error occured : {0}".format(error.message)
       }
-    }
+    },
+    async processUploadFile(pictureKey) {
+      const src = await imageResize.pFileReader(this.selectedPicture);
+      const img = await imageResize.pImage(src);
+      const resizedImg = await imageResize.resizeImage(img, 800, 'image/png');
+      await Storage.put(pictureKey, resizedImg, {
+          level: 'public'
+      })
+    },
+    async processUpdateUser(pictureKey) {
+      const postdata = {
+        headers: {},
+        body: {
+          'name': this.name,
+          'comment': this.comment,
+          'picture': pictureKey
+        },
+        response: true,
+      };
+      const response = await API.post(
+        process.env.ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_name, 
+        '/profile', 
+        postdata
+      )
+    },
   },
 }
 </script>

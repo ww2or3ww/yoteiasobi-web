@@ -14,18 +14,14 @@ def handler(event, context):
     logger.info(json.dumps(event, ensure_ascii=False, indent=2))
 
     body = json.loads(event['body'])
-    name = body['name']
-    comment = body['comment']
-    logger.info('name={0}, comment={1}'.format(name, comment))
-    
-    if not name:
-      raise ValueError('name is not exist.')
+    name, comment, picture = getParamFromBody(body)
+    logger.info('name={0}, comment={1}, picture={2}'.format(name, comment, picture))
 
     poolId, userName = getUserInfo(event)
     logger.info('user info = {0}, {1}'.format(poolId, userName))
 
-    updateUserInfo(poolId, userName, name, comment)
-
+    updateUserInfo(poolId, userName, name, comment, picture)
+    
     return {
       "statusCode": 200,
       "body": json.dumps(body),
@@ -46,6 +42,23 @@ def handler(event, context):
         },
       }
 
+def getParamFromBody(body):
+  name = ""
+  comment = None
+  picture = None
+  
+  if 'name' not in body or not body['name']:
+    raise ValueError('name is not exist.')
+
+  name = body['name']
+  if "comment" in body:
+    comment = body['comment']
+  
+  if "picture" in body:
+    picture = body['picture']
+    
+  return name, comment, picture
+
 def getUserInfo(event):
   poolId = None
   userName = None
@@ -65,19 +78,29 @@ def getUserInfo(event):
 
   return poolId, userName
 
-def updateUserInfo(poolId, userName, name, comment):
+def updateUserInfo(poolId, userName, name, comment, picture):
 
   try:
     update_attributes = [
       {
         'Name': 'custom:name',
         'Value': name
-      },
-      {
-        'Name': 'custom:comment',
-        'Value': comment
       }
     ]
+    if comment:
+      update_attributes.append(
+        {
+          'Name': 'custom:comment',
+          'Value': comment
+        }
+      )
+    if picture:
+      update_attributes.append(
+        {
+          'Name': 'custom:picture',
+          'Value': picture
+        }
+      )
     COGNITO_CLIENT.admin_update_user_attributes(
         UserPoolId = poolId,
         Username = userName, 

@@ -74,6 +74,11 @@ export default {
       this.name = this.$auth_get_name()
       this.mailAddress = this.$auth_get_email()
       this.pictureAddress = this.$auth_get_picture()
+      this.$store.watch ((state, getters) => getters["authdata/picture"],
+        (newValue) => {
+          this.pictureAddress = newValue
+        }
+      )
     }
   },
   methods: {

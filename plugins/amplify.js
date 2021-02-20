@@ -27,7 +27,9 @@ const awsconfig = {
             "endpoint": "",
             "region": "ap-northeast-1"
         }
-    ]
+    ],
+    "aws_user_files_s3_bucket": "",
+    "aws_user_files_s3_bucket_region": "ap-northeast-1"
 };
 awsconfig.aws_cognito_identity_pool_id          = process.env.ENVVAL_AWS_EXPORTS_aws_cognito_identity_pool_id;
 awsconfig.aws_user_pools_id                     = process.env.ENVVAL_AWS_EXPORTS_aws_user_pools_id;
@@ -37,6 +39,7 @@ awsconfig.oauth.redirectSignIn                  = process.env.ENVVAL_AWS_EXPORTS
 awsconfig.oauth.redirectSignOut                 = process.env.ENVVAL_AWS_EXPORTS_oauth_redirectSignOut;
 awsconfig.aws_cloud_logic_custom[0].name        = process.env.ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_name;
 awsconfig.aws_cloud_logic_custom[0].endpoint    = process.env.ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_endpoint;
+awsconfig.aws_user_files_s3_bucket              = process.env.ENVVAL_AWS_EXPORTS_aws_user_files_s3_bucket;
 
 Amplify.configure(awsconfig)
 Vue.use(Amplify)
