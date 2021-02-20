@@ -38,6 +38,7 @@ export default {
     ENVVAL_AWS_EXPORTS_oauth_redirectSignOut: process.env.ENVVAL_AWS_EXPORTS_oauth_redirectSignOut,
     ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_name: process.env.ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_name,
     ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_endpoint: process.env.ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_endpoint,
+    ENVVAL_AWS_EXPORTS_aws_user_files_s3_bucket: process.env.ENVVAL_AWS_EXPORTS_aws_user_files_s3_bucket,
     ENVVAL_STRIPE_SECRET_KEY: process.env.ENVVAL_STRIPE_SECRET_KEY,
     ENVVAL_STRIPE_PUBLIC_KEY: process.env.ENVVAL_STRIPE_PUBLIC_KEY,
   },
