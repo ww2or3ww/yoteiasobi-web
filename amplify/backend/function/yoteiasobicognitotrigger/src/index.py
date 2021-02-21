@@ -100,12 +100,25 @@ def uploadPictureToStorage(userName, picture):
 
 def updateIsAdmin(userPoolId, userName):
   try:
-    logger.info('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
     response = COGNITO_CLIENT.admin_list_groups_for_user(
-      Username = userName,
-      UserPoolId = userPoolId
+      UserPoolId = userPoolId,
+      Username = userName
     )
-    logger.info(response)
-    logger.info('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+    groups = response['Groups']
+    group = list(filter(lambda data: data['GroupName'] == 'Admin' , groups))
+    admin = "0"
+    if group:
+      admin = "1"
+    update_attributes = [
+        {
+        'Name': 'custom:admin',
+        'Value': admin
+        }
+      ]
+    COGNITO_CLIENT.admin_update_user_attributes(
+      UserPoolId = userPoolId,
+      Username = userName, 
+      UserAttributes = update_attributes
+    )
   except Exception as e:
     logger.exception(e)
