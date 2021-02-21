@@ -24,7 +24,8 @@
                     "/POST",
                     "/GET",
                     "/PUT",
-                    "/PATCH"
+                    "/PATCH",
+                    "/DELETE"
                 ]
             }
         }
@@ -63,5 +64,5 @@
             ]
         }
     ],
-    "uuid": "f6ff8ec8"
+    "uuid": "13dba120"
 }

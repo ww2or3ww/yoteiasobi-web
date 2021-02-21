@@ -40,11 +40,20 @@ export default (context, inject) => {
       context.store.state.authdata.user.attributes
   }
   
+  const getUserIDFunc = () => {
+    const user = JSON.parse(JSON.stringify(context.store.state.authdata.user))
+    if (user == null) {
+      return null
+    }
+    return user.username
+  }
+  
   const getNameFunc = () => {
     const user = JSON.parse(JSON.stringify(context.store.state.authdata.user))
     if (user == null) {
       return "Guest"
     }
+    console.log(user)
     return user.attributes["custom:name"]
   }
 
@@ -78,7 +87,7 @@ export default (context, inject) => {
       ('0' + date.getUTCHours()).slice(-2) + 
       ('0' + date.getUTCMinutes()).slice(-2) + 
       ('0' + date.getUTCSeconds()).slice(-2)
-    const key = "profile/" + user.username + "/" + datetimestr + "." + ext
+    const key = "public/profile/" + user.username + "/" + datetimestr + "." + ext
     return key
   }
 
@@ -103,6 +112,7 @@ export default (context, inject) => {
   inject('auth_reload_user', reloadUserFunc)
   inject('auth_get_picture_address_from_storage', getPictureAddressFromStorage)
   inject('auth_is_authed', isAuthedFunc)
+  inject('auth_get_user_id', getUserIDFunc)
   inject('auth_get_name', getNameFunc)
   inject('auth_get_email', getEMailFunc)
   inject('auth_get_picture', getPictureFunc)

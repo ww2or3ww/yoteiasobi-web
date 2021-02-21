@@ -16,22 +16,23 @@ def handler(event, context):
   try:
     logger.info('=== START ===')
     logger.info(json.dumps(event, ensure_ascii=False, indent=2))
-
-    body = json.loads(event['body'])
-    name, comment, picture = getParamFromBody(body)
-    logger.info('name={0}, comment={1}, picture={2}'.format(name, comment, picture))
-
-    poolId, userName, pictureOrg = getUserInfo(event)
-    logger.info('user info = {0}, {1}, {2}'.format(poolId, userName, pictureOrg))
-
-    updateUserInfo(poolId, userName, name, comment, picture)
     
-    if picture and pictureOrg:
-      removeOldPicture(pictureOrg)
+    method = event['httpMethod']
+    
+    retBody = ""
+    if method == 'POST':
+      post(event)
+      retBody = "success post request."
+    elif method == 'DELETE':
+      delete(event)
+      retBody = "success delete request."
+    else:
+      raise ValueError('{0} is not supported.'.format(method))
+
     
     return {
       "statusCode": 200,
-      "body": json.dumps(body),
+      "body": json.dumps(retBody),
       'headers': {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*'
@@ -48,6 +49,28 @@ def handler(event, context):
           'Access-Control-Allow-Origin': '*'
         },
       }
+      
+def post(event):
+  body = json.loads(event['body'])
+  name, comment, picture = getParamFromBody(body)
+  logger.info('name={0}, comment={1}, picture={2}'.format(name, comment, picture))
+
+  poolId, userName, pictureOrg = getUserInfo(event)
+  logger.info('user info = {0}, {1}, {2}'.format(poolId, userName, pictureOrg))
+
+  updateUserInfo(poolId, userName, name, comment, picture)
+  
+  if picture and pictureOrg:
+    removeOldPicture(pictureOrg)
+    
+def delete(event):
+  pathParameters = event['pathParameters']
+  userName = pathParameters['proxy']
+  poolId, userSub = getCognitoAuthenticationProviderFromEvent(event)
+  response = COGNITO_CLIENT.admin_delete_user(
+    UserPoolId = poolId,
+    Username = userName
+  )
 
 def getParamFromBody(body):
   name = ""
@@ -72,8 +95,7 @@ def getUserInfo(event):
   pictureOrg = None
 
   try:
-    poolId = event["requestContext"]["identity"]["cognitoAuthenticationProvider"].split(',')[0].split('/')[1]
-    userSub = event["requestContext"]["identity"]["cognitoAuthenticationProvider"].split(',')[1].split(':')[2]
+    poolId, userSub = getCognitoAuthenticationProviderFromEvent(event)
     response = COGNITO_CLIENT.list_users(
         UserPoolId = poolId,
         Filter = "sub = \"{0}\"".format(userSub)
@@ -87,6 +109,11 @@ def getUserInfo(event):
     raise
 
   return poolId, userName, pictureOrg
+  
+def getCognitoAuthenticationProviderFromEvent(event):
+  poolId = event["requestContext"]["identity"]["cognitoAuthenticationProvider"].split(',')[0].split('/')[1]
+  userSub = event["requestContext"]["identity"]["cognitoAuthenticationProvider"].split(',')[1].split(':')[2]
+  return poolId, userSub  
 
 def get_value_from_attributes(attributes, name):
   attr = list(filter(lambda data: data['Name'] == name , attributes))
@@ -129,6 +156,6 @@ def updateUserInfo(poolId, userName, name, comment, picture):
 
 def removeOldPicture(picture):
   try:
-    S3.delete_object(Bucket=S3_BUCKET_NAME, Key="public/{0}".format(picture))
+    S3.delete_object(Bucket=S3_BUCKET_NAME, Key=picture)
   except Exception as e:
     logger.exception(e)
