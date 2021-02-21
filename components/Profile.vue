@@ -181,8 +181,8 @@ export default {
     async processUploadFile(pictureKey) {
       const src = await imageResize.pFileReader(this.selectedPicture);
       const img = await imageResize.pImage(src);
-      const resizedImg = await imageResize.resizeImage(img, 800, 'image/png');
-      await Storage.put(pictureKey, resizedImg, {
+      const resizedImg = await imageResize.resizeImage(img, 400, 'image/png');
+      await Storage.put(pictureKey.replace('public/', ''), resizedImg, {
           level: 'public'
       })
     },

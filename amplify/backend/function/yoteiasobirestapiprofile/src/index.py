@@ -65,12 +65,18 @@ def post(event):
     
 def delete(event):
   pathParameters = event['pathParameters']
-  userName = pathParameters['proxy']
-  poolId, userSub = getCognitoAuthenticationProviderFromEvent(event)
+  userNameTo = pathParameters['proxy']
+  logger.info(userNameTo)
+  
+  poolId, userNameFrom, pictureOrg = getUserInfo(event)
+  logger.info('user info = {0}, {1}, {2}'.format(poolId, userNameFrom, pictureOrg))
+  
   response = COGNITO_CLIENT.admin_delete_user(
     UserPoolId = poolId,
-    Username = userName
+    Username = userNameTo
   )
+  
+  removeOldPicture(pictureOrg)
 
 def getParamFromBody(body):
   name = ""
