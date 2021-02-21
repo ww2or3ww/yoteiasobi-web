@@ -80,6 +80,7 @@ export default {
       comment: "",
       comment_org: "",
       picture: "", 
+      picture_org: "",
       isFormValid: false,
       isProcessing: false,
       message: "",
@@ -105,13 +106,13 @@ export default {
       this.name_org = this.name
       this.email_org = this.email
       this.comment_org = this.comment
-      
+      this.picture_org = this.picture
       this.isProcessing = false
     },
     isEdited(){
       return this.name != this.name_org ||
         this.comment != this.comment_org ||
-        this.selectedPicture != null
+        this.picture != this.picture_org
     },
     onSelectedPicture(file) {
       this.selectedPicture = file
@@ -123,6 +124,7 @@ export default {
     onCancel() {
       this.name = this.name_org
       this.comment = this.comment_org
+      this.picture = this.picture_org
     },
     async updateProcess() {
       this.isProcessing = true
@@ -137,7 +139,7 @@ export default {
         this.$auth_reload_user(this.dataInitialize)
       } catch (error) {
         this.isProcessing = false
-        this.message = "error occured : {0}".format(error.message)
+        this.message = "error occured : " + error.message
       }
     },
     async processUploadFile(pictureKey) {
