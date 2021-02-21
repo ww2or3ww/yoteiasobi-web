@@ -24,17 +24,23 @@ export default {
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [
-    {
-      src: '~/plugins/amplify.js', ssr: false
-    }
+    { src: '~/plugins/amplify.js', ssr: false },
+    { src: '~/plugins/injected-cookie-common.js', ssr: false },
+    { src: '~/plugins/injected-auth-common.js', ssr: false },
   ],
   env: {
+    TSC_WATCHFILE: 'UseFsEventsWithFallbackDynamicPolling',
     ENVVAL_AWS_EXPORTS_aws_cognito_identity_pool_id: process.env.ENVVAL_AWS_EXPORTS_aws_cognito_identity_pool_id,
     ENVVAL_AWS_EXPORTS_aws_user_pools_id: process.env.ENVVAL_AWS_EXPORTS_aws_user_pools_id,
     ENVVAL_AWS_EXPORTS_aws_user_pools_web_client_id: process.env.ENVVAL_AWS_EXPORTS_aws_user_pools_web_client_id,
     ENVVAL_AWS_EXPORTS_oauth_domain: process.env.ENVVAL_AWS_EXPORTS_oauth_domain,
     ENVVAL_AWS_EXPORTS_oauth_redirectSignIn: process.env.ENVVAL_AWS_EXPORTS_oauth_redirectSignIn,
     ENVVAL_AWS_EXPORTS_oauth_redirectSignOut: process.env.ENVVAL_AWS_EXPORTS_oauth_redirectSignOut,
+    ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_name: process.env.ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_name,
+    ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_endpoint: process.env.ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_endpoint,
+    ENVVAL_AWS_EXPORTS_aws_user_files_s3_bucket: process.env.ENVVAL_AWS_EXPORTS_aws_user_files_s3_bucket,
+    ENVVAL_STRIPE_SECRET_KEY: process.env.ENVVAL_STRIPE_SECRET_KEY,
+    ENVVAL_STRIPE_PUBLIC_KEY: process.env.ENVVAL_STRIPE_PUBLIC_KEY,
   },
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
@@ -57,7 +63,14 @@ export default {
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
     '@nuxtjs/dotenv',
+    'cookie-universal-nuxt',
   ],
+  
+  router: {
+    middleware: [
+      'auth',
+    ],
+  },
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {},
@@ -82,5 +95,11 @@ export default {
   },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
-  build: {},
+  build: { },
+  
+  // stripe
+  stripe: {
+    version: 'v3',
+    publishableKey: process.env.ENVVAL_STRIPE_PUBLIC_KEY
+  },
 }

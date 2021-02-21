@@ -1,0 +1,67 @@
+{
+    "paths": [
+        {
+            "name": "/process",
+            "lambdaFunction": "yoteiasobirestapiprocess",
+            "privacy": {
+                "private": true,
+                "auth": [
+                    "/POST",
+                    "/GET",
+                    "/PUT",
+                    "/PATCH",
+                    "/DELETE"
+                ]
+            },
+            "policyResourceName": "/process"
+        },
+        {
+            "name": "/profile",
+            "lambdaFunction": "yoteiasobirestapiprofile",
+            "privacy": {
+                "private": true,
+                "auth": [
+                    "/POST",
+                    "/GET",
+                    "/PUT",
+                    "/PATCH"
+                ]
+            }
+        }
+    ],
+    "resourceName": "yoteiasobirestapi",
+    "apiName": "yoteiasobirestapi",
+    "functionArns": [
+        {
+            "lambdaFunction": "yoteiasobirestapiprocess"
+        },
+        {
+            "lambdaFunction": "yoteiasobirestapiprofile"
+        }
+    ],
+    "privacy": {
+        "auth": 2,
+        "unauth": 0,
+        "authRoleName": "amplify-yoteiasobi-dev-52943-authRole",
+        "unAuthRoleName": "amplify-yoteiasobi-dev-52943-unauthRole"
+    },
+    "dependsOn": [
+        {
+            "category": "function",
+            "resourceName": "yoteiasobirestapiprocess",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
+        },
+        {
+            "category": "function",
+            "resourceName": "yoteiasobirestapiprofile",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
+        }
+    ],
+    "uuid": "f6ff8ec8"
+}
