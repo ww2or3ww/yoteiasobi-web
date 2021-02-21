@@ -4,56 +4,47 @@
       <v-container>
         <v-row class="flex-column">
           <v-col cols="12">
-            <v-btn
+            <IconButton
               color="#607D8B"
-              @click="signin('Google')"
+              :callbackClick="signin"
+              mytype="Google"
+              text="Google"
+              icon="mdi-google"
               class="login_buttons"
-            >
-              <v-container>
-                <v-row>
-                  <v-col cols="2">
-                    <v-icon left dark>mdi-google</v-icon>
-                  </v-col>
-                  <v-col cols="8">
-                    Google
-                  </v-col>
-                  <v-col></v-col>
-                </v-row>
-              </v-container>
-            </v-btn>
+            />
           </v-col>
           <v-col cols="12">
-            <v-btn
+            <IconButton
               color="#607D8B"
-              @click="signin('LINE')"
-              :disabled="true"
+              :callbackClick="signin"
+              mytype="LINE"
+              text="LINE (準備中)"
+              icon="mdi-alpha-l-circle"
               class="login_buttons"
-            >
-              <v-icon left dark>mdi-alpha-l-circle </v-icon>
-              LINE (*coming soon..)
-            </v-btn>
+              :isDisabled=true
+            />
           </v-col>
           <v-col cols="12">
-            <v-btn
+            <IconButton
               color="#607D8B"
-              @click="signin('Twitter')"
-              :disabled="true"
+              :callbackClick="signin"
+              mytype="Twitter"
+              text="Twitter (準備中)"
+              icon="mdi-twitter"
               class="login_buttons"
-            >
-              <v-icon left dark>mdi-twitter</v-icon>
-              Twitter (*coming soon..)
-            </v-btn>
+              :isDisabled=true
+            />
           </v-col>
           <v-col cols="12">
-            <v-btn
+            <IconButton
               color="#607D8B"
-              @click="signin('Facebook')"
-              :disabled="true"
+              :callbackClick="signin"
+              mytype="Facebook"
+              text="Facebook (準備中)"
+              icon="mdi-facebook"
               class="login_buttons"
-            >
-              <v-icon left dark>mdi-facebook</v-icon>
-              Facebook (*coming soon..)
-            </v-btn>
+              :isDisabled=true
+            />
           </v-col>
         </v-row>
       </v-container>
@@ -61,7 +52,11 @@
   </div>
 </template>
 <script>
+import IconButton from '~/components/IconButton.vue'
 export default {
+  components: {
+    IconButton,
+  },
   methods: {
     signin(providerName) {
       this.$auth_signin(providerName)
