@@ -30,6 +30,9 @@ def handler(event, context):
     if triggerSource == "PostConfirmation_ConfirmSignUp":
       attributes = response['Users'][0]['Attributes']
       updateCustomAttributes(userPoolId, userName, attributes)
+      
+    if triggerSource == "PostAuthentication_Authentication":
+      updateIsAdmin(userPoolId, userName)
 
   except Exception as e:
     logger.exception(e)
@@ -95,3 +98,14 @@ def uploadPictureToStorage(userName, picture):
     logger.exception(e)
     raise
 
+def updateIsAdmin(userPoolId, userName):
+  try:
+    logger.info('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+    response = COGNITO_CLIENT.admin_list_groups_for_user(
+      Username = userName,
+      UserPoolId = userPoolId
+    )
+    logger.info(response)
+    logger.info('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+  except Exception as e:
+    logger.exception(e)

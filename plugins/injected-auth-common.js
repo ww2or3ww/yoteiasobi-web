@@ -45,6 +45,7 @@ export default (context, inject) => {
     if (user == null) {
       return "Guest"
     }
+    console.log(user)
     return user.attributes["custom:name"]
   }
 

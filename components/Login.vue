@@ -2,7 +2,7 @@
   <div class="main">
     <section class="section_buttons">
       <v-container>
-        <v-row class="flex-column">
+        <v-row class="row_buttons">
           <v-col cols="12">
             <IconButton
               color="#607D8B"
@@ -68,6 +68,9 @@ export default {
 .section_buttons {
   text-align: center;
   margin: 24px;
+}
+.row_buttons {
+  text-align: center;
 }
 .login_buttons {
   width: 280px;
