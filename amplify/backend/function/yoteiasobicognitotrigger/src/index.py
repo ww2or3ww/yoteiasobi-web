@@ -10,12 +10,10 @@ logger.setLevel(logging.INFO)
 import boto3
 COGNITO_CLIENT = boto3.client('cognito-idp')
 S3 = boto3.client("s3")
-
 S3_BUCKET_NAME   = os.environ['S3_BUCKET_NAME']
 
 def handler(event, context):
   try:
-    logger.info('=== START ===')
     logger.info(json.dumps(event, ensure_ascii=False, indent=2))
 
     userPoolId = event["userPoolId"]
