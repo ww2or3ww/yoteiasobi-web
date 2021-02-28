@@ -22,7 +22,6 @@
           :rules="[rules.required, rules.email]"
           dense
           readonly
-          color="#424242"
           class="text_field text-gray"
         />
         <v-textarea
