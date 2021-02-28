@@ -28,7 +28,7 @@ export default {
     },
     callbackSelectedPicture: {
       type: Function, 
-      required: true
+      required: false
     },
   },
   data() {
@@ -41,25 +41,37 @@ export default {
   },
   methods: {
     selectedAvatar() {
-      this.$refs.input.click()
+      if (this.callbackSelectedPicture) {
+        this.$refs.input.click()
+      }
     },
     dragEnterAvatar() {
-      this.avatarStyle.border = '4px solid #448AFF'
+      if (this.callbackSelectedPicture) {
+        this.avatarStyle.border = '4px solid #448AFF'
+      }
     },
     dragOverAvatar() {
-      this.avatarStyle.border = '4px solid #448AFF'
+      if (this.callbackSelectedPicture) {
+        this.avatarStyle.border = '4px solid #448AFF'
+      }
     },
     dragLeaveAvatar() {
-      this.avatarStyle.border = '2px solid #000'
+      if (this.callbackSelectedPicture) {
+        this.avatarStyle.border = '2px solid #000'
+      }
     },
     dropFileAvatar() {
-      this.avatarStyle.border = '2px solid #000'
-      const file = [...event.dataTransfer.files][0]
-      this.setImageToAvatar(file)
+      if (this.callbackSelectedPicture) {
+        this.avatarStyle.border = '2px solid #000'
+        const file = [...event.dataTransfer.files][0]
+        this.setImageToAvatar(file)
+      }
     },
     selectedInput() {
-      const file = this.$refs.input.files[0]
-      this.setImageToAvatar(file)
+      if (this.callbackSelectedPicture) {
+        const file = this.$refs.input.files[0]
+        this.setImageToAvatar(file)
+      }
     },
     setImageToAvatar(file) {
       if (file) {

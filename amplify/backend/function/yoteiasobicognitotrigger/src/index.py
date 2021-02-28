@@ -10,12 +10,10 @@ logger.setLevel(logging.INFO)
 import boto3
 COGNITO_CLIENT = boto3.client('cognito-idp')
 S3 = boto3.client("s3")
-
 S3_BUCKET_NAME   = os.environ['S3_BUCKET_NAME']
 
 def handler(event, context):
   try:
-    logger.info('=== START ===')
     logger.info(json.dumps(event, ensure_ascii=False, indent=2))
 
     userPoolId = event["userPoolId"]
@@ -90,7 +88,9 @@ def uploadPictureToStorage(userName, picture):
     fileName = contentDisposition[contentDisposition.find(ATTRIBUTE) + len(ATTRIBUTE):]
     fileName = fileName.strip('"')
     root, ext = os.path.splitext(fileName)
-    key = "public/profile/{0}{1}".format(userName, ext)
+    now = datetime.datetime.now()
+    datetimestr = now.strftime('%Y%m%d-%H%M%S')
+    key = "public/profile/{0}/{1}{2}".format(userName, datetimestr, ext)
     S3.upload_fileobj(response.raw, S3_BUCKET_NAME, key)
     return key
     

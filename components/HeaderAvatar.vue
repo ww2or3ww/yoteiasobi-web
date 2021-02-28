@@ -62,7 +62,7 @@
 export default {
   data() {
     return {
-      isAuthed: true,
+      isAuthed: false,
       name: "Guest", 
       mailAddress: "",
       pictureAddress: "", 

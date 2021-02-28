@@ -1,6 +1,6 @@
 import os
 import json
-import datetime
+from datetime import date, datetime
 
 import logging
 logger = logging.getLogger()
@@ -16,22 +16,23 @@ def handler(event, context):
   try:
     logger.info('=== START ===')
     logger.info(json.dumps(event, ensure_ascii=False, indent=2))
-
-    body = json.loads(event['body'])
-    name, comment, picture = getParamFromBody(body)
-    logger.info('name={0}, comment={1}, picture={2}'.format(name, comment, picture))
-
-    poolId, userName, pictureOrg = getUserInfo(event)
-    logger.info('user info = {0}, {1}, {2}'.format(poolId, userName, pictureOrg))
-
-    updateUserInfo(poolId, userName, name, comment, picture)
     
-    if picture and pictureOrg:
-      removeOldPicture(pictureOrg)
+    method = event['httpMethod']
+    
+    retCode = 500
+    retBody = ""
+    if method == 'GET':
+      retCode, retBody = get(event)
+    elif method == 'POST':
+      retCode, retBody = post(event)
+    elif method == 'DELETE':
+      retCode, retBody = delete(event)
+    else:
+      raise ValueError('{0} is not supported.'.format(method))
     
     return {
-      "statusCode": 200,
-      "body": json.dumps(body),
+      "statusCode": retCode,
+      "body": retBody,
       'headers': {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*'
@@ -48,6 +49,117 @@ def handler(event, context):
           'Access-Control-Allow-Origin': '*'
         },
       }
+      
+def get(event):
+  poolId, userName, pictureOrg, isAdmin = getUserInfo(event)
+  logger.info('user info = {0}, {1}, {2} (admin={3})'.format(poolId, userName, pictureOrg, isAdmin))
+  if not isAdmin:
+    return 401, "need admin."
+  
+  result = None
+  if "pathParameters" in event and event['pathParameters']:
+    result = get_at(event, poolId)
+  else:
+    result = get_list(event, poolId)
+    
+  return 200, json.dumps(result, ensure_ascii=False, indent=2, default=json_serial)
+    
+def get_at(event, poolId):
+  username = getPathParameter(event)
+  response = COGNITO_CLIENT.list_users(
+      UserPoolId = poolId, 
+      Filter = "username = \"{0}\"".format(username)
+  )
+  user = response['Users'][0]
+  retUser = createRetUser(user)
+  return retUser
+  
+def getPathParameter(event):
+  pathParameters = event['pathParameters']
+  return pathParameters['proxy']
+    
+def get_list(event, poolId):
+  count, search = getQueryParams(event)
+  users = []
+  
+  response = COGNITO_CLIENT.list_users(
+      UserPoolId = poolId, 
+      Filter = "email ^= \"{0}\"".format(search)
+  )
+  users.extend(response['Users'])
+  
+  if search:
+    response = COGNITO_CLIENT.list_users(
+        UserPoolId = poolId, 
+        Filter = "name ^= \"{0}\"".format(search)
+    )
+    users.extend(response['Users'])
+  
+  retUserList = []
+  for user in users:
+    tmp = list(filter(lambda data: data['username'] == user['Username'] , retUserList))
+    if tmp:
+      continue
+    retUser = createRetUser(user)
+    retUserList.append(retUser)
+  
+  return retUserList
+
+def getQueryParams(event):
+  count = 0
+  search = ""
+  queryPrm = event['queryStringParameters']
+  if "count" in queryPrm:
+    count = int(queryPrm['count'])
+  if "search" in queryPrm:
+    search = queryPrm['search']
+
+  return count, search
+  
+def createRetUser(user):
+  attributes = user['Attributes']
+  retUser = {
+    "username": user['Username'], 
+    "name": get_value_from_attributes(attributes, 'custom:name'),
+    "picture": get_value_from_attributes(attributes, 'custom:picture'),
+    "email": get_value_from_attributes(attributes, 'custom:email'),
+    "admin": get_value_from_attributes(attributes, 'custom:admin'),
+    "comment": get_value_from_attributes(attributes, 'custom:comment'),
+    "enabled": user['Enabled']
+  }
+  return retUser
+
+def post(event):
+  body = json.loads(event['body'])
+  name, comment, picture = getParamFromBody(body)
+  logger.info('name={0}, comment={1}, picture={2}'.format(name, comment, picture))
+
+  poolId, userName, pictureOrg, isAdmin = getUserInfo(event)
+  logger.info('user info = {0}, {1}, {2}'.format(poolId, userName, pictureOrg))
+
+  updateUserInfo(poolId, userName, name, comment, picture)
+  
+  if picture and pictureOrg:
+    removeOldPicture(pictureOrg)
+    
+  return 200, "success : {0}".format(userName)
+    
+def delete(event):
+  pathParameters = event['pathParameters']
+  userName = pathParameters['proxy']
+  logger.info(userName)
+  
+  poolId, userNameFrom, pictureOrg, isAdmin = getUserInfo(event)
+  logger.info('user info = {0}, {1}, {2}'.format(poolId, userNameFrom, pictureOrg))
+  
+  response = COGNITO_CLIENT.admin_delete_user(
+    UserPoolId = poolId,
+    Username = userName
+  )
+  
+  removeOldPicture(pictureOrg)
+
+  return 200, "success : {0}".format(userName)
 
 def getParamFromBody(body):
   name = ""
@@ -69,24 +181,32 @@ def getParamFromBody(body):
 def getUserInfo(event):
   poolId = None
   userName = None
-  pictureOrg = None
+  picture = None
+  isAdmin = False
 
   try:
-    poolId = event["requestContext"]["identity"]["cognitoAuthenticationProvider"].split(',')[0].split('/')[1]
-    userSub = event["requestContext"]["identity"]["cognitoAuthenticationProvider"].split(',')[1].split(':')[2]
+    poolId, userSub = getCognitoAuthenticationProviderFromEvent(event)
     response = COGNITO_CLIENT.list_users(
         UserPoolId = poolId,
         Filter = "sub = \"{0}\"".format(userSub)
     )
     userName = response['Users'][0]['Username']
     attributes = response['Users'][0]['Attributes']
-    pictureOrg = get_value_from_attributes(attributes, 'custom:picture')
+    picture = get_value_from_attributes(attributes, 'custom:picture')
+    admin = get_value_from_attributes(attributes, 'custom:admin')
+    if admin == '1':
+      isAdmin = True
     
   except Exception as e:
     logger.exception(e)
     raise
 
-  return poolId, userName, pictureOrg
+  return poolId, userName, picture, isAdmin
+  
+def getCognitoAuthenticationProviderFromEvent(event):
+  poolId = event["requestContext"]["identity"]["cognitoAuthenticationProvider"].split(',')[0].split('/')[1]
+  userSub = event["requestContext"]["identity"]["cognitoAuthenticationProvider"].split(',')[1].split(':')[2]
+  return poolId, userSub  
 
 def get_value_from_attributes(attributes, name):
   attr = list(filter(lambda data: data['Name'] == name , attributes))
@@ -129,6 +249,12 @@ def updateUserInfo(poolId, userName, name, comment, picture):
 
 def removeOldPicture(picture):
   try:
-    S3.delete_object(Bucket=S3_BUCKET_NAME, Key="public/{0}".format(picture))
+    S3.delete_object(Bucket=S3_BUCKET_NAME, Key=picture)
   except Exception as e:
     logger.exception(e)
+
+def json_serial(obj):
+    if isinstance(obj, (datetime, date)):
+        return obj.isoformat()
+    raise TypeError ("Type %s not serializable" % type(obj))
+

@@ -25,12 +25,21 @@ export default (context, inject) => {
   
   const getPictureAddressFromStorage = async (user) => {
     let pictureRet = null
-    const picturePath = user.attributes["custom:picture"]
+    let picturePath = null
+    if (user.attributes) {
+      picturePath = user.attributes["custom:picture"]
+    } else if (user.picture) {
+      picturePath = user.picture
+    } else {
+      return null
+    }
     await Storage.get(picturePath.replace('public/', ''), {
       level: 'public', 
       expires: 60 * 60 * 3
     }).then(result => {
       pictureRet = result;
+    }).catch(err => {
+      console.log(err)
     })
     return pictureRet
   }
@@ -40,20 +49,25 @@ export default (context, inject) => {
       context.store.state.authdata.user.attributes
   }
   
+  const getUserIDFunc = () => {
+    if (context.store.state.authdata.user == null) {
+      return null
+    }
+    return context.store.state.authdata.user.username
+  }
+  
   const getNameFunc = () => {
-    const user = JSON.parse(JSON.stringify(context.store.state.authdata.user))
-    if (user == null) {
+    if (!isAuthedFunc()) {
       return "Guest"
     }
-    return user.attributes["custom:name"]
+    return context.store.state.authdata.user.attributes["custom:name"]
   }
 
   const getEMailFunc = () => {
     if (!isAuthedFunc()) {
       return null
     }
-    const user = JSON.parse(JSON.stringify(context.store.state.authdata.user))
-    return user.attributes["custom:email"]
+    return context.store.state.authdata.user.attributes["custom:email"]
   }
   
   const getPictureFunc = () => {
@@ -64,8 +78,7 @@ export default (context, inject) => {
   }
 
   const createPictureKeyFunc = (filename) => {
-    const user = JSON.parse(JSON.stringify(context.store.state.authdata.user))
-    if (user == null) {
+    if (context.store.state.authdata.user == null) {
       return null
     }
     const ext = filename.slice(filename.lastIndexOf('.') + 1)
@@ -78,7 +91,11 @@ export default (context, inject) => {
       ('0' + date.getUTCHours()).slice(-2) + 
       ('0' + date.getUTCMinutes()).slice(-2) + 
       ('0' + date.getUTCSeconds()).slice(-2)
-    const key = "profile/" + user.username + "/" + datetimestr + "." + ext
+    const key = 
+      "public/profile/" + 
+      context.store.state.authdata.user.username + 
+      "/" + 
+      datetimestr + "." + ext
     return key
   }
 
@@ -86,16 +103,25 @@ export default (context, inject) => {
     if (!isAuthedFunc()) {
       return null
     }
-    const user = JSON.parse(JSON.stringify(context.store.state.authdata.user))
-    return user.attributes["custom:picture"].replace('public/', '')
+    return context.store.state.authdata.user.attributes["custom:picture"].replace('public/', '')
   }
 
   const getCommentFunc = () => {
     if (!isAuthedFunc()) {
       return null
     }
-    const user = JSON.parse(JSON.stringify(context.store.state.authdata.user))
-    return user.attributes["custom:comment"]
+    return context.store.state.authdata.user.attributes["custom:comment"]
+  }
+
+  const isAdminFunc = () => {
+    if (!isAuthedFunc()) {
+      return false
+    }
+    if (context.store.state.authdata.user.attributes["custom:admin"] == "1") {
+      return true
+    } else {
+      return false
+    }
   }
 
   inject('auth_signin', signinFunc)
@@ -103,6 +129,8 @@ export default (context, inject) => {
   inject('auth_reload_user', reloadUserFunc)
   inject('auth_get_picture_address_from_storage', getPictureAddressFromStorage)
   inject('auth_is_authed', isAuthedFunc)
+  inject('auth_is_admin', isAdminFunc)
+  inject('auth_get_user_id', getUserIDFunc)
   inject('auth_get_name', getNameFunc)
   inject('auth_get_email', getEMailFunc)
   inject('auth_get_picture', getPictureFunc)

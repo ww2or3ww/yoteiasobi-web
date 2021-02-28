@@ -12,6 +12,7 @@
     <v-navigation-drawer
       v-model="drawer"
       fixed
+      temporary
     >
       <HeaderDrawer v-on:onClickFromDrawer="drawer = !drawer" />
     </v-navigation-drawer>
