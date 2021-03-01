@@ -26,14 +26,35 @@
         :headers="headers" 
         :items="users"
         item-key="id"
+        select-all
         hide-default-footer
         @click:row="onClickRow"
       >
+        <template v-slot:items="{ props }">
+          <tr>
+            <td>
+              <v-checkbox v-model="props.selected" primary hide-details></v-checkbox>
+            </td>
+            <td>
+              <v-avatar>
+                <v-img :src="props.item.imageAddress"></v-img>
+              </v-avatar>
+            </td>
+            <td>
+              {{props.item.name }}
+            </td>
+            <td>
+              {{props.item.email }}
+            </td>
+          </tr>
+        </template>
+
         <template v-slot:item.imageAddress="{ item }">
           <v-avatar>
             <v-img :src="item.imageAddress"></v-img>
           </v-avatar>
         </template>
+        
       </v-data-table>
       <v-data-table
         v-else
@@ -55,7 +76,6 @@ export default {
         { text: "icon", value: "imageAddress", sortable: false },
         { text: 'name', value: 'name' },
         { text: 'email', value: 'email' },
-        { text: 'comment', value: 'comment' },
       ],
       users: null,
       search: "",
@@ -81,8 +101,6 @@ export default {
           user['id'] = i
           user['imageAddress'] = await this.$auth_get_picture_address_from_storage(user)
         })
-        console.log(users)
-        
         return users
       } catch (error) {
         console.log(error)
@@ -98,10 +116,8 @@ export default {
     onClickRow(item) {
       this.selectedUser = item
       this.selected = [item]
-      console.log(this.selectedUser)
     },
     onClickDetail() {
-      console.log(this.selectedUser)
       this.$router.push('/userProfile?username=' + this.selectedUser['username'])
     },
   }

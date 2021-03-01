@@ -77,14 +77,12 @@ export default {
     },
     async getUsers() {
       try {
-        console.log('!! get !!')
         const user = await API.get(
           process.env.ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_name, 
           '/profile/' + this.$route.query.username
         )
         user['imageAddress'] = await this.$auth_get_picture_address_from_storage(user)
-        console.log(user)
-        
+
         return user
       } catch (error) {
         console.log(error)
