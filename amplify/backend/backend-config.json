@@ -51,6 +51,21 @@
           ]
         }
       ]
+    },
+    "yoteiasobigraphqlapi": {
+      "service": "AppSync",
+      "providerPlugin": "awscloudformation",
+      "output": {
+        "authConfig": {
+          "defaultAuthentication": {
+            "authenticationType": "AMAZON_COGNITO_USER_POOLS",
+            "userPoolConfig": {
+              "userPoolId": "authyoteiasobi8e9669f8"
+            }
+          },
+          "additionalAuthenticationProviders": []
+        }
+      }
     }
   },
   "storage": {

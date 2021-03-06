@@ -28,6 +28,9 @@ const awsconfig = {
             "region": "ap-northeast-1"
         }
     ],
+    "aws_appsync_graphqlEndpoint": "",
+    "aws_appsync_region": "ap-northeast-1",
+    "aws_appsync_authenticationType": "AMAZON_COGNITO_USER_POOLS",
     "aws_user_files_s3_bucket": "",
     "aws_user_files_s3_bucket_region": "ap-northeast-1"
 };
@@ -40,6 +43,7 @@ awsconfig.oauth.redirectSignOut                 = process.env.ENVVAL_AWS_EXPORTS
 awsconfig.aws_cloud_logic_custom[0].name        = process.env.ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_name;
 awsconfig.aws_cloud_logic_custom[0].endpoint    = process.env.ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_endpoint;
 awsconfig.aws_user_files_s3_bucket              = process.env.ENVVAL_AWS_EXPORTS_aws_user_files_s3_bucket;
+awsconfig.aws_appsync_graphqlEndpoint           = process.env.ENVVAL_AWS_EXPORTS_aws_appsync_graphqlEndpoint;
 
 Amplify.configure(awsconfig)
 Vue.use(Amplify)

@@ -186,7 +186,7 @@ export default {
       })
     },
     async processUpdateUser(pictureKey) {
-      const postdata = {
+      const data = {
         headers: {},
         body: {
           'name': this.name,
@@ -195,10 +195,10 @@ export default {
         },
         response: true,
       };
-      const response = await API.post(
+      const response = await API.put(
         process.env.ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_name, 
         '/profile', 
-        postdata
+        data
       )
     },
     async processDelete(typestr) {

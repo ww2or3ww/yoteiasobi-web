@@ -6,6 +6,20 @@
         class="navicon" />
     </v-list-item-action>
     <v-list>
+
+      <v-list-item to="/">
+        <v-list-item-action>
+          <v-icon>mdi-home-outline</v-icon>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>
+            TOP
+          </v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-divider />
+
       <v-list-item
         v-for="(item, i) in items"
         :key="i"
@@ -56,19 +70,14 @@ export default {
       isAdmin: false,
       items: [
         {
-          icon: 'mdi-home-outline',
-          title: 'TOP',
-          to: '/',
-        },
-        {
           icon: 'mdi-feature-search-outline',
           title: 'SEARCH',
-          to: '/login',
+          to: '/searchCalendar',
         },
         {
           icon: 'mdi-square-edit-outline',
           title: 'REGIST',
-          to: '/login',
+          to: '/registCalendar',
         },
       ],
     }
