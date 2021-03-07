@@ -11,6 +11,11 @@
             <v-btn @click="onClickSearch">
               <v-icon>mdi-magnify</v-icon>
             </v-btn>
+            <v-btn
+              :disabled="selectedItem==null"
+              @click="onClickDetail">
+              <v-icon>mdi-calendar-month</v-icon>
+            </v-btn>
           </template>
         </v-text-field>
       </v-card-title>
@@ -21,6 +26,7 @@
         item-key="id"
         select-all
         hide-default-footer
+        @click:row="onClickRow"
       >
       </v-data-table>
       <v-data-table
@@ -33,10 +39,34 @@
     </section>
     
     <section class="section_form">
-        <v-textarea
+        <v-text-field
+          label="Calendar ID*"
+          v-model="calendarId"
+          :rules="[rules.required]"
+          counter="30"
+          dense
+          class="text_field text-white"
+        />
+        <v-text-field
+          label="Title*"
           v-model="title"
-          label="Title"
-          counter="500"
+          :rules="[rules.required]"
+          counter="50"
+          dense
+          class="text_field text-white"
+        />
+        <v-text-field
+          label="Address"
+          v-model="address"
+          counter="50"
+          dense
+          class="text_field text-white"
+        />
+        <v-text-field
+          label="Tel"
+          v-model="tel"
+          :rules="[rules.tel]"
+          counter="50"
           dense
           class="text_field text-white"
         />
@@ -59,6 +89,14 @@
         Regist
         <v-icon right dark>mdi-account-edit-outline</v-icon>
       </v-btn>
+      <v-btn
+        color="#607D8B"
+        @click="onProcess"
+        :disabled="isProcessing"
+      >
+        Process
+        <v-icon right dark>mdi-rocket-launch</v-icon>
+      </v-btn>
     </section>
 
     <v-overlay :value="isProcessing">
@@ -74,23 +112,32 @@
 </template>
 <script>
 import { API, graphqlOperation } from 'aws-amplify'
-import { listCalendar2 } from '~/src/graphql/queries'
-import { createCalendar2 } from "~/src/graphql/mutations"
+import { listCalendar } from '~/src/graphql/queries'
+import { createCalendar, processYoteiasobi } from "~/src/graphql/mutations"
 export default {
   data() {
     return {
       headers: [
         { text: "icon", value: "imageAddress", sortable: false },
-        { text: 'owner', value: 'owner' },
         { text: 'calendarId', value: 'calendarId' },
         { text: 'title', value: 'title' },
-        { text: 'description', value: 'description' },
       ],
       calendars: null,
+      calendarId: "",
       title: "",
       description: "",
+      address: "",
+      tel: "",
+      selectedItem: null,
       isProcessing: false,
       message: "",
+      rules: {
+        required: value => !!value || 'Required.',
+        tel: value => {
+          const pattern = /^[0-9]{10,11}$/
+          return (value.length == 0 || pattern.test(value)) || 'Invalid TEL.'
+        },
+      }
     }
   },
   mounted () {
@@ -103,44 +150,75 @@ export default {
     },
     async getItems() {
       try {
-        let calendars = await API.graphql(graphqlOperation(listCalendar2, {
+        let calendars = await API.graphql(graphqlOperation(listCalendar, {
           owner: this.$auth_get_user_id(),
-          limit: 10
+          //calendarId: {
+          //  beginsWith: "calendar"
+          //},
+          limit: 5
         }))
         console.log(calendars)
-        return calendars.data.listCalendar2.items
+        return calendars.data.listCalendar.items
       } catch (error) {
         console.log(error)
         this.users = null
       }
     },
     async onClickSearch() {
+      this.selectedItem = null
       this.calendars = await this.getItems()
       console.log(this.calendars)
     },
-    onRegist() {
-      this.registProcess()
+    onClickRow(item) {
+      this.selectedItem = item
     },
-    async registProcess() {
+    onClickDetail() {
+      this.$router.push('/calendar?id=' + this.selectedItem['calendarId'])
+    },
+
+    async onRegist() {
       this.isProcessing = true
       try {
         const inputdata = {
-          //owner: this.$auth_get_user_id(),
-          calendarId: "calendar-id",
+          owner: this.$auth_get_user_id(),
+          calendarId: this.calendarId,
           title: this.title, 
-          description: this.description
+          description: this.description,
+          address: this.address,
+          tel: this.tel
         }
         console.log(inputdata)
-        await API.graphql(graphqlOperation(createCalendar2, {input: inputdata}))
+        const res = await API.graphql(graphqlOperation(createCalendar, {input: inputdata}))
         console.log('create done!')
+        console.log(res)
       } catch (error) {
-        this.isProcessing = false
         this.message = "error occured : " + error.message
         console.log('error!')
         console.log(error)
       }
       this.isProcessing = false
     },
+
+    async onProcess() {
+      this.isProcessing = true
+      try {
+        const inputdata = {
+          //owner: this.$auth_get_user_id(),
+          calendarId: "calendar-id",
+          content: this.title
+        }
+        console.log(inputdata)
+        const res = await API.graphql(graphqlOperation(processYoteiasobi, inputdata))
+        console.log('process done!')
+        console.log(res)
+      } catch (error) {
+        this.message = "error occured : " + error.message
+        console.log('error!')
+        console.log(error)
+      }
+      this.isProcessing = false
+    },
+    
   }
 }
 </script>

@@ -89,36 +89,6 @@ export default {
         this.users = null
       }
     },
-    onDisable() {
-      this.isShowMessage = true
-    },
-    async processDisable(typestr) {
-      this.isShowMessage = false
-      if (typestr == "cancel") {
-        return
-      }
-      this.isProcessing = true
-      try {
-        const postdata = {
-          headers: {},
-          body: {
-            'username': this.name,
-            'enable': false
-          },
-          response: true,
-        };
-        const response = await API.post(
-          process.env.ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_name, 
-          '/profile', 
-          postdata
-        )
-      } catch (error) {
-        console.log(error)
-        this.isProcessing = false
-        this.message = "error occured : " + error.message
-      }
-      this.$auth_signout()
-    },
   },
 }
 </script>

@@ -27,6 +27,16 @@
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
+    },
+    "yoteiasobigraphqlprocess": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "yoteiasobirestapicalendar": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
     }
   },
   "api": {
@@ -45,6 +55,14 @@
         {
           "category": "function",
           "resourceName": "yoteiasobirestapiprofile",
+          "attributes": [
+            "Name",
+            "Arn"
+          ]
+        },
+        {
+          "category": "function",
+          "resourceName": "yoteiasobirestapicalendar",
           "attributes": [
             "Name",
             "Arn"

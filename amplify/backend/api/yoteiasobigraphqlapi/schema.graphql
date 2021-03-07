@@ -24,26 +24,16 @@ type YoteiasobiCalendar
   updatedAt: AWSDateTime
 }
 
-type YoteiasobiCalendar2
-  @model (
-    queries: { get: "getCalendar2", list: "listCalendar2" },
-    mutations: {create: "createCalendar2", update: null, delete: "deleteCalendar2"}
-    subscriptions: {
-      onCreate: ["onCreateCalendar2All", "onCreateCalendar2By(owner: String!)"]
-      level: on
-    }
-  )
-  @auth(rules: [
-    {allow: owner, ownerField:"owner", provider: userPools, operations:[read, create, delete]}
-    {allow: private, provider: userPools, operations:[read]}
-  ])
-  @key(fields:["calendarId"])
+type Mutation
 {
-  calendarId: String!
-  title: String!
-  description: String
-  createdAt: AWSDateTime!
-  updatedAt: AWSDateTime
+  processYoteiasobi(
+    calendarId: String!
+		content: String!
+	): YoteiasobiCalendar
+    @function(name: "yoteiasobigraphqlprocess-${env}")
+    @auth(rules: [
+      {allow: private, provider: userPools},
+    ])
 }
 
 type PrivateNote

@@ -48,45 +48,6 @@ export const listCalendar = /* GraphQL */ `
     }
   }
 `;
-export const getCalendar2 = /* GraphQL */ `
-  query GetCalendar2($calendarId: String!) {
-    getCalendar2(calendarId: $calendarId) {
-      calendarId
-      title
-      description
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
-export const listCalendar2 = /* GraphQL */ `
-  query ListCalendar2(
-    $calendarId: String
-    $filter: ModelYoteiasobiCalendar2FilterInput
-    $limit: Int
-    $nextToken: String
-    $sortDirection: ModelSortDirection
-  ) {
-    listCalendar2(
-      calendarId: $calendarId
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      sortDirection: $sortDirection
-    ) {
-      items {
-        calendarId
-        title
-        description
-        createdAt
-        updatedAt
-        owner
-      }
-      nextToken
-    }
-  }
-`;
 export const getPrivateNote = /* GraphQL */ `
   query GetPrivateNote($id: ID!) {
     getPrivateNote(id: $id) {

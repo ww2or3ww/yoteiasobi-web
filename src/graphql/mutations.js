@@ -1,6 +1,21 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const processYoteiasobi = /* GraphQL */ `
+  mutation ProcessYoteiasobi($calendarId: String!, $content: String!) {
+    processYoteiasobi(calendarId: $calendarId, content: $content) {
+      owner
+      calendarId
+      title
+      image
+      description
+      address
+      tel
+      createdAt
+      updatedAt
+    }
+  }
+`;
 export const createCalendar = /* GraphQL */ `
   mutation CreateCalendar(
     $input: CreateYoteiasobiCalendarInput!
@@ -34,36 +49,6 @@ export const deleteCalendar = /* GraphQL */ `
       tel
       createdAt
       updatedAt
-    }
-  }
-`;
-export const createCalendar2 = /* GraphQL */ `
-  mutation CreateCalendar2(
-    $input: CreateYoteiasobiCalendar2Input!
-    $condition: ModelYoteiasobiCalendar2ConditionInput
-  ) {
-    createCalendar2(input: $input, condition: $condition) {
-      calendarId
-      title
-      description
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
-export const deleteCalendar2 = /* GraphQL */ `
-  mutation DeleteCalendar2(
-    $input: DeleteYoteiasobiCalendar2Input!
-    $condition: ModelYoteiasobiCalendar2ConditionInput
-  ) {
-    deleteCalendar2(input: $input, condition: $condition) {
-      calendarId
-      title
-      description
-      createdAt
-      updatedAt
-      owner
     }
   }
 `;

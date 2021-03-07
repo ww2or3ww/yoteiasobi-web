@@ -71,12 +71,12 @@ export default {
       items: [
         {
           icon: 'mdi-feature-search-outline',
-          title: 'SEARCH',
+          title: 'Search Calendar',
           to: '/searchCalendar',
         },
         {
           icon: 'mdi-square-edit-outline',
-          title: 'REGIST',
+          title: 'Regist Calendar',
           to: '/registCalendar',
         },
       ],

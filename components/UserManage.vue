@@ -13,7 +13,7 @@
               <v-icon>mdi-magnify</v-icon>
             </v-btn>
             <v-btn
-              :disabled="selectedUser==null"
+              :disabled="selectedItem==null"
               @click="onClickDetail">
               <v-icon>mdi-account-details</v-icon>
             </v-btn>
@@ -21,7 +21,7 @@
         </v-text-field>
       </v-card-title>
       <v-data-table
-        v-model="selected"
+        v-model="selectedList"
         v-if="users"
         :headers="headers" 
         :items="users"
@@ -33,7 +33,7 @@
         <template v-slot:items="{ props }">
           <tr>
             <td>
-              <v-checkbox v-model="props.selected" primary hide-details></v-checkbox>
+              <v-checkbox v-model="props.selectedList" primary hide-details></v-checkbox>
             </td>
             <td>
               <v-avatar>
@@ -79,8 +79,8 @@ export default {
       ],
       users: null,
       search: "",
-      selectedUser: null,
-      selected: []
+      selectedItem: null,
+      selectedList: []
     }
   },
   mounted () {
@@ -108,17 +108,17 @@ export default {
       }
     },
     async onClickSearch() {
-      this.selectedUser = null
-      this.selected = []
+      this.selectedItem = null
+      this.selectedList = []
       this.users = null
       this.users = await this.getUsers()
     },
     onClickRow(item) {
-      this.selectedUser = item
-      this.selected = [item]
+      this.selectedItem = item
+      this.selectedList = [item]
     },
     onClickDetail() {
-      this.$router.push('/userProfile?username=' + this.selectedUser['username'])
+      this.$router.push('/userProfile?username=' + this.selectedItem['username'])
     },
   }
 }

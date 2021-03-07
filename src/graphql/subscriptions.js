@@ -31,30 +31,6 @@ export const onCreateCalendarBy = /* GraphQL */ `
     }
   }
 `;
-export const onCreateCalendar2All = /* GraphQL */ `
-  subscription OnCreateCalendar2All {
-    onCreateCalendar2All {
-      calendarId
-      title
-      description
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
-export const onCreateCalendar2By = /* GraphQL */ `
-  subscription OnCreateCalendar2By($owner: String!) {
-    onCreateCalendar2By(owner: $owner) {
-      calendarId
-      title
-      description
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
 export const onCreatePrivateNote = /* GraphQL */ `
   subscription OnCreatePrivateNote($owner: String!) {
     onCreatePrivateNote(owner: $owner) {
