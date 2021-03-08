@@ -161,7 +161,7 @@ export default {
   methods: {
     async dataInitialize() {
       this.isProcessing = true
-      const item = await this.getItem()
+      this.events= await this.getItem()
       this.isProcessing = false
     },
     async getItem() {
@@ -170,6 +170,10 @@ export default {
           process.env.ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_name, 
           '/calendar/' + this.calendarId
         )
+        calendar.forEach(function(data){
+          data.start = new Date(data.start)
+          data.end = new Date(data.end)
+        })
         console.log(calendar)
         return calendar
       } catch (error) {
