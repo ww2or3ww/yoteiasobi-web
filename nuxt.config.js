@@ -55,6 +55,8 @@ export default {
     '@nuxtjs/stylelint-module',
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
+    // https://momentjs.com/
+    '@nuxtjs/moment',
   ],
 
   // Modules (https://go.nuxtjs.dev/config-modules)
@@ -102,5 +104,10 @@ export default {
   stripe: {
     version: 'v3',
     publishableKey: process.env.ENVVAL_STRIPE_PUBLIC_KEY
+  },
+  
+  // Moment
+  moment: {
+    locales: ['ja']
   },
 }

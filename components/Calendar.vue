@@ -4,14 +4,14 @@
       <v-form>
         <v-text-field
           v-model="calendarId"
-          label="calendarId*"
+          label="ID"
           dense
           readonly
           class="text_field text-gray"
         />
         <v-text-field
-          v-model="title"
-          label="title*"
+          v-model="calendarTitle"
+          label="Title"
           dense
           readonly
           class="text_field text-gray"
@@ -100,6 +100,13 @@
       ></v-calendar>
     </v-sheet>
     
+    <v-btn fixed fab bottom right 
+      color="#BDBDBD88" style="bottom: 40px"
+      @click="onClickPlus"
+    >
+      <v-icon color="white">mdi-plus</v-icon>
+    </v-btn>
+    
     <v-overlay :value="isProcessing">
       <v-progress-circular
         :size="100"
@@ -108,29 +115,52 @@
         indeterminate
       />
     </v-overlay>
+    <v-dialog
+      v-model="isShowForm"
+      fullscreen
+      hide-overlay
+      transition="dialog-bottom-transition"
+    >
+      <CalendarForm
+        formTitle = "Regist Schedule"
+        :calendarId = "calendarId"
+        :name = "name"
+        :dateStart = "dateStart"
+        :dateEnd = "dateEnd"
+        :timeStart = "timeStart"
+        :timeEnd = "timeEnd"
+        :selectedDate = "focus"
+        :email = "email"
+        :description = "description"
+        :callbackOK = "onFormOK"
+        :callbackCancel = "onFormCancel"
+      />
+    </v-dialog>
     
   </div>
 </template>
 <script>
 import { API } from 'aws-amplify'
 import SelectableAvatarImage from '~/components/SelectableAvatarImage.vue'
+import CalendarForm from '~/components/CalendarForm.vue'
 export default {
   components: {
     SelectableAvatarImage,
+    CalendarForm
   },
   data() {
     return {
       calendarId: "",
-      title: "",
-      description: "",
-      address: "",
-      tel: "",
+      calendarTitle: "",
+      name: "",
+      dateStart: "",
+      dateEnd: "",
+      timeStart: "",
+      timeEnd: "",
       email: "",
-      comment: "",
-      picture: "", 
+      description: "",
       isProcessing: false,
-      isCheckDisable: false,
-      isShowMessage: false,
+      isShowForm: false,
       message: "",
       
       type: 'month',
@@ -156,13 +186,18 @@ export default {
   },
   mounted () {
     this.calendarId = this.$route.query.id
+    this.calendarTitle = "calendar for me"
+    this.email = this.$auth_get_email()
     this.dataInitialize()
   },
   methods: {
     async dataInitialize() {
+      this.focus = this.getToday()
       this.isProcessing = true
       this.events= await this.getItem()
+      console.log(this.events)
       this.isProcessing = false
+      this.isShowForm = false
     },
     async getItem() {
       try {
@@ -174,19 +209,50 @@ export default {
           data.start = new Date(data.start)
           data.end = new Date(data.end)
         })
-        console.log(calendar)
         return calendar
       } catch (error) {
         console.log(error)
       }
     },
+    getToday () {
+      return this.$moment().format('YYYY-MM-DD')
+    },
     setToday () {
-      this.focus = ''
+      this.focus = this.getToday()
     },
     viewDay ({ date }) {
       this.focus = date
       this.type = 'day'
     },
+    onClickPlus () {
+      console.log(this.focus)
+      this.dateStart = this.focus
+      this.dateEnd = this.focus
+      this.timeStart = '00:00'
+      this.timeEnd = '00:00'
+      this.isShowForm = true
+    },
+    async onFormOK (data) {
+      this.isProcessing = true
+      console.log(data)
+      const postdata = {
+        headers: {},
+        body: data,
+        response: true,
+      };
+      const response = await API.post(
+        process.env.ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_name, 
+        '/calendar',
+        postdata
+      )
+      console.log(response)
+      this.events.push(data)
+      this.isProcessing = false
+      this.isShowForm = false
+    },
+    onFormCancel () {
+      this.isShowForm = false
+    }
   },
 }
 </script>
