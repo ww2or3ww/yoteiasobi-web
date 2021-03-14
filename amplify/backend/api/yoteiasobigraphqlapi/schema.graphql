@@ -11,17 +11,32 @@ type YoteiasobiCalendar
     {allow: owner, ownerField:"owner", provider: userPools, operations:[read, create, delete]}
     {allow: private, provider: userPools, operations:[read]}
   ])
-  @key(fields:["owner", "calendarId"])
+  @key(fields:["calendarId"])
 {
-  owner: String!
   calendarId: String!
   title: String!
   image: String
   description: String
-  address: String
-  tel: String
-  createdAt: AWSDateTime!
-  updatedAt: AWSDateTime
+}
+
+type YoteiasobiUserCalendar
+  @model (
+    queries: { get: "getUserCalendar", list: "listUserCalendar" },
+    mutations: {create: "createUserCalendar", update: null, delete: "deleteUserCalendar"}
+    subscriptions: {
+      onCreate: ["onCreateUserCalendarAll", "onCreateUserCalendarBy(owner: String!)"]
+      level: on
+    }
+  )
+  @auth(rules: [
+    {allow: owner, ownerField:"owner", provider: userPools, operations:[read, create, delete]}
+    {allow: private, provider: userPools, operations:[read]}
+  ])
+  @key(fields:["owner", "calendarId"])
+{
+  owner: String!
+  calendarId: String!
+  creator: String!
 }
 
 type Mutation

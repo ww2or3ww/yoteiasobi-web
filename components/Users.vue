@@ -13,7 +13,7 @@
               <v-icon>mdi-magnify</v-icon>
             </v-btn>
             <v-btn
-              :disabled="selectedItem==null"
+              :disabled="selectedList.length==0"
               @click="onClickDetail">
               <v-icon>mdi-account-details</v-icon>
             </v-btn>
@@ -61,7 +61,6 @@ export default {
       ],
       users: null,
       search: "",
-      selectedItem: null,
       selectedList: []
     }
   },
@@ -95,7 +94,6 @@ export default {
       }
     },
     async onClickSearch() {
-      this.selectedItem = null
       this.selectedList = []
       this.users = null
       this.users = await this.getUsers()
@@ -104,11 +102,10 @@ export default {
       }
     },
     onClickRow(item) {
-      this.selectedItem = item
       this.selectedList = [item]
     },
     onClickDetail() {
-      this.$router.push('/userProfile?username=' + this.selectedItem['username'])
+      this.$router.push('/users/' + this.selectedList[0]['username'])
     },
   }
 }

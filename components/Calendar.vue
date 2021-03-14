@@ -74,7 +74,7 @@
         </v-menu>
       </v-toolbar>
     </v-sheet>
-    <v-sheet>
+    <v-sheet :height="calendarHeight">
       <v-calendar
         ref="calendar"
         v-model="focus"
@@ -98,7 +98,7 @@
       fullscreen
       transition="dialog-bottom-transition"
     >
-      <CalendarForm
+      <CalendarEventRegistDialog
         formTitle = "Regist Schedule"
         :calendarId = "calendarId"
         :name = "name"
@@ -128,11 +128,17 @@
 <script>
 import { API } from 'aws-amplify'
 import SelectableAvatarImage from '~/components/SelectableAvatarImage.vue'
-import CalendarForm from '~/components/CalendarForm.vue'
+import CalendarEventRegistDialog from '~/components/CalendarEventRegistDialog.vue'
 export default {
   components: {
     SelectableAvatarImage,
-    CalendarForm
+    CalendarEventRegistDialog
+  },
+  props: {
+    id: {
+      type: String,
+      required: true
+    }
   },
   data() {
     return {
@@ -152,10 +158,10 @@ export default {
       type: 'month',
       types: ['month', 'week', 'day', '4day'],
       typeToLabel: {
-        month: 'Month',
-        week: 'Week',
-        day: 'Dday',
-        '4day': '4days',
+        month: 'MONTH',
+        week: 'WEEK',
+        day: 'DAY',
+        '4day': '4DAYS',
       },
       weekday: [0, 1, 2, 3, 4, 5, 6],
       weekdays: [
@@ -166,27 +172,35 @@ export default {
       ],
       focus: '',
       events: [],
-      colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'],
-      names: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party'],
+      calendarHeight: 600,
     }
   },
   mounted () {
-    this.calendarId = this.$route.query.id
+    this.calendarId = this.id
     this.calendarId = this.calendarId.replace("@group.calendar.google.com", "")
-    console.log(this.calendarId)
     this.calendarTitle = "calendar for me"
     this.email = this.$auth_get_email()
     this.initialize()
   },
+  created() {
+    window.addEventListener('resize', this.onResize)
+    this.onResize()
+  },
+  destroyed() {
+    window.removeEventListener('resize', this.onResize)
+  },
   methods: {
     async initialize() {
       this.isShowForm = false
-      this.focus = this.getToday()
+      this.setToday()
       if (this.calendarId && this.calendarId.length > 10) {
         this.isProcessing = true
         this.events= await this.getItem()
         this.isProcessing = false
       }
+    },
+    onResize() {
+      this.calendarHeight = window.innerHeight - 280
     },
     async getItem() {
       try {
@@ -203,11 +217,8 @@ export default {
         console.log(error)
       }
     },
-    getToday () {
-      return this.$moment().format('YYYY-MM-DD')
-    },
     setToday () {
-      this.focus = this.getToday()
+      this.focus = this.$moment().format('YYYY-MM-DD')
     },
     viewDay ({ date }) {
       this.focus = date
@@ -216,14 +227,13 @@ export default {
     },
     getEventColor (event) {
       if (event['isMasked']) {
-        return 'grey'
+        return '#757575'
       } else if (event['isMine']) {
         return 'orange'
       }
-      return 'blue'
+      return '#455A64'
     },
     onClickPlus () {
-      console.log(this.focus)
       this.dateStart = this.focus
       this.dateEnd = this.focus
       this.timeStart = '00:00'

@@ -50,6 +50,12 @@ export default {
   components: {
     SelectableAvatarImage,
   },
+  props: {
+    id: {
+      type: String,
+      required: true
+    }
+  },
   data() {
     return {
       name: "", 
@@ -79,7 +85,7 @@ export default {
       try {
         const user = await API.get(
           process.env.ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_name, 
-          '/profile/' + this.$route.query.username
+          '/profile/' + this.id
         )
         user['imageAddress'] = await this.$auth_get_picture_address_from_storage(user)
 

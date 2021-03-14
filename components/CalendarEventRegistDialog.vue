@@ -21,7 +21,7 @@
           <v-icon left>
             mdi-pencil
           </v-icon>
-          Save
+          Regist
         </v-btn>
       </v-toolbar-items>
     </v-toolbar>

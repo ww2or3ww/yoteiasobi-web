@@ -26,7 +26,7 @@
           maxlength="60"
         >
           <template v-slot:append>
-            <v-btn @click="onClickSearch" :disabled="calendarId.length == 0">
+            <v-btn @click="onClickDetail" :disabled="calendarId.length == 0">
               <v-icon>mdi-calendar-month</v-icon>
             </v-btn>
           </template>
@@ -34,20 +34,18 @@
       </v-card-title>
     </section>
     
-    <v-overlay :value="isProcessing">
-      <v-progress-circular
-        :size="100"
-        :width="8"
-        color="primary"
-        indeterminate
-      />
-    </v-overlay>
+    <v-btn fixed fab bottom right 
+      color="#BDBDBD88" style="bottom: 40px"
+      @click="onClickPlus"
+    >
+      <v-icon color="white">mdi-plus</v-icon>
+    </v-btn>
     
   </div>
 </template>
 <script>
 import { API, graphqlOperation } from 'aws-amplify'
-import { listCalendar } from '~/src/graphql/queries'
+import { listUserCalendar } from '~/src/graphql/queries'
 export default {
   data() {
     return {
@@ -59,7 +57,6 @@ export default {
       calendars: null,
       selectedItem: null,
       calendarId: "",
-      isProcessing: false,
       message: "",
     }
   },
@@ -68,13 +65,11 @@ export default {
   },
   methods: {
     async initialize() {
-      this.isProcessing = true
       this.calendars = await this.getItems()
-      this.isProcessing = false
     },
     async getItems() {
       try {
-        let calendars = await API.graphql(graphqlOperation(listCalendar, {
+        let calendars = await API.graphql(graphqlOperation(listUserCalendar, {
           owner: this.$auth_get_user_id(),
           //calendarId: {
           //  beginsWith: "calendar"
@@ -82,7 +77,7 @@ export default {
           limit: 5
         }))
         console.log(calendars)
-        return calendars.data.listCalendar.items
+        return calendars.data.listUserCalendar.items
       } catch (error) {
         console.log(error)
         this.users = null
@@ -95,9 +90,13 @@ export default {
       this.calendarId = item["calendarId"]
     },
     
-    onClickSearch() {
-      this.$router.push('/calendar?id=' + this.calendarId)
+    onClickDetail() {
+      this.$router.push('/calendars/' + this.calendarId)
     },
+    
+    onClickPlus() {
+      this.$router.push('/calendarRegist')
+    }
     
   }
 }

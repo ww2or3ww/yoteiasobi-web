@@ -20,29 +20,25 @@
 
       <v-divider />
 
-      <v-list-item
-        v-for="(item, i) in items"
-        :key="i"
-        :to="item.to"
-        router
-        exact
-      >
+      <v-list-item to="/calendars">
         <v-list-item-action>
-          <v-icon>{{ item.icon }}</v-icon>
+          <v-icon>mdi-calendar-month</v-icon>
         </v-list-item-action>
         <v-list-item-content>
-          <v-list-item-title v-text="item.title" />
+          <v-list-item-title>
+            Calendar
+          </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
 
       <v-divider v-if="isAdmin" />
-      <v-list-item  v-if="isAdmin" to="/userManage">
+      <v-list-item  v-if="isAdmin" to="/users">
         <v-list-item-action>
           <v-icon>mdi-account-group</v-icon>
         </v-list-item-action>
         <v-list-item-content>
           <v-list-item-title>
-            User Manage
+            User
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
@@ -67,18 +63,6 @@ export default {
   data() {
     return {
       isAdmin: false,
-      items: [
-        {
-          icon: 'mdi-feature-search-outline',
-          title: 'Select Calendar',
-          to: '/calendarSelect',
-        },
-        {
-          icon: 'mdi-square-edit-outline',
-          title: 'Regist Calendar',
-          to: '/calendarRegist',
-        },
-      ],
     }
   },
   mounted () {

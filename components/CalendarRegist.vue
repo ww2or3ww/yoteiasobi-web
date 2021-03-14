@@ -1,49 +1,12 @@
 <template>
   <div class="main">
-    <section class="section_list">
-      <v-card-title>
-        <v-text-field
-          type="text"
-          single-line
-          hide-details
-        >
-          <template v-slot:append>
-            <v-btn @click="onClickSearch">
-              <v-icon>mdi-magnify</v-icon>
-            </v-btn>
-            <v-btn
-              :disabled="selectedItem==null"
-              @click="onClickDetail">
-              <v-icon>mdi-calendar-month</v-icon>
-            </v-btn>
-          </template>
-        </v-text-field>
-      </v-card-title>
-      <v-data-table
-        v-if="calendars"
-        :headers="headers" 
-        :items="calendars"
-        item-key="id"
-        select-all
-        hide-default-footer
-        @click:row="onClickRow"
-      >
-      </v-data-table>
-      <v-data-table
-        v-else
-        loading
-        loading-text="Loading... Please wait"
-        hide-default-footer
-      >
-      </v-data-table>
-    </section>
-    
     <section class="section_form">
         <v-text-field
           label="Calendar ID*"
           v-model="calendarId"
           :rules="[rules.required]"
-          counter="30"
+          counter="60"
+          maxlength="60"
           dense
           class="text_field text-white"
         />
@@ -51,21 +14,6 @@
           label="Title*"
           v-model="title"
           :rules="[rules.required]"
-          counter="50"
-          dense
-          class="text_field text-white"
-        />
-        <v-text-field
-          label="Address"
-          v-model="address"
-          counter="50"
-          dense
-          class="text_field text-white"
-        />
-        <v-text-field
-          label="Tel"
-          v-model="tel"
-          :rules="[rules.tel]"
           counter="50"
           dense
           class="text_field text-white"
@@ -112,7 +60,7 @@
 </template>
 <script>
 import { API, graphqlOperation } from 'aws-amplify'
-import { createCalendar, processYoteiasobi } from "~/src/graphql/mutations"
+import { createCalendar, createUserCalendar, processYoteiasobi } from "~/src/graphql/mutations"
 export default {
   data() {
     return {
@@ -121,13 +69,11 @@ export default {
         { text: 'calendarId', value: 'calendarId' },
         { text: 'title', value: 'title' },
       ],
-      calendars: null,
       calendarId: "",
       title: "",
       description: "",
       address: "",
       tel: "",
-      selectedItem: null,
       isProcessing: false,
       message: "",
       rules: {
@@ -140,33 +86,24 @@ export default {
     }
   },
   methods: {
-    async onClickSearch() {
-      this.selectedItem = null
-      this.calendars = await this.getItems()
-      console.log(this.calendars)
-    },
-    onClickRow(item) {
-      this.selectedItem = item
-    },
-    onClickDetail() {
-      this.$router.push('/calendar?id=' + this.selectedItem['calendarId'])
-    },
-
     async onRegist() {
       this.isProcessing = true
       try {
         const inputdata = {
-          owner: this.$auth_get_user_id(),
           calendarId: this.calendarId,
           title: this.title, 
           description: this.description,
-          address: this.address,
-          tel: this.tel
+          image: "",
         }
-        console.log(inputdata)
-        const res = await API.graphql(graphqlOperation(createCalendar, {input: inputdata}))
-        console.log('create done!')
-        console.log(res)
+        await API.graphql(graphqlOperation(createCalendar, {input: inputdata}))
+        
+        const inputuserdata = {
+          owner: this.$auth_get_user_id(),
+          calendarId: this.calendarId,
+          creator: this.$auth_get_user_id(),
+        }
+        await API.graphql(graphqlOperation(createUserCalendar, {input: inputuserdata}))
+        
       } catch (error) {
         this.message = "error occured : " + error.message
         console.log('error!')

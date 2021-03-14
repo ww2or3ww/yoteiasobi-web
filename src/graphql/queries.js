@@ -2,30 +2,67 @@
 // this is an auto generated file. This will be overwritten
 
 export const getCalendar = /* GraphQL */ `
-  query GetCalendar($owner: String!, $calendarId: String!) {
-    getCalendar(owner: $owner, calendarId: $calendarId) {
-      owner
+  query GetCalendar($calendarId: String!) {
+    getCalendar(calendarId: $calendarId) {
       calendarId
       title
       image
       description
-      address
-      tel
       createdAt
       updatedAt
+      owner
     }
   }
 `;
 export const listCalendar = /* GraphQL */ `
   query ListCalendar(
-    $owner: String
-    $calendarId: ModelStringKeyConditionInput
+    $calendarId: String
     $filter: ModelYoteiasobiCalendarFilterInput
     $limit: Int
     $nextToken: String
     $sortDirection: ModelSortDirection
   ) {
     listCalendar(
+      calendarId: $calendarId
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      sortDirection: $sortDirection
+    ) {
+      items {
+        calendarId
+        title
+        image
+        description
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+  }
+`;
+export const getUserCalendar = /* GraphQL */ `
+  query GetUserCalendar($owner: String!, $calendarId: String!) {
+    getUserCalendar(owner: $owner, calendarId: $calendarId) {
+      owner
+      calendarId
+      creator
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listUserCalendar = /* GraphQL */ `
+  query ListUserCalendar(
+    $owner: String
+    $calendarId: ModelStringKeyConditionInput
+    $filter: ModelYoteiasobiUserCalendarFilterInput
+    $limit: Int
+    $nextToken: String
+    $sortDirection: ModelSortDirection
+  ) {
+    listUserCalendar(
       owner: $owner
       calendarId: $calendarId
       filter: $filter
@@ -36,11 +73,7 @@ export const listCalendar = /* GraphQL */ `
       items {
         owner
         calendarId
-        title
-        image
-        description
-        address
-        tel
+        creator
         createdAt
         updatedAt
       }

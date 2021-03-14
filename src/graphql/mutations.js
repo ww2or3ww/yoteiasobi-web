@@ -4,15 +4,13 @@
 export const processYoteiasobi = /* GraphQL */ `
   mutation ProcessYoteiasobi($calendarId: String!, $content: String!) {
     processYoteiasobi(calendarId: $calendarId, content: $content) {
-      owner
       calendarId
       title
       image
       description
-      address
-      tel
       createdAt
       updatedAt
+      owner
     }
   }
 `;
@@ -22,15 +20,13 @@ export const createCalendar = /* GraphQL */ `
     $condition: ModelYoteiasobiCalendarConditionInput
   ) {
     createCalendar(input: $input, condition: $condition) {
-      owner
       calendarId
       title
       image
       description
-      address
-      tel
       createdAt
       updatedAt
+      owner
     }
   }
 `;
@@ -40,13 +36,39 @@ export const deleteCalendar = /* GraphQL */ `
     $condition: ModelYoteiasobiCalendarConditionInput
   ) {
     deleteCalendar(input: $input, condition: $condition) {
-      owner
       calendarId
       title
       image
       description
-      address
-      tel
+      createdAt
+      updatedAt
+      owner
+    }
+  }
+`;
+export const createUserCalendar = /* GraphQL */ `
+  mutation CreateUserCalendar(
+    $input: CreateYoteiasobiUserCalendarInput!
+    $condition: ModelYoteiasobiUserCalendarConditionInput
+  ) {
+    createUserCalendar(input: $input, condition: $condition) {
+      owner
+      calendarId
+      creator
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteUserCalendar = /* GraphQL */ `
+  mutation DeleteUserCalendar(
+    $input: DeleteYoteiasobiUserCalendarInput!
+    $condition: ModelYoteiasobiUserCalendarConditionInput
+  ) {
+    deleteUserCalendar(input: $input, condition: $condition) {
+      owner
+      calendarId
+      creator
       createdAt
       updatedAt
     }
