@@ -3,6 +3,7 @@
     <section class="section_list">
       <v-card-title>
         <v-text-field
+          v-model="calendarId"
           type="text"
           single-line
           hide-details
@@ -14,46 +15,8 @@
           </template>
         </v-text-field>
       </v-card-title>
-      <v-data-table
-        v-if="privateNotes"
-        :headers="headers" 
-        :items="privateNotes"
-        item-key="id"
-        select-all
-        hide-default-footer
-      >
-      </v-data-table>
-      <v-data-table
-        v-else
-        loading
-        loading-text="Loading... Please wait"
-        hide-default-footer
-      >
-      </v-data-table>
     </section>
     
-    <section class="section_form">
-        <v-textarea
-          v-model="comment"
-          label="Comment"
-          counter="500"
-          dense
-          class="text_field text-white"
-        />
-      </v-form>
-    </section>
-    
-    <section class="section_buttons">
-      <v-btn
-        color="#607D8B"
-        @click="onRegist"
-        :disabled="isProcessing"
-      >
-        Regist
-        <v-icon right dark>mdi-account-edit-outline</v-icon>
-      </v-btn>
-    </section>
-
     <v-overlay :value="isProcessing">
       <v-progress-circular
         :size="100"
@@ -78,8 +41,8 @@ export default {
         { text: 'owner', value: 'owner' },
         { text: 'content', value: 'content' },
       ],
+      calendarId: "",
       privateNotes: null,
-      comment: "",
       isProcessing: false,
       message: "",
     }
@@ -89,8 +52,6 @@ export default {
   },
   methods: {
     async initialize() {
-      this.privateNotes = await this.getItems()
-      console.log(this.privateNotes)
     },
     async getItems() {
       try {
@@ -105,6 +66,7 @@ export default {
       }
     },
     async onClickSearch() {
+      this.$router.push('/calendar?id=' + this.calendarId)
     },
     onRegist() {
       this.registProcess()

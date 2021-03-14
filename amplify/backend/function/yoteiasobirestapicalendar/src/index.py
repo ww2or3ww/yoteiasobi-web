@@ -60,6 +60,7 @@ def get(event):
   id = getPathParameter(event)
   poolId, userName, email, isAdmin = getUserInfo(event)
   logger.info('user info = {0}, {1}, {2} (admin={3})'.format(poolId, userName, email, isAdmin))
+  logger.info('calendarID={0}'.format(id))
   result = get_calender_events(id, email)
   return 200, json.dumps(result, ensure_ascii=False, indent=2, default=json_serial)
 
