@@ -112,7 +112,6 @@
 </template>
 <script>
 import { API, graphqlOperation } from 'aws-amplify'
-import { listCalendar } from '~/src/graphql/queries'
 import { createCalendar, processYoteiasobi } from "~/src/graphql/mutations"
 export default {
   data() {
@@ -140,30 +139,7 @@ export default {
       }
     }
   },
-  mounted () {
-    this.initialize()
-  },
   methods: {
-    async initialize() {
-      this.calendars = await this.getItems()
-      console.log(this.calendars)
-    },
-    async getItems() {
-      try {
-        let calendars = await API.graphql(graphqlOperation(listCalendar, {
-          owner: this.$auth_get_user_id(),
-          //calendarId: {
-          //  beginsWith: "calendar"
-          //},
-          limit: 5
-        }))
-        console.log(calendars)
-        return calendars.data.listCalendar.items
-      } catch (error) {
-        console.log(error)
-        this.users = null
-      }
-    },
     async onClickSearch() {
       this.selectedItem = null
       this.calendars = await this.getItems()

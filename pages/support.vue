@@ -1,6 +1,6 @@
 <template>
   <v-row justify="center" align="center">
-    <v-col cols="12" sm="8" md="6">
+    <v-col>
       <div class="card" v-if="isStripeLoaded">
         <div class="info-area">
           <p class="name" v-text="product.name" />

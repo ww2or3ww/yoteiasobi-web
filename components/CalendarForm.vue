@@ -98,6 +98,16 @@
       </v-list-item>
       
     </v-list>
+
+    <v-overlay :value="isProcessing">
+      <v-progress-circular
+        :size="100"
+        :width="8"
+        color="primary"
+        indeterminate
+      />
+    </v-overlay>
+
   </v-card>
 </template>
 
@@ -149,6 +159,7 @@ export default {
   },
   data() {
     return {
+      isProcessing: false,
       isShowTimeStart: false,
       nameTmp: "",
       dateStartTmp: "",
@@ -162,6 +173,7 @@ export default {
     }
   },
   mounted () {
+    this.isProcessing = false
     this.isShowTimeStart = false
     this.nameTmp = this.name
     this.dateStartTmp = this.dateStart
@@ -179,16 +191,21 @@ export default {
       this.dateEndTmp = date
       this.timeEndTmp = time
     },
-    onClickOK() {
-      const data = {
-        "calendarId": this.calendarId,
-        "name": this.nameTmp,
-        "start": new Date(this.$moment(this.dateStartTmp + 'T' + this.timeStartTmp).format('YYYY-MM-DDTHH:mm')),
-        "end": new Date(this.$moment(this.dateEndTmp + 'T' + this.timeEndTmp).format('YYYY-MM-DDTHH:mm')),
-        "description": this.descriptionTmp,
-        "timed": true,
+    async onClickOK() {
+      try {
+        this.isProcessing = true
+        const data = {
+          "calendarId": this.calendarId,
+          "name": this.nameTmp,
+          "start": new Date(this.$moment(this.dateStartTmp + 'T' + this.timeStartTmp).format('YYYY-MM-DDTHH:mm')),
+          "end": new Date(this.$moment(this.dateEndTmp + 'T' + this.timeEndTmp).format('YYYY-MM-DDTHH:mm')),
+          "description": this.descriptionTmp,
+          "timed": true,
+        }
+        await this.callbackOK(data)
+      } finally {
+        this.isProcessing = false
       }
-      this.callbackOK(data)
     },
     onClickCancel() {
       this.callbackCancel()

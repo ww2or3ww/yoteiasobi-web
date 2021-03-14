@@ -30,24 +30,6 @@
         hide-default-footer
         @click:row="onClickRow"
       >
-        <template v-slot:items="{ props }">
-          <tr>
-            <td>
-              <v-checkbox v-model="props.selectedList" primary hide-details></v-checkbox>
-            </td>
-            <td>
-              <v-avatar>
-                <v-img :src="props.item.imageAddress"></v-img>
-              </v-avatar>
-            </td>
-            <td>
-              {{props.item.name }}
-            </td>
-            <td>
-              {{props.item.email }}
-            </td>
-          </tr>
-        </template>
 
         <template v-slot:item.imageAddress="{ item }">
           <v-avatar>
@@ -73,9 +55,9 @@ export default {
   data() {
     return {
       headers: [
-        { text: "icon", value: "imageAddress", sortable: false },
-        { text: 'name', value: 'name' },
-        { text: 'email', value: 'email' },
+        { text: "Icon",   value: "imageAddress",  width: "50px", sortable: false },
+        { text: 'Name',   value: 'name',          width: "200px" },
+        { text: 'Email',  value: 'email' },
       ],
       users: null,
       search: "",
@@ -89,6 +71,9 @@ export default {
   methods: {
     async initialize() {
       this.users = await this.getUsers()
+      if (this.users.length > 0) {
+        this.selectedList = [this.users[0]]
+      }
     },
     async getUsers() {
       try {
@@ -97,14 +82,16 @@ export default {
           process.env.ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_name, 
           '/profile?count=' + count + '&search=' + this.search
         )
-        users.forEach(async (user, i) => {
+        for (let i = 0; i < users.length; i++) {
+          const user = users[i]
           user['id'] = i
           user['imageAddress'] = await this.$auth_get_picture_address_from_storage(user)
-        })
+        }
         return users
       } catch (error) {
         console.log(error)
         this.users = null
+        this.selectedList  = []
       }
     },
     async onClickSearch() {
@@ -112,6 +99,9 @@ export default {
       this.selectedList = []
       this.users = null
       this.users = await this.getUsers()
+      if (this.users.length > 0) {
+        this.selectedList = [this.users[0]]
+      }
     },
     onClickRow(item) {
       this.selectedItem = item

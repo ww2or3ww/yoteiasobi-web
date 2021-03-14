@@ -1,35 +1,20 @@
 <template>
   <div class="main">
-    <section class="section_form">
-      <v-form>
-        <v-text-field
-          v-model="calendarId"
-          label="ID"
-          dense
-          readonly
-          class="text_field text-gray"
-        />
-        <v-text-field
-          v-model="calendarTitle"
-          label="Title"
-          dense
-          readonly
-          class="text_field text-gray"
-        />
-      </v-form>
-    </section>
-    
-    <v-sheet height="64">
-      <v-toolbar flat>
-        <v-toolbar-title
-          style="margin-left: 4px;"
-          v-if="$refs.calendar"
-        >
-          {{ $refs.calendar.title }}
-        </v-toolbar-title>
-      </v-toolbar>
+    <v-sheet>
+      <v-toolbar-title
+        style="margin-left: 4px;"
+        v-if="$refs.calendar"
+      >
+        {{ calendarTitle }}
+      </v-toolbar-title>
+      <v-toolbar-title
+        style="margin-left: 4px;"
+        v-if="$refs.calendar"
+      >
+        {{ $refs.calendar.title }}
+      </v-toolbar-title>
     </v-sheet>
-    <v-sheet height="64">
+    <v-sheet>
       <v-toolbar flat>
         <v-btn
           outlined
@@ -89,13 +74,14 @@
         </v-menu>
       </v-toolbar>
     </v-sheet>
-    <v-sheet height="600">
+    <v-sheet>
       <v-calendar
         ref="calendar"
         v-model="focus"
         :weekdays="weekday"
         :type="type"
         :events="events"
+        :event-color="getEventColor"
         @click:date="viewDay"
       ></v-calendar>
     </v-sheet>
@@ -107,18 +93,9 @@
       <v-icon color="white">mdi-plus</v-icon>
     </v-btn>
     
-    <v-overlay :value="isProcessing">
-      <v-progress-circular
-        :size="100"
-        :width="8"
-        color="primary"
-        indeterminate
-      />
-    </v-overlay>
     <v-dialog
       v-model="isShowForm"
       fullscreen
-      hide-overlay
       transition="dialog-bottom-transition"
     >
       <CalendarForm
@@ -137,6 +114,15 @@
       />
     </v-dialog>
     
+    <v-overlay :value="isProcessing">
+      <v-progress-circular
+        :size="100"
+        :width="8"
+        color="primary"
+        indeterminate
+      />
+    </v-overlay>
+
   </div>
 </template>
 <script>
@@ -186,18 +172,21 @@ export default {
   },
   mounted () {
     this.calendarId = this.$route.query.id
+    this.calendarId = this.calendarId.replace("@group.calendar.google.com", "")
+    console.log(this.calendarId)
     this.calendarTitle = "calendar for me"
     this.email = this.$auth_get_email()
-    this.dataInitialize()
+    this.initialize()
   },
   methods: {
-    async dataInitialize() {
-      this.focus = this.getToday()
-      this.isProcessing = true
-      this.events= await this.getItem()
-      console.log(this.events)
-      this.isProcessing = false
+    async initialize() {
       this.isShowForm = false
+      this.focus = this.getToday()
+      if (this.calendarId && this.calendarId.length > 10) {
+        this.isProcessing = true
+        this.events= await this.getItem()
+        this.isProcessing = false
+      }
     },
     async getItem() {
       try {
@@ -223,6 +212,15 @@ export default {
     viewDay ({ date }) {
       this.focus = date
       this.type = 'day'
+      console.log(this.focus)
+    },
+    getEventColor (event) {
+      if (event['isMasked']) {
+        return 'grey'
+      } else if (event['isMine']) {
+        return 'orange'
+      }
+      return 'blue'
     },
     onClickPlus () {
       console.log(this.focus)
@@ -233,8 +231,6 @@ export default {
       this.isShowForm = true
     },
     async onFormOK (data) {
-      this.isProcessing = true
-      console.log(data)
       const postdata = {
         headers: {},
         body: data,
@@ -245,9 +241,7 @@ export default {
         '/calendar',
         postdata
       )
-      console.log(response)
       this.events.push(data)
-      this.isProcessing = false
       this.isShowForm = false
     },
     onFormCancel () {

@@ -106,13 +106,13 @@ def convert_data(data, email):
 
   if "description" in data:
     ret["description"] = data["description"]
-    ret = update_to_mask_data(ret, email)
+    ret = update_event_data(ret, email)
   else:
-    ret["description"] = ""
+    ret = update_to_mask_data(ret)
   
   return ret
 
-def update_to_mask_data(data, email):
+def update_event_data(data, email):
   description = data["description"]
 
   index = description.find("\n")
@@ -122,19 +122,23 @@ def update_to_mask_data(data, email):
     index = description.lower().find("<br>")
     if index >= 0:
       description = description[:index]
-    
+
   index = description.find("public")
-  if index > 0:
+  if index >= 0:
     data["isPublic"] = True
   else:
     index = description.find(email)
-    if index > 0:
+    if index >= 0:
       data["isMine"] = True
     else:
-      data["name"] = "***"
-      data["description"] = "***"
-      data["isMasked"] = True
+      data = update_to_mask_data(data)
 
+  return data
+
+def update_to_mask_data(data):
+  data["name"] = "***"
+  data["description"] = "***"
+  data["isMasked"] = True
   return data
 
 def get_date_or_datetime(data):

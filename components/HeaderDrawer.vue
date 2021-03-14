@@ -47,9 +47,8 @@
         </v-list-item-content>
       </v-list-item>
 
-      <v-divider />
-      
-      <v-list-item to="/support">
+      <v-divider  v-if="false" />
+      <v-list-item to="/support" v-if="false">
         <v-list-item-action>
           <v-icon>mdi-hand-heart-outline</v-icon>
         </v-list-item-action>
@@ -71,13 +70,13 @@ export default {
       items: [
         {
           icon: 'mdi-feature-search-outline',
-          title: 'Search Calendar',
-          to: '/searchCalendar',
+          title: 'Select Calendar',
+          to: '/calendarSelect',
         },
         {
           icon: 'mdi-square-edit-outline',
           title: 'Regist Calendar',
-          to: '/registCalendar',
+          to: '/calendarRegist',
         },
       ],
     }
