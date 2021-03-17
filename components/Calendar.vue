@@ -99,7 +99,7 @@
       transition="dialog-bottom-transition"
     >
       <CalendarEventRegistDialog
-        formTitle = "Regist Schedule"
+        formTitle = "Regist Event"
         :calendarId = "calendarId"
         :name = "name"
         :dateStart = "dateStart"

@@ -30,6 +30,22 @@ export const createCalendar = /* GraphQL */ `
     }
   }
 `;
+export const updateCalendar = /* GraphQL */ `
+  mutation UpdateCalendar(
+    $input: UpdateYoteiasobiCalendarInput!
+    $condition: ModelYoteiasobiCalendarConditionInput
+  ) {
+    updateCalendar(input: $input, condition: $condition) {
+      calendarId
+      title
+      image
+      description
+      createdAt
+      updatedAt
+      owner
+    }
+  }
+`;
 export const deleteCalendar = /* GraphQL */ `
   mutation DeleteCalendar(
     $input: DeleteYoteiasobiCalendarInput!

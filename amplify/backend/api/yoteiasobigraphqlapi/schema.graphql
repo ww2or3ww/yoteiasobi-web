@@ -1,7 +1,7 @@
 type YoteiasobiCalendar
   @model (
     queries: { get: "getCalendar", list: "listCalendar" },
-    mutations: {create: "createCalendar", update: null, delete: "deleteCalendar"}
+    mutations: {create: "createCalendar", update: "updateCalendar", delete: "deleteCalendar"}
     subscriptions: {
       onCreate: ["onCreateCalendarAll", "onCreateCalendarBy(owner: String!)"]
       level: on

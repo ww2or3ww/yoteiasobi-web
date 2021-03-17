@@ -203,6 +203,8 @@ export default {
           "timed": true,
         }
         await this.callbackOK(data)
+      } catch (error) {
+        console.log(error)
       } finally {
         this.isProcessing = false
       }
