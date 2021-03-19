@@ -111,6 +111,7 @@ export default {
       comment_org: "",
       picture: "", 
       picture_org: "",
+      selectedPicture: null,
       isFormValid: false,
       isProcessing: false,
       isCheckDelete: false,

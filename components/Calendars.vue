@@ -62,7 +62,7 @@
 </template>
 <script>
 import { API, graphqlOperation } from 'aws-amplify'
-import { createCalendar, createUserCalendar, updateCalendar } from "~/src/graphql/mutations"
+import { createCalendar, createUserCalendar, updateCalendar, deleteCalendar, deleteUserCalendar } from "~/src/graphql/mutations"
 import { listUserCalendar, getCalendar } from '~/src/graphql/queries'
 import CalendarRegistDialog from '~/components/CalendarRegistDialog'
 export default {
@@ -112,8 +112,11 @@ export default {
           const calendar = await API.graphql(graphqlOperation(getCalendar, {
             calendarId: data[i]["calendarId"]
           }))
-          data[i]["title"] = calendar.data.getCalendar["title"]
-          data[i]["description"] = calendar.data.getCalendar["description"]
+          console.log(calendar)
+          if (calendar.data.getCalendar) {
+            data[i]["title"] = calendar.data.getCalendar["title"]
+            data[i]["description"] = calendar.data.getCalendar["description"]
+          }
         }
         
         return data
@@ -158,7 +161,7 @@ export default {
       this.isFormShow = true
     },
     
-    async onFormOK (isRegistMode, data) {
+    async onFormOK (isRegistMode, isDelete, data) {
       if (isRegistMode) {
         await API.graphql(graphqlOperation(createCalendar, {input: data}))
         const userCalendar = {
@@ -168,8 +171,18 @@ export default {
         }
         await API.graphql(graphqlOperation(createUserCalendar, {input: userCalendar}))
       } else {
-        await API.graphql(graphqlOperation(updateCalendar, {input: data}))
+        if (isDelete) {
+          const userCalendar = {
+            owner: this.$auth_get_user_id(),
+            calendarId: data["calendarId"],
+          }
+          await API.graphql(graphqlOperation(deleteUserCalendar, {input: userCalendar}))
+          await API.graphql(graphqlOperation(deleteCalendar, {input: data}))
+        } else {
+          await API.graphql(graphqlOperation(updateCalendar, {input: data}))
+        }
       }
+      this.calendars = await this.getItems()
       this.isFormShow = false
     },
     onFormCancel () {

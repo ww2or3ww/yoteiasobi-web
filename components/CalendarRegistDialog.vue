@@ -11,34 +11,16 @@
       <v-toolbar-title>
         {{ formTitle }}
       </v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-toolbar-items>
-        <v-btn
-          v-if="isRegistMode"
-          dark
-          color="primary"
-          @click="onClickOK"
-        >
-          <v-icon left>
-            mdi-pencil
-          </v-icon>
-          Regist
-        </v-btn>
-        <v-btn
-          v-else
-          dark
-          color="primary"
-          @click="onClickOK"
-        >
-          <v-icon left>
-            mdi-autorenew
-          </v-icon>
-          Edit
-        </v-btn>
-      </v-toolbar-items>
     </v-toolbar>
 
     <v-divider></v-divider>
+    <section style="margin: 24px;">
+      <SelectableAvatarImage
+        :propsImageSrc="picture"
+        :callbackSelectedPicture="onSelectedPicture"
+        :isTile=true
+      />
+    </section>
     <v-list
       three-line
     >
@@ -75,6 +57,54 @@
       </v-form>
 
     </v-list>
+    
+    <section style="margin-left: 16px;">
+      <v-btn
+        v-if="isRegistMode"
+        dark
+        color="primary"
+        @click="onClickOK"
+        width="160"
+      >
+        <v-icon left>
+          mdi-pencil
+        </v-icon>
+        Regist
+      </v-btn>
+      <v-btn
+        v-else
+        dark
+        color="primary"
+        @click="onClickOK"
+        width="160"
+      >
+        <v-icon left>
+          mdi-autorenew
+        </v-icon>
+        Edit
+      </v-btn>
+    </section>
+
+    <section style="margin-left: 16px;" v-if="!isRegistMode">
+      <div style="margin-top: 32px;">
+        <v-checkbox
+          v-model="isCheckDelete"
+          label="Delete Account"
+        />
+      </div>
+      <div style="height: 40px;">
+        <v-btn
+          color="#F8BBD0"
+          @click="onDelete"
+          :disabled="isProcessing"
+          v-show="isCheckDelete"
+          small
+        >
+          Delete
+          <v-icon right dark>mdi-account-off-outline</v-icon>
+        </v-btn>
+      </div>
+    </section>
 
     <v-overlay :value="isProcessing">
       <v-progress-circular
@@ -134,6 +164,7 @@ export default {
   },
   mounted () {
     this.isProcessing = false
+    this.isCheckDelete = false
     this.calendarIdTmp = this.calendarId
     this.titleTmp = this.title
     this.descriptionTmp = this.description
@@ -141,6 +172,8 @@ export default {
   data() {
     return {
       valid: true,
+      picture: "", 
+      selectedPicture: null,
       headers: [
         { text: "icon", value: "imageAddress", sortable: false },
         { text: 'calendarId', value: 'calendarId' },
@@ -150,7 +183,7 @@ export default {
       titleTmp: "",
       descriptionTmp: "",
       isProcessing: false,
-      message: "",
+      isCheckDelete: false,
       rules: {
         required: value => !!value || 'Required.',
         tel: value => {
@@ -161,16 +194,20 @@ export default {
     }
   },
   methods: {
+    onSelectedPicture(file) {
+      this.selectedPicture = file
+      this.picture = URL.createObjectURL(file)
+    },
     async onClickOK() {
       try {
         this.isProcessing = true
         const data = {
-          calendarId: this.calendarId,
+          calendarId: this.calendarIdTmp,
           title: this.titleTmp, 
           description: this.descriptionTmp,
           image: "",
         }
-        await this.callbackOK(this.isRegistMode, data)
+        await this.callbackOK(this.isRegistMode, false, data)
         
       } catch (error) {
         console.log(error)
@@ -181,7 +218,19 @@ export default {
     onClickCancel() {
       this.callbackCancel()
     },
-
+    async onDelete() {
+      try {
+        this.isProcessing = true
+        const data = {
+          calendarId: this.calendarId,
+        }
+        await this.callbackOK(this.isRegistMode, true, data)
+      } catch (error) {
+        console.log(error)
+      } finally {
+        this.isProcessing = false
+      }
+    }
   }
 }
 </script>
@@ -191,10 +240,6 @@ export default {
 }
 .section_form {
   margin-bottom: 32px;
-}
-.section_buttons {
-  text-align: right;
-  margin: 16px 16px 16px 16px;
 }
 .text_field {
   margin: 16px;

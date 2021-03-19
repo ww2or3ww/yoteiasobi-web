@@ -1,5 +1,6 @@
 <template>
   <v-avatar
+    :tile="isTile"
     size="160"
     :style="avatarStyle"
     @click="selectedAvatar"
@@ -29,6 +30,10 @@ export default {
     callbackSelectedPicture: {
       type: Function, 
       required: false
+    },
+    isTile: {
+      type: Boolean,
+      default: false
     },
   },
   data() {
