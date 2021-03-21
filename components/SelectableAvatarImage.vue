@@ -24,8 +24,7 @@
 export default {
   props: {
     propsImageSrc: {
-      type: String, 
-      required: true
+      type: String
     },
     callbackSelectedPicture: {
       type: Function, 

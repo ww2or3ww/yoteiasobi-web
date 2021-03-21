@@ -16,7 +16,7 @@
     <v-divider></v-divider>
     <section style="margin: 24px;">
       <SelectableAvatarImage
-        :propsImageSrc="picture"
+        :propsImageSrc="imageTmp"
         :callbackSelectedPicture="onSelectedPicture"
         :isTile=true
       />
@@ -137,6 +137,9 @@ export default {
     description: {
       type: String
     },
+    image: {
+      type: String
+    },
     callbackOK: {
       type: Function, 
       required: true
@@ -145,8 +148,21 @@ export default {
       type: Function, 
       required: true
     },
+    isShow: {
+      type: Boolean,
+    }
   },
   watch: {
+    isShow (nextValue) {
+      this.isCheckDelete = false
+      if (this.isRegistMode) {
+        this.calendarIdTmp = ""
+        this.titleTmp = ""
+        this.descriptionTmp = ""
+        this.imageTmp = ""
+        this.$refs.form.resetValidation()
+      }
+    },
     calendarId (nextValue) {
       this.calendarIdTmp = nextValue
     },
@@ -156,11 +172,9 @@ export default {
     description (nextValue) {
       this.descriptionTmp = nextValue
     },
-    isRegistMode (nextValue) {
-      if (nextValue) {
-        this.$refs.form.resetValidation()
-      }
-    }
+    image (nextValue) {
+      this.imageTmp = nextValue
+    },
   },
   mounted () {
     this.isProcessing = false
@@ -168,17 +182,18 @@ export default {
     this.calendarIdTmp = this.calendarId
     this.titleTmp = this.title
     this.descriptionTmp = this.description
+    this.imageTmp = this.image
   },
   data() {
     return {
       valid: true,
-      picture: "", 
-      selectedPicture: null,
       headers: [
         { text: "icon", value: "imageAddress", sortable: false },
         { text: 'calendarId', value: 'calendarId' },
         { text: 'title', value: 'title' },
       ],
+      imageTmp: "", 
+      selectedImage: null,
       calendarIdTmp: "",
       titleTmp: "",
       descriptionTmp: "",
@@ -195,19 +210,20 @@ export default {
   },
   methods: {
     onSelectedPicture(file) {
-      this.selectedPicture = file
-      this.picture = URL.createObjectURL(file)
+      this.selectedImage = file
+      this.imageTmp = URL.createObjectURL(file)
     },
     async onClickOK() {
       try {
+        const isDelete = false
         this.isProcessing = true
         const data = {
           calendarId: this.calendarIdTmp,
           title: this.titleTmp, 
           description: this.descriptionTmp,
-          image: "",
+          image: this.selectedImage
         }
-        await this.callbackOK(this.isRegistMode, false, data)
+        await this.callbackOK(this.isRegistMode, isDelete, data)
         
       } catch (error) {
         console.log(error)
@@ -220,11 +236,12 @@ export default {
     },
     async onDelete() {
       try {
+        const isDelete = true
         this.isProcessing = true
         const data = {
           calendarId: this.calendarId,
         }
-        await this.callbackOK(this.isRegistMode, true, data)
+        await this.callbackOK(this.isRegistMode, isDelete, data)
       } catch (error) {
         console.log(error)
       } finally {

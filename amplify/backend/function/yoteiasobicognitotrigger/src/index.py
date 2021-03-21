@@ -50,7 +50,6 @@ def updateCustomAttributes(userPoolId, userName, attributes):
   picture = get_value_from_attributes(attributes, 'picture')
 
   custom_name = get_value_from_attributes(attributes, 'custom:name')
-  custom_email = get_value_from_attributes(attributes, 'custom:email')
   custom_picture = get_value_from_attributes(attributes, 'custom:picture')
   
   update_attributes = []
@@ -58,11 +57,6 @@ def updateCustomAttributes(userPoolId, userName, attributes):
     update_attributes.append({
       'Name': 'custom:name',
       'Value': name
-    })
-  if not custom_email and email:
-    update_attributes.append({
-      'Name': 'custom:email',
-      'Value': email
     })
   if not custom_picture and picture:
     key = uploadPictureToStorage(userName, picture)
@@ -88,9 +82,7 @@ def uploadPictureToStorage(userName, picture):
     fileName = contentDisposition[contentDisposition.find(ATTRIBUTE) + len(ATTRIBUTE):]
     fileName = fileName.strip('"')
     root, ext = os.path.splitext(fileName)
-    now = datetime.datetime.now()
-    datetimestr = now.strftime('%Y%m%d-%H%M%S')
-    key = "public/profile/{0}/{1}{2}".format(userName, datetimestr, ext)
+    key = "public/profile/{0}{1}".format(userName, ext)
     S3.upload_fileobj(response.raw, S3_BUCKET_NAME, key)
     return key
     

@@ -139,7 +139,7 @@ def put(event):
 
   updateUserInfo(poolId, userName, name, comment, picture)
   
-  if picture and pictureOrg:
+  if picture and pictureOrg and picture != pictureOrg:
     removeOldPicture(pictureOrg)
     
   return 200, "success : {0}".format(userName)

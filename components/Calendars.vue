@@ -26,6 +26,11 @@
         hide-default-footer
         @click:row="onClickRow"
       >
+        <template v-slot:item.imageAddress="{ item }">
+          <v-avatar tile>
+            <v-img :src="item.imageAddress"></v-img>
+          </v-avatar>
+        </template>
       </v-data-table>
       <v-data-table
         v-else
@@ -55,16 +60,19 @@
         :calendarId = "calendarIdTmp"
         :title = "titleTmp"
         :description = "descriptionTmp"
+        :image = "imageTmp"
+        :isShow = "isFormShow"
       />
     </v-dialog>
     
   </div>
 </template>
 <script>
-import { API, graphqlOperation } from 'aws-amplify'
+import { API, Storage, graphqlOperation } from 'aws-amplify'
 import { createCalendar, createUserCalendar, updateCalendar, deleteCalendar, deleteUserCalendar } from "~/src/graphql/mutations"
 import { listUserCalendar, getCalendar } from '~/src/graphql/queries'
 import CalendarRegistDialog from '~/components/CalendarRegistDialog'
+import imageResize from '~/static/imageResize.js'
 export default {
   components: {
     CalendarRegistDialog
@@ -85,7 +93,7 @@ export default {
       calendarIdTmp: "",
       titleTmp: "",
       descriptionTmp: "",
-      message: "",
+      imageTmp: "",
     }
   },
   mounted () {
@@ -107,16 +115,19 @@ export default {
           limit: 5
         }))
         const data = userCalendars.data.listUserCalendar.items
-        
+        console.log(data)
         for(let i = 0; i < data.length; i++) {
           const calendar = await API.graphql(graphqlOperation(getCalendar, {
             calendarId: data[i]["calendarId"]
           }))
-          console.log(calendar)
           if (calendar.data.getCalendar) {
             data[i]["title"] = calendar.data.getCalendar["title"]
             data[i]["description"] = calendar.data.getCalendar["description"]
+            data[i]["image"] = calendar.data.getCalendar["image"]
+            data[i]["imageAddress"] = await this.$auth_get_picture_address_from_storage(calendar.data.getCalendar)
           }
+          //console.log("---")
+          //console.log(data[i])
         }
         
         return data
@@ -144,11 +155,13 @@ export default {
     },
     
     onClickEdit() {
+      console.log(this.selectedItem)
       this.formTitle = "Edit Calendar"
       this.isFormRegistMode = false
       this.calendarIdTmp = this.selectedItem["calendarId"]
       this.titleTmp = this.selectedItem["title"]
       this.descriptionTmp = this.selectedItem["description"]
+      this.imageTmp = this.selectedItem["imageAddress"]
       this.isFormShow = true
     },
     
@@ -160,9 +173,14 @@ export default {
       this.descriptionTmp = ""
       this.isFormShow = true
     },
-    
+    onFormCancel () {
+      this.isFormShow = false
+    },
     async onFormOK (isRegistMode, isDelete, data) {
       if (isRegistMode) {
+        if (data["image"]) {
+          data = await this.processImage(data)
+        }
         await API.graphql(graphqlOperation(createCalendar, {input: data}))
         const userCalendar = {
           owner: this.$auth_get_user_id(),
@@ -176,6 +194,10 @@ export default {
             owner: this.$auth_get_user_id(),
             calendarId: data["calendarId"],
           }
+          console.log(data)
+          console.log(userCalendar)
+          console.log(this.selectedItem["image"])
+          await Storage.remove(this.selectedItem["image"].replace('public/', ''))
           await API.graphql(graphqlOperation(deleteUserCalendar, {input: userCalendar}))
           await API.graphql(graphqlOperation(deleteCalendar, {input: data}))
         } else {
@@ -185,9 +207,31 @@ export default {
       this.calendars = await this.getItems()
       this.isFormShow = false
     },
-    onFormCancel () {
-      this.isFormShow = false
-    }
+    async processImage(data) {
+      if (!data["image"]) {
+        return data
+      }
+      try {
+        const selectedPicture = data["image"]
+        const pictureKey = this.$auth_create_picture_key(selectedPicture.name, "calendar")
+        await this.processUploadFile(pictureKey, selectedPicture)
+        data["image"] = pictureKey
+      } catch (error) {
+        console.log(error)
+        data["image"] = ""
+      } finally {
+        this.isProcessing = false
+      }
+      return data
+    },
+    async processUploadFile(pictureKey, selectedPicture) {
+      const src = await imageResize.pFileReader(selectedPicture);
+      const img = await imageResize.pImage(src);
+      const resizedImg = await imageResize.resizeImage(img, 400, 'image/png');
+      await Storage.put(pictureKey.replace('public/', ''), resizedImg, {
+          level: 'public'
+      })
+    },
   }
 }
 </script>

@@ -30,13 +30,11 @@
         hide-default-footer
         @click:row="onClickRow"
       >
-
         <template v-slot:item.imageAddress="{ item }">
           <v-avatar>
             <v-img :src="item.imageAddress"></v-img>
           </v-avatar>
         </template>
-        
       </v-data-table>
       <v-data-table
         v-else

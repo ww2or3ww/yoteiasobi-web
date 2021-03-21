@@ -167,8 +167,10 @@ export default {
       try {
         let pictureKey = null
         if (this.selectedPicture) {
-          pictureKey = this.$auth_create_picture_key(this.selectedPicture.name)
-          await this.processUploadFile(pictureKey)
+          const filename = this.selectedPicture.name
+          const ext = filename.slice(filename.lastIndexOf('.') + 1)
+          pictureKey = "public/profile/" + this.$auth_get_user_id() + "." + ext
+          await this.processUploadFile(pictureKey, this.selectedPicture)
         }
         await this.processUpdateUser(pictureKey)
 
@@ -176,13 +178,14 @@ export default {
       } catch (error) {
         this.isProcessing = false
         this.message = "error occured : " + error.message
+        console.log(error)
       }
     },
-    async processUploadFile(pictureKey) {
-      const src = await imageResize.pFileReader(this.selectedPicture);
+    async processUploadFile(pictureKey, selectedPicture) {
+      const src = await imageResize.pFileReader(selectedPicture);
       const img = await imageResize.pImage(src);
       const resizedImg = await imageResize.resizeImage(img, 400, 'image/png');
-      await Storage.put(pictureKey.replace('public/', ''), resizedImg, {
+      const ret = await Storage.put(pictureKey.replace('public/', ''), resizedImg, {
           level: 'public'
       })
     },
