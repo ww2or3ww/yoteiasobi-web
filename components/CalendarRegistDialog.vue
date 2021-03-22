@@ -16,7 +16,7 @@
     <v-divider></v-divider>
     <section style="margin: 24px;">
       <SelectableAvatarImage
-        :propsImageSrc="imageTmp"
+        :propsImageSrc="imageAddressTmp"
         :callbackSelectedPicture="onSelectedPicture"
         :isTile=true
       />
@@ -137,7 +137,7 @@ export default {
     description: {
       type: String
     },
-    image: {
+    imageAddress: {
       type: String
     },
     callbackOK: {
@@ -159,7 +159,7 @@ export default {
         this.calendarIdTmp = ""
         this.titleTmp = ""
         this.descriptionTmp = ""
-        this.imageTmp = ""
+        this.imageAddressTmp = ""
         this.$refs.form.resetValidation()
       }
     },
@@ -172,8 +172,8 @@ export default {
     description (nextValue) {
       this.descriptionTmp = nextValue
     },
-    image (nextValue) {
-      this.imageTmp = nextValue
+    imageAddress (nextValue) {
+      this.imageAddressTmp = nextValue
     },
   },
   mounted () {
@@ -182,7 +182,7 @@ export default {
     this.calendarIdTmp = this.calendarId
     this.titleTmp = this.title
     this.descriptionTmp = this.description
-    this.imageTmp = this.image
+    this.imageAddressTmp = this.imageAddress
   },
   data() {
     return {
@@ -192,7 +192,7 @@ export default {
         { text: 'calendarId', value: 'calendarId' },
         { text: 'title', value: 'title' },
       ],
-      imageTmp: "", 
+      imageAddressTmp: "", 
       selectedImage: null,
       calendarIdTmp: "",
       titleTmp: "",
@@ -211,7 +211,7 @@ export default {
   methods: {
     onSelectedPicture(file) {
       this.selectedImage = file
-      this.imageTmp = URL.createObjectURL(file)
+      this.imageAddressTmp = URL.createObjectURL(file)
     },
     async onClickOK() {
       try {
@@ -221,7 +221,7 @@ export default {
           calendarId: this.calendarIdTmp,
           title: this.titleTmp, 
           description: this.descriptionTmp,
-          image: this.selectedImage
+          selectedImage: this.selectedImage
         }
         await this.callbackOK(this.isRegistMode, isDelete, data)
         

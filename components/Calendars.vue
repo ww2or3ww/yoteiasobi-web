@@ -51,6 +51,7 @@
       v-model="isFormShow"
       fullscreen
       transition="dialog-bottom-transition"
+      @keydown.esc="onFormCancel"
     >
       <CalendarRegistDialog
         :formTitle = "formTitle"
@@ -60,7 +61,7 @@
         :calendarId = "calendarIdTmp"
         :title = "titleTmp"
         :description = "descriptionTmp"
-        :image = "imageTmp"
+        :imageAddress = "imageAddressTmp"
         :isShow = "isFormShow"
       />
     </v-dialog>
@@ -93,7 +94,7 @@ export default {
       calendarIdTmp: "",
       titleTmp: "",
       descriptionTmp: "",
-      imageTmp: "",
+      imageAddressTmp: "",
     }
   },
   mounted () {
@@ -126,8 +127,6 @@ export default {
             data[i]["image"] = calendar.data.getCalendar["image"]
             data[i]["imageAddress"] = await this.$auth_get_picture_address_from_storage(calendar.data.getCalendar)
           }
-          //console.log("---")
-          //console.log(data[i])
         }
         
         return data
@@ -150,18 +149,28 @@ export default {
       return this.selectedItem["calendarId"] == this.calendarId
     },
     
+    clearData() {
+      this.selectedItem = null
+      this.formTitle = ""
+      this.isFormRegistMode = false
+      this.calendarIdTmp = ""
+      this.titleTmp = ""
+      this.descriptionTmp = ""
+      this.imageAddressTmp = ""
+      this.isFormShow = false
+    },
+    
     onClickDetail() {
       this.$router.push('/calendars/' + this.calendarId)
     },
     
     onClickEdit() {
-      console.log(this.selectedItem)
       this.formTitle = "Edit Calendar"
       this.isFormRegistMode = false
       this.calendarIdTmp = this.selectedItem["calendarId"]
       this.titleTmp = this.selectedItem["title"]
       this.descriptionTmp = this.selectedItem["description"]
-      this.imageTmp = this.selectedItem["imageAddress"]
+      this.imageAddressTmp = this.selectedItem["imageAddress"]
       this.isFormShow = true
     },
     
@@ -173,20 +182,25 @@ export default {
       this.descriptionTmp = ""
       this.isFormShow = true
     },
+    
     onFormCancel () {
       this.isFormShow = false
+      this.clearData()
     },
+    
     async onFormOK (isRegistMode, isDelete, data) {
+      if (data["selectedImage"]) {
+        const imageKey = await this.processImage(data["selectedImage"], data["calendarId"])
+        data["image"] = imageKey
+      }
+      delete data["selectedImage"]
       if (isRegistMode) {
-        if (data["image"]) {
-          data = await this.processImage(data)
-        }
-        await API.graphql(graphqlOperation(createCalendar, {input: data}))
         const userCalendar = {
           owner: this.$auth_get_user_id(),
           calendarId: data["calendarId"],
           creator: this.$auth_get_user_id(),
         }
+        await API.graphql(graphqlOperation(createCalendar, {input: data}))
         await API.graphql(graphqlOperation(createUserCalendar, {input: userCalendar}))
       } else {
         if (isDelete) {
@@ -194,10 +208,9 @@ export default {
             owner: this.$auth_get_user_id(),
             calendarId: data["calendarId"],
           }
-          console.log(data)
-          console.log(userCalendar)
-          console.log(this.selectedItem["image"])
-          await Storage.remove(this.selectedItem["image"].replace('public/', ''))
+          if (this.selectedItem["image"]) {
+            await Storage.remove(this.selectedItem["image"].replace('public/', ''))
+          }
           await API.graphql(graphqlOperation(deleteUserCalendar, {input: userCalendar}))
           await API.graphql(graphqlOperation(deleteCalendar, {input: data}))
         } else {
@@ -206,31 +219,24 @@ export default {
       }
       this.calendars = await this.getItems()
       this.isFormShow = false
+      this.clearData()
     },
-    async processImage(data) {
-      if (!data["image"]) {
-        return data
-      }
+    async processImage(selectedImage, calendarId) {
       try {
-        const selectedPicture = data["image"]
-        const pictureKey = this.$auth_create_picture_key(selectedPicture.name, "calendar")
-        await this.processUploadFile(pictureKey, selectedPicture)
-        data["image"] = pictureKey
+        const filename = selectedImage.name
+        const ext = filename.slice(filename.lastIndexOf('.') + 1)
+        const imageKey = "public/calendar/" + this.$auth_get_user_id() + "/" + calendarId + "." + ext
+        await Storage.remove(imageKey.replace('public/', ''))
+        const src = await imageResize.pFileReader(selectedImage);
+        const img = await imageResize.pImage(src);
+        const resizedImg = await imageResize.resizeImage(img, 400, 'image/png');
+        await Storage.put(imageKey.replace('public/', ''), resizedImg, {
+            level: 'public'
+        })
+        return imageKey
       } catch (error) {
         console.log(error)
-        data["image"] = ""
-      } finally {
-        this.isProcessing = false
       }
-      return data
-    },
-    async processUploadFile(pictureKey, selectedPicture) {
-      const src = await imageResize.pFileReader(selectedPicture);
-      const img = await imageResize.pImage(src);
-      const resizedImg = await imageResize.resizeImage(img, 400, 'image/png');
-      await Storage.put(pictureKey.replace('public/', ''), resizedImg, {
-          level: 'public'
-      })
     },
   }
 }

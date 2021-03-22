@@ -15,8 +15,9 @@
       type="file"
       accept="image/jpeg, image/jpg, image/png"
       @change="selectedInput"
+      id="inputfile"
     >
-    <v-img :src="propsImageSrc" />
+    <v-img :src="imageAddressTmp" />
   </v-avatar>
 </template>
 
@@ -35,9 +36,17 @@ export default {
       default: false
     },
   },
+  watch: {
+    propsImageSrc (nextValue) {
+      this.imageAddressTmp = nextValue
+      const obj = document.getElementById("inputfile")
+      obj.value = ""
+    },
+  },
   data() {
     return {
       selectedImage: null,
+      imageAddressTmp: "",
       avatarStyle:{
         border: '2px solid #000'
       },
