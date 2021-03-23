@@ -113,6 +113,9 @@ def convert_data(data, email):
   return ret
 
 def update_event_data(data, email):
+  if email == None:
+    return update_to_mask_data(data)
+    
   description = data["description"]
 
   index = description.find("\n")
@@ -220,6 +223,9 @@ def getUserInfo(event):
 
   try:
     poolId, userSub = getCognitoAuthenticationProviderFromEvent(event)
+    if poolId == None:
+      return None, None, None, False
+      
     response = COGNITO_CLIENT.list_users(
         UserPoolId = poolId,
         Filter = "sub = \"{0}\"".format(userSub)
@@ -240,6 +246,9 @@ def getUserInfo(event):
 
 
 def getCognitoAuthenticationProviderFromEvent(event):
+  if event["requestContext"]["identity"]["cognitoAuthenticationProvider"] == None:
+    return None, None
+  
   poolId = event["requestContext"]["identity"]["cognitoAuthenticationProvider"].split(',')[0].split('/')[1]
   userSub = event["requestContext"]["identity"]["cognitoAuthenticationProvider"].split(',')[1].split(':')[2]
   return poolId, userSub  

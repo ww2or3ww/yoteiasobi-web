@@ -87,6 +87,7 @@
     </v-sheet>
     
     <v-btn fixed fab bottom right 
+      v-if="isAuthed"
       color="#BDBDBD88" style="bottom: 40px"
       @click="onClickPlus"
     >
@@ -142,6 +143,7 @@ export default {
   },
   data() {
     return {
+      isAuthed: false,
       calendarId: "",
       calendarTitle: "",
       name: "",
@@ -191,6 +193,7 @@ export default {
   },
   methods: {
     async initialize() {
+      this.isAuthed = this.$auth_is_authed()
       this.isShowForm = false
       this.setToday()
       if (this.calendarId && this.calendarId.length > 10) {

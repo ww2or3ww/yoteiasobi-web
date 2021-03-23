@@ -43,6 +43,7 @@
     
     <v-btn fixed fab bottom right 
       color="#BDBDBD88" style="bottom: 40px"
+      v-if="isAuthed"
       @click="onClickPlus"
     >
       <v-icon color="white">mdi-plus</v-icon>
@@ -85,6 +86,7 @@ export default {
         { text: 'Calendar ID',  value: 'calendarId',    width: "200px" },
         { text: 'Title',        value: 'title' },
       ],
+      isAuthed: false,
       calendars: null,
       selectedItem: null,
       calendarId: "",
@@ -103,7 +105,12 @@ export default {
   methods: {
     async initialize() {
       this.isFormShow = false
-      this.calendars = await this.getItems()
+      this.isAuthed = this.$auth_is_authed()
+      if (this.isAuthed) {
+        this.calendars = await this.getItems()
+      } else {
+        this.calendars = []
+      }
     },
     async getItems() {
       const owner = this.$auth_get_user_id()
