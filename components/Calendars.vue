@@ -57,6 +57,7 @@
       <CalendarRegistDialog
         :formTitle = "formTitle"
         :isRegistMode = "isFormRegistMode"
+        :isOwnItem = "isOwnItem"
         :callbackOK = "onFormOK"
         :callbackCancel = "onFormCancel"
         :calendarId = "calendarIdTmp"
@@ -100,6 +101,7 @@ export default {
       calendarId: "",
       isFormShow: false,
       isFormRegistMode: false,
+      isOwnItem: false,
       formTitle: "",
       calendarIdTmp: "",
       titleTmp: "",
@@ -181,6 +183,7 @@ export default {
       this.selectedItem = null
       this.formTitle = ""
       this.isFormRegistMode = false
+      this.isOwnItem = false
       this.calendarIdTmp = ""
       this.titleTmp = ""
       this.descriptionTmp = ""
@@ -195,6 +198,7 @@ export default {
     onClickEdit() {
       this.formTitle = "Edit Calendar"
       this.isFormRegistMode = false
+      this.isOwnItem = this.selectedItem["owner"] == this.$auth_get_user_id()
       this.calendarIdTmp = this.selectedItem["calendarId"]
       this.titleTmp = this.selectedItem["title"]
       this.descriptionTmp = this.selectedItem["description"]

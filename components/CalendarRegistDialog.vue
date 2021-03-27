@@ -76,6 +76,7 @@
       </v-btn>
       <v-btn
         v-else
+        v-show="isOwnItem"
         :disabled="!isFormValid"
         dark
         color="primary"
@@ -89,7 +90,7 @@
       </v-btn>
     </section>
 
-    <section style="margin-left: 16px;" v-if="!isRegistMode">
+    <section style="margin-left: 16px;" v-if="!isRegistMode" v-show="isOwnItem">
       <div style="margin-top: 32px;">
         <v-checkbox
           v-model="isCheckDelete"
@@ -129,6 +130,10 @@ export default {
       required: true
     },
     isRegistMode: {
+      type: Boolean,
+      required: true
+    },
+    isOwnItem: {
       type: Boolean,
       required: true
     },
