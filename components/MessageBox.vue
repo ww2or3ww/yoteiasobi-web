@@ -5,7 +5,7 @@
         {{ title }}
       </v-card-title>
 
-      <v-card-text>
+      <v-card-text style="white-space:pre-wrap; word-wrap:break-word;">
         {{ text }}
       </v-card-text>
 
@@ -21,6 +21,7 @@
           OK
         </v-btn>
         <v-btn
+          v-if="isShowCancel"
           color="primary"
           text
           @click="onClickCancel"
@@ -45,6 +46,10 @@ export default {
     callbackBtn: {
       type: Function, 
       required: true
+    },
+    isShowCancel: {
+      type: Boolean,
+      default: true
     },
   },
   methods: {

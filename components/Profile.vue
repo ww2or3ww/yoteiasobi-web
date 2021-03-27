@@ -76,7 +76,7 @@
     <v-dialog v-model="isShowMessage" width="400">
       <MessageBox
         :callbackBtn="processDelete"
-        text="Delete your account. Are you sure ?"
+        :text="message"
       />
     </v-dialog>
     
@@ -155,6 +155,7 @@ export default {
       this.updateProcess()
     },
     onDelete() {
+      this.message = "Delete your account. Are you sure ?"
       this.isShowMessage = true
     },
     onCancel() {
@@ -177,7 +178,6 @@ export default {
         this.$auth_reload_user(this.dataInitialize)
       } catch (error) {
         this.isProcessing = false
-        this.message = "error occured : " + error.message
         console.log(error)
       }
     },
@@ -220,7 +220,6 @@ export default {
       } catch (error) {
         console.log(error)
         this.isProcessing = false
-        this.message = "error occured : " + error.message
       }
       this.$auth_signout()
     },

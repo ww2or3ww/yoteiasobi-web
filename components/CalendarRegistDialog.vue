@@ -25,16 +25,16 @@
       three-line
     >
       <v-form
+        v-model="isFormValid"
         ref="form"
-        v-model="valid"
         lazy-validation
       >
         <v-text-field
           v-model="calendarIdTmp"
           label="Calendar ID*"
-          :rules="[rules.required]"
-          counter="60"
-          maxlength="60"
+          :rules="[rules.required, rules.minimum(calendarIdTmp, 25, 'characters')]"
+          counter="30"
+          maxlength="30"
           dense
           :readonly="!isRegistMode"
           class="text_field text-white"
@@ -42,15 +42,17 @@
         <v-text-field
           v-model="titleTmp"
           label="Title*"
-          :rules="[rules.required]"
-          counter="50"
+          :rules="[rules.required, rules.minimum(titleTmp, 5, 'characters')]"
+          counter="30"
+          maxlength="30"
           dense
           class="text_field text-white"
         />
         <v-textarea
           v-model="descriptionTmp"
           label="Description"
-          counter="500"
+          counter="300"
+          maxlength="300"
           dense
           class="text_field text-white"
         />
@@ -61,6 +63,7 @@
     <section style="margin-left: 16px;">
       <v-btn
         v-if="isRegistMode"
+        :disabled="!isFormValid"
         dark
         color="primary"
         @click="onClickOK"
@@ -73,6 +76,7 @@
       </v-btn>
       <v-btn
         v-else
+        :disabled="!isFormValid"
         dark
         color="primary"
         @click="onClickOK"
@@ -89,7 +93,7 @@
       <div style="margin-top: 32px;">
         <v-checkbox
           v-model="isCheckDelete"
-          label="Delete Account"
+          label="Delete Calendar"
         />
       </div>
       <div style="height: 40px;">
@@ -155,13 +159,14 @@ export default {
   watch: {
     isShow (nextValue) {
       this.isCheckDelete = false
+      this.isFormValid = false
       if (this.isRegistMode) {
         this.calendarIdTmp = ""
         this.titleTmp = ""
         this.descriptionTmp = ""
         this.imageAddressTmp = ""
-        this.$refs.form.resetValidation()
       }
+      this.$refs.form.validate()
     },
     calendarId (nextValue) {
       this.calendarIdTmp = nextValue
@@ -177,21 +182,18 @@ export default {
     },
   },
   mounted () {
+    this.isFormValid = false
     this.isProcessing = false
     this.isCheckDelete = false
     this.calendarIdTmp = this.calendarId
     this.titleTmp = this.title
     this.descriptionTmp = this.description
     this.imageAddressTmp = this.imageAddress
+    this.$refs.form.validate()
   },
   data() {
     return {
-      valid: true,
-      headers: [
-        { text: "icon", value: "imageAddress", sortable: false },
-        { text: 'calendarId', value: 'calendarId' },
-        { text: 'title', value: 'title' },
-      ],
+      isFormValid: false,
       imageAddressTmp: "", 
       selectedImage: null,
       calendarIdTmp: "",
@@ -204,6 +206,12 @@ export default {
         tel: value => {
           const pattern = /^[0-9]{10,11}$/
           return (value.length == 0 || pattern.test(value)) || 'Invalid TEL.'
+        },
+        minimum (value, min, unit) {
+          return value.length >= min || "Too small (Need more " + min + " " + unit + ")"
+        },
+        loanMaxMax(value, max, currency) {
+          return (value || "") <= max || 'Too long (Need less than ${max} ${currency})'
         },
       }
     }

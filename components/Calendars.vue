@@ -66,7 +66,14 @@
         :isShow = "isFormShow"
       />
     </v-dialog>
-    
+    <v-dialog v-model="isShowMessage" width="400">
+      <MessageBox
+        :callbackBtn="onMessageClose"
+        :text="message"
+        :isShowCancel="false"
+      />
+    </v-dialog>
+
   </div>
 </template>
 <script>
@@ -74,6 +81,7 @@ import { API, Storage, graphqlOperation } from 'aws-amplify'
 import { createCalendar, createUserCalendar, updateCalendar, deleteCalendar, deleteUserCalendar } from "~/src/graphql/mutations"
 import { listUserCalendar, getCalendar } from '~/src/graphql/queries'
 import CalendarRegistDialog from '~/components/CalendarRegistDialog'
+import MessageBox from '~/components/MessageBox.vue'
 import imageResize from '~/static/imageResize.js'
 export default {
   components: {
@@ -97,6 +105,8 @@ export default {
       titleTmp: "",
       descriptionTmp: "",
       imageAddressTmp: "",
+      isShowMessage: false,
+      message: "",
     }
   },
   mounted () {
@@ -117,9 +127,6 @@ export default {
       try {
         const userCalendars = await API.graphql(graphqlOperation(listUserCalendar, {
           owner: owner,
-          //calendarId: {
-          //  beginsWith: "calendar"
-          //},
           limit: 5
         }))
         const data = userCalendars.data.listUserCalendar.items
@@ -196,44 +203,65 @@ export default {
     },
     
     async onFormOK (isRegistMode, isDelete, data) {
+      console.log(data)
       if (data["selectedImage"]) {
         const imageKey = await this.processImage(data["selectedImage"], data["calendarId"])
         data["image"] = imageKey
       }
       delete data["selectedImage"]
-      if (isRegistMode) {
-        const userCalendar = {
-          owner: this.$auth_get_user_id(),
-          calendarId: data["calendarId"],
-          creator: this.$auth_get_user_id(),
-        }
-        await API.graphql(graphqlOperation(createCalendar, {input: data}))
-        await API.graphql(graphqlOperation(createUserCalendar, {input: userCalendar}))
+      if (isDelete) {
+        await this.processDeleteCalendar(data)
       } else {
-        if (isDelete) {
+        if (isRegistMode) {
+          if (await this.isCheckExistCalendar(data)) {
+            this.message = "Calendar ID : " + data["calendarId"] + "\nAlready Exists."
+            this.isShowMessage = true
+            return
+          }
           const userCalendar = {
             owner: this.$auth_get_user_id(),
             calendarId: data["calendarId"],
+            creator: this.$auth_get_user_id(),
           }
-          if (this.selectedItem["image"]) {
-            await Storage.remove(this.selectedItem["image"].replace('public/', ''))
-          }
-          await API.graphql(graphqlOperation(deleteUserCalendar, {input: userCalendar}))
-          await API.graphql(graphqlOperation(deleteCalendar, {input: data}))
+          await API.graphql(graphqlOperation(createCalendar, {input: data}))
+          await API.graphql(graphqlOperation(createUserCalendar, {input: userCalendar}))
         } else {
           await API.graphql(graphqlOperation(updateCalendar, {input: data}))
         }
       }
+      
       this.calendars = await this.getItems()
       this.isFormShow = false
       this.clearData()
     },
+    onMessageClose() {
+      this.isShowMessage = false
+    },
+    async isCheckExistCalendar(data) {
+      const calendar = await API.graphql(graphqlOperation(getCalendar, {
+        calendarId: data["calendarId"]
+      }))
+      return calendar.data.getCalendar != null
+    },
+    async processDeleteCalendar(data) {
+      const userCalendar = {
+        owner: this.$auth_get_user_id(),
+        calendarId: data["calendarId"],
+      }
+      if (this.selectedItem["image"]) {
+        await Storage.remove(this.selectedItem["image"].replace('public/', ''))
+      }
+      await API.graphql(graphqlOperation(deleteUserCalendar, {input: userCalendar}))
+      await API.graphql(graphqlOperation(deleteCalendar, {input: data}))
+    },
     async processImage(selectedImage, calendarId) {
       try {
+        if (this.selectedItem["image"]) {
+          await Storage.remove(this.selectedItem["image"].replace('public/', ''))
+        }
         const filename = selectedImage.name
         const ext = filename.slice(filename.lastIndexOf('.') + 1)
         const imageKey = "public/calendar/" + this.$auth_get_user_id() + "/" + calendarId + "." + ext
-        await Storage.remove(imageKey.replace('public/', ''))
         const src = await imageResize.pFileReader(selectedImage);
         const img = await imageResize.pImage(src);
         const resizedImg = await imageResize.resizeImage(img, 400, 'image/png');
