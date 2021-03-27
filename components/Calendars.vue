@@ -205,7 +205,7 @@ export default {
     async onFormOK (isRegistMode, isDelete, data) {
       console.log(data)
       if (data["selectedImage"]) {
-        const imageKey = await this.processImage(data["selectedImage"], data["calendarId"])
+        const imageKey = await this.processImage(isRegistMode, data["selectedImage"], data["calendarId"])
         data["image"] = imageKey
       }
       delete data["selectedImage"]
@@ -254,9 +254,9 @@ export default {
       await API.graphql(graphqlOperation(deleteUserCalendar, {input: userCalendar}))
       await API.graphql(graphqlOperation(deleteCalendar, {input: data}))
     },
-    async processImage(selectedImage, calendarId) {
+    async processImage(isRegistMode, selectedImage, calendarId) {
       try {
-        if (this.selectedItem["image"]) {
+        if (isRegistMode == false && this.selectedItem["image"]) {
           await Storage.remove(this.selectedItem["image"].replace('public/', ''))
         }
         const filename = selectedImage.name

@@ -159,7 +159,6 @@ export default {
   watch: {
     isShow (nextValue) {
       this.isCheckDelete = false
-      this.isFormValid = false
       if (this.isRegistMode) {
         this.calendarIdTmp = ""
         this.titleTmp = ""
@@ -182,7 +181,6 @@ export default {
     },
   },
   mounted () {
-    this.isFormValid = false
     this.isProcessing = false
     this.isCheckDelete = false
     this.calendarIdTmp = this.calendarId
