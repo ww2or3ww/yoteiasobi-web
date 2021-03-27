@@ -1,22 +1,29 @@
 <template>
   <div class="main">
     <section class="section_list">
-      <v-card-title>
-        <v-text-field
-          v-model="calendarId"
-          label="Calendar ID"
-          maxlength="60"
-        >
-          <template v-slot:append>
-            <v-btn @click="onClickEdit" :disabled="!isEnableEdit()">
-              <v-icon>mdi-square-edit-outline</v-icon>
-            </v-btn>
-            <v-btn @click="onClickDetail" :disabled="calendarId.length == 0">
-              <v-icon>mdi-calendar-month</v-icon>
-            </v-btn>
-          </template>
-        </v-text-field>
-      </v-card-title>
+      <v-form
+        v-model="isFormValid"
+        ref="form"
+        lazy-validation
+      >
+        <v-card-title>
+          <v-text-field
+            v-model="calendarId"
+            label="Calendar ID"
+            maxlength="60"
+            :rules="[rules.required, rules.minimum(calendarId, 25, 'characters')]"
+          >
+            <template v-slot:append>
+              <v-btn @click="onClickEdit" :disabled="!isEnableEdit()">
+                <v-icon>mdi-square-edit-outline</v-icon>
+              </v-btn>
+              <v-btn @click="onClickDetail" :disabled="calendarId.length == 0 || !isFormValid">
+                <v-icon>mdi-calendar-month</v-icon>
+              </v-btn>
+            </template>
+          </v-text-field>
+        </v-card-title>
+      </v-form>
       <v-data-table
         v-if="calendars"
         :headers="headers" 
@@ -95,6 +102,7 @@ export default {
         { text: 'Calendar ID',  value: 'calendarId',    width: "200px" },
         { text: 'Title',        value: 'title' },
       ],
+      isFormValid: false,
       isAuthed: false,
       calendars: null,
       selectedItem: null,
@@ -109,6 +117,12 @@ export default {
       imageAddressTmp: "",
       isShowMessage: false,
       message: "",
+      rules: {
+        required: value => !!value || 'Required.',
+        minimum (value, min, unit) {
+          return value.length >= min || "Too small (Need more " + min + " " + unit + ")"
+        }
+      }
     }
   },
   mounted () {

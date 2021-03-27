@@ -215,10 +215,7 @@ export default {
         },
         minimum (value, min, unit) {
           return value.length >= min || "Too small (Need more " + min + " " + unit + ")"
-        },
-        loanMaxMax(value, max, currency) {
-          return (value || "") <= max || 'Too long (Need less than ${max} ${currency})'
-        },
+        }
       }
     }
   },
