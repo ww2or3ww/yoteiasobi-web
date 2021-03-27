@@ -19,6 +19,7 @@
         :propsImageSrc="imageAddressTmp"
         :callbackSelectedPicture="onSelectedPicture"
         :isTile=true
+        :readonly="!isOwnItem"
       />
     </section>
     <v-list
