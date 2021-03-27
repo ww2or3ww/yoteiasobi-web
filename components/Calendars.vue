@@ -116,21 +116,36 @@ export default {
     async initialize() {
       this.isFormShow = false
       this.isAuthed = this.$auth_is_authed()
-      if (this.isAuthed) {
-        this.calendars = await this.getItems()
-      } else {
-        this.calendars = []
-      }
+      this.calendars = await this.getItems()
     },
     async getItems() {
-      const owner = this.$auth_get_user_id()
       try {
+        let data = []
+        const sampleID = "jvlan24bq1ctttv4pbvlchntng"
+
+        if (!this.isAuthed) {
+          const tmp = {
+            calendarId: sampleID,
+            title: "YOTEIASOBI SAMPLE"
+          }
+          data.push(tmp)
+          return data          
+        }
+
+        const owner = this.$auth_get_user_id()
         const userCalendars = await API.graphql(graphqlOperation(listUserCalendar, {
           owner: owner,
           limit: 5
         }))
-        const data = userCalendars.data.listUserCalendar.items
-        console.log(data)
+        data = userCalendars.data.listUserCalendar.items
+        const sample = data.find(element => element["calendarId"] == sampleID)
+        if (!sample) {
+          const tmp = {
+            calendarId: sampleID
+          }
+          data.push(tmp)
+        }
+        
         for(let i = 0; i < data.length; i++) {
           const calendar = await API.graphql(graphqlOperation(getCalendar, {
             calendarId: data[i]["calendarId"]
@@ -151,13 +166,12 @@ export default {
     },
     
     onClickRow(item) {
-      console.log(item)
       this.selectedItem = item
       this.calendarId = item["calendarId"]
     },
     
     isEnableEdit() {
-      if (!this.selectedItem) {
+      if (!this.isAuthed || !this.selectedItem) {
         return false
       }
       return this.selectedItem["calendarId"] == this.calendarId
@@ -203,7 +217,6 @@ export default {
     },
     
     async onFormOK (isRegistMode, isDelete, data) {
-      console.log(data)
       if (data["selectedImage"]) {
         const imageKey = await this.processImage(isRegistMode, data["selectedImage"], data["calendarId"])
         data["image"] = imageKey

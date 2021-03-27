@@ -18,7 +18,7 @@
               color="#607D8B"
               :callbackClick="signin"
               mytype="LINE"
-              text="LINE (準備中)"
+              text="LINE (T.B.D.)"
               icon="mdi-alpha-l-circle"
               class="login_buttons"
               :isDisabled=true
@@ -29,7 +29,7 @@
               color="#607D8B"
               :callbackClick="signin"
               mytype="Twitter"
-              text="Twitter (準備中)"
+              text="Twitter (T.B.D.)"
               icon="mdi-twitter"
               class="login_buttons"
               :isDisabled=true
@@ -40,7 +40,7 @@
               color="#607D8B"
               :callbackClick="signin"
               mytype="Facebook"
-              text="Facebook (準備中)"
+              text="Facebook (T.B.D.)"
               icon="mdi-facebook"
               class="login_buttons"
               :isDisabled=true
