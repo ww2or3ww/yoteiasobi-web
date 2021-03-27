@@ -36,7 +36,7 @@
           counter="30"
           maxlength="30"
           dense
-          :readonly="!isRegistMode"
+          :readonly="!isRegistMode || !isOwnItem"
           class="text_field text-white"
         />
         <v-text-field
@@ -46,6 +46,7 @@
           counter="30"
           maxlength="30"
           dense
+          :readonly="!isOwnItem"
           class="text_field text-white"
         />
         <v-textarea
@@ -54,6 +55,7 @@
           counter="300"
           maxlength="300"
           dense
+          :readonly="!isOwnItem"
           class="text_field text-white"
         />
       </v-form>

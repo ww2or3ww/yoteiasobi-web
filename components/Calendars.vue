@@ -209,6 +209,7 @@ export default {
     onClickPlus() {
       this.formTitle = "Regist Calendar"
       this.isFormRegistMode = true
+      this.isOwnItem = true
       this.calendarIdTmp = ""
       this.titleTmp = ""
       this.descriptionTmp = ""
