@@ -14,10 +14,10 @@
             :rules="[rules.required, rules.minimum(calendarId, 12, 'characters')]"
           >
             <template v-slot:append>
-              <v-btn @click="onClickEdit" :disabled="!isEnableEdit()">
-                <v-icon>mdi-square-edit-outline</v-icon>
+              <v-btn @click="onClickDetail" :disabled="isEnableBtns()">
+                <v-icon>mdi-information-outline</v-icon>
               </v-btn>
-              <v-btn @click="onClickDetail" :disabled="calendarId.length == 0 || !isFormValid">
+              <v-btn @click="onClickCalendar" :disabled="isEnableBtns()">
                 <v-icon>mdi-calendar-month</v-icon>
               </v-btn>
             </template>
@@ -186,11 +186,8 @@ export default {
       this.calendarId = item["calendarId"]
     },
     
-    isEnableEdit() {
-      if (!this.isAuthed || !this.selectedItem) {
-        return false
-      }
-      return this.selectedItem["calendarId"] == this.calendarId
+    isEnableBtns() {
+      return this.calendarId.length == 0 || !this.isFormValid
     },
     
     clearData() {
@@ -205,23 +202,33 @@ export default {
       this.isFormShow = false
     },
     
-    onClickDetail() {
+    onClickCalendar() {
       this.$router.push('/calendars/' + this.calendarId)
     },
     
-    onClickEdit() {
-      this.formTitle = "Edit Calendar"
+    async onClickDetail() {
+      this.formTitle = "Calendar Information"
       this.isFormRegistMode = false
-      this.isOwnItem = this.selectedItem["owner"] == this.$auth_get_user_id()
-      this.calendarIdTmp = this.selectedItem["calendarId"]
-      this.titleTmp = this.selectedItem["title"]
-      this.descriptionTmp = this.selectedItem["description"]
-      this.imageAddressTmp = this.selectedItem["imageAddress"]
-      this.isFormShow = true
+      
+      const calendar = await API.graphql(graphqlOperation(getCalendar, {
+        calendarId: this.calendarId
+      }))
+      
+      if (calendar.data.getCalendar) {
+        this.isOwnItem = calendar.data.getCalendar["owner"] == this.$auth_get_user_id()
+        this.calendarIdTmp = calendar.data.getCalendar["calendarId"]
+        this.titleTmp = calendar.data.getCalendar["title"]
+        this.descriptionTmp = calendar.data.getCalendar["description"]
+        this.imageAddressTmp = await this.$auth_get_picture_address_from_storage(calendar.data.getCalendar)
+        this.isFormShow = true
+      } else {
+        this.message = "Invalid Calendar ID."
+        this.isShowMessage = true
+      }
     },
     
     onClickPlus() {
-      this.formTitle = "Regist Calendar"
+      this.formTitle = "Calendar Registration"
       this.isFormRegistMode = true
       this.isOwnItem = true
       this.calendarIdTmp = ""

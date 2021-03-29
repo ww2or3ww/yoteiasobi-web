@@ -4,7 +4,7 @@
       <v-btn icon @click.stop="drawer = !drawer">
         <v-icon>mdi-menu</v-icon>
       </v-btn>
-      <v-toolbar-title v-text="title" />
+      <v-toolbar-title v-text="title" class="toolbar__title"/>
       <v-spacer />
       <HeaderBell />
       <HeaderAvatar />
@@ -41,3 +41,12 @@ export default {
   },
 }
 </script>
+<style>
+.toolbar__title {
+  color: #FF0032;
+  font-family: 'Train One', sans-serif;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+</style>

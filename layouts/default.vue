@@ -20,7 +20,7 @@ export default {
   },
   data() {
     return {
-      title: 'yoteiasobi'
+      title: 'YOTEIASOBI'
     }
   }
 }
