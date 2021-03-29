@@ -50,12 +50,3 @@ type Mutation
       {allow: private, provider: userPools},
     ])
 }
-
-type PrivateNote
-  @model
-  @auth(rules: [{allow: owner}])
-{
-  id: ID!
-  content: String!
-  updatedAt: String
-}

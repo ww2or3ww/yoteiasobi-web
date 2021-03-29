@@ -33,9 +33,9 @@
         <v-text-field
           v-model="calendarIdTmp"
           label="Calendar ID*"
-          :rules="[rules.required, rules.minimum(calendarIdTmp, 25, 'characters')]"
-          counter="30"
-          maxlength="30"
+          :rules="[rules.required, rules.minimum(calendarIdTmp, 12, 'characters')]"
+          counter="60"
+          maxlength="60"
           dense
           :readonly="!isRegistMode || !isOwnItem"
           class="text_field text-white"

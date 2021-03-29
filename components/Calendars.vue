@@ -137,7 +137,7 @@ export default {
     async getItems() {
       try {
         let data = []
-        const sampleID = "jvlan24bq1ctttv4pbvlchntng"
+        const sampleID = "jvlan24bq1ctttv4pbvlchntng@group.calendar.google.com"
 
         if (!this.isAuthed) {
           const tmp = {
