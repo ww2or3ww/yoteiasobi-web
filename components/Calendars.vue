@@ -11,7 +11,7 @@
             v-model="calendarId"
             label="Calendar ID"
             maxlength="60"
-            :rules="[rules.required, rules.minimum(calendarId, 25, 'characters')]"
+            :rules="[rules.required, rules.minimum(calendarId, 12, 'characters')]"
           >
             <template v-slot:append>
               <v-btn @click="onClickEdit" :disabled="!isEnableEdit()">
