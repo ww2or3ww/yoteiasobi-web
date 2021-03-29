@@ -179,7 +179,6 @@ export default {
   },
   mounted () {
     this.calendarId = this.id
-    this.calendarId = this.calendarId.replace("@group.calendar.google.com", "")
     this.calendarTitle = "calendar for me"
     this.email = this.$auth_get_email()
     this.initialize()

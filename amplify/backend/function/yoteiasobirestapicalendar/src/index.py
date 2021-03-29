@@ -71,7 +71,7 @@ def getPathParameter(event):
 def get_calender_events(id, email):
 
     service = get_google_service_calendar()
-    calendar_id = "{0}@group.calendar.google.com".format(id)
+    calendar_id = id
     
     dt_now = datetime.utcnow()
     dt_from = dt_now + timedelta(weeks=(-1*4*3))
@@ -160,7 +160,7 @@ def post(event):
   
   service = get_google_service_calendar()
   ret = service.events().insert(
-    calendarId = "{0}@group.calendar.google.com".format(calendar["calendarId"]),
+    calendarId = calendar["calendarId"],
     body= {
         'summary': calendar["name"],
         'description': '{0}\n{1}'.format(calendar['email'], calendar['description']),
