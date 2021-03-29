@@ -23,13 +23,15 @@ export default (context, inject) => {
     }
   }
   
-  const getPictureAddressFromStorage = async (user) => {
+  const getPictureAddressFromStorage = async (data) => {
     let pictureRet = null
     let picturePath = null
-    if (user.attributes) {
-      picturePath = user.attributes["custom:picture"]
-    } else if (user.picture) {
-      picturePath = user.picture
+    if (data.attributes) {
+      picturePath = data.attributes["custom:picture"]
+    } else if (data.picture) {
+      picturePath = data.picture
+    } else if (data.image) {
+      picturePath = data.image
     } else {
       return null
     }
@@ -67,7 +69,7 @@ export default (context, inject) => {
     if (!isAuthedFunc()) {
       return null
     }
-    return context.store.state.authdata.user.attributes["custom:email"]
+    return context.store.state.authdata.user.attributes["email"]
   }
   
   const getPictureFunc = () => {
@@ -75,28 +77,6 @@ export default (context, inject) => {
       return null
     }
     return context.store.state.authdata.picture
-  }
-
-  const createPictureKeyFunc = (filename) => {
-    if (context.store.state.authdata.user == null) {
-      return null
-    }
-    const ext = filename.slice(filename.lastIndexOf('.') + 1)
-    const date = new Date()
-    const datetimestr = '' + 
-      date.getUTCFullYear() + 
-      ('0' + date.getUTCMonth()).slice(-2) + 
-      ('0' + date.getUTCDay()).slice(-2) + 
-      '-' + 
-      ('0' + date.getUTCHours()).slice(-2) + 
-      ('0' + date.getUTCMinutes()).slice(-2) + 
-      ('0' + date.getUTCSeconds()).slice(-2)
-    const key = 
-      "public/profile/" + 
-      context.store.state.authdata.user.username + 
-      "/" + 
-      datetimestr + "." + ext
-    return key
   }
 
   const getPictureKeyFunc = () => {
@@ -134,6 +114,6 @@ export default (context, inject) => {
   inject('auth_get_name', getNameFunc)
   inject('auth_get_email', getEMailFunc)
   inject('auth_get_picture', getPictureFunc)
-  inject('auth_create_picture_key', createPictureKeyFunc)
+  inject('auth_get_picture_key', getPictureKeyFunc)
   inject('auth_get_comment', getCommentFunc)
 }

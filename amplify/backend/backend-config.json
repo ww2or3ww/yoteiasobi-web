@@ -27,6 +27,16 @@
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
+    },
+    "yoteiasobigraphqlprocess": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "yoteiasobirestapicalendar": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
     }
   },
   "api": {
@@ -49,8 +59,31 @@
             "Name",
             "Arn"
           ]
+        },
+        {
+          "category": "function",
+          "resourceName": "yoteiasobirestapicalendar",
+          "attributes": [
+            "Name",
+            "Arn"
+          ]
         }
       ]
+    },
+    "yoteiasobigraphqlapi": {
+      "service": "AppSync",
+      "providerPlugin": "awscloudformation",
+      "output": {
+        "authConfig": {
+          "defaultAuthentication": {
+            "authenticationType": "AMAZON_COGNITO_USER_POOLS",
+            "userPoolConfig": {
+              "userPoolId": "authyoteiasobi8e9669f8"
+            }
+          },
+          "additionalAuthenticationProviders": []
+        }
+      }
     }
   },
   "storage": {

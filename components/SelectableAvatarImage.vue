@@ -1,5 +1,6 @@
 <template>
   <v-avatar
+    :tile="isTile"
     size="160"
     :style="avatarStyle"
     @click="selectedAvatar"
@@ -14,8 +15,9 @@
       type="file"
       accept="image/jpeg, image/jpg, image/png"
       @change="selectedInput"
+      id="inputfile"
     >
-    <v-img :src="propsImageSrc" />
+    <v-img :src="imageAddressTmp" />
   </v-avatar>
 </template>
 
@@ -23,17 +25,32 @@
 export default {
   props: {
     propsImageSrc: {
-      type: String, 
-      required: true
+      type: String
     },
     callbackSelectedPicture: {
       type: Function, 
       required: false
     },
+    isTile: {
+      type: Boolean,
+      default: false
+    },
+    readonly: {
+      type: Boolean,
+      default: false
+    }
+  },
+  watch: {
+    propsImageSrc (nextValue) {
+      this.imageAddressTmp = nextValue
+      const obj = document.getElementById("inputfile")
+      obj.value = ""
+    },
   },
   data() {
     return {
       selectedImage: null,
+      imageAddressTmp: "",
       avatarStyle:{
         border: '2px solid #000'
       },
@@ -41,34 +58,34 @@ export default {
   },
   methods: {
     selectedAvatar() {
-      if (this.callbackSelectedPicture) {
+      if (!this.readonly && this.callbackSelectedPicture) {
         this.$refs.input.click()
       }
     },
     dragEnterAvatar() {
-      if (this.callbackSelectedPicture) {
+      if (!this.readonly && this.callbackSelectedPicture) {
         this.avatarStyle.border = '4px solid #448AFF'
       }
     },
     dragOverAvatar() {
-      if (this.callbackSelectedPicture) {
+      if (!this.readonly && this.callbackSelectedPicture) {
         this.avatarStyle.border = '4px solid #448AFF'
       }
     },
     dragLeaveAvatar() {
-      if (this.callbackSelectedPicture) {
+      if (!this.readonly && this.callbackSelectedPicture) {
         this.avatarStyle.border = '2px solid #000'
       }
     },
     dropFileAvatar() {
-      if (this.callbackSelectedPicture) {
+      if (!this.readonly && this.callbackSelectedPicture) {
         this.avatarStyle.border = '2px solid #000'
         const file = [...event.dataTransfer.files][0]
         this.setImageToAvatar(file)
       }
     },
     selectedInput() {
-      if (this.callbackSelectedPicture) {
+      if (!this.readonly && this.callbackSelectedPicture) {
         const file = this.$refs.input.files[0]
         this.setImageToAvatar(file)
       }

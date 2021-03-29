@@ -1,0 +1,61 @@
+type YoteiasobiCalendar
+  @model (
+    queries: { get: "getCalendar", list: "listCalendar" },
+    mutations: {create: "createCalendar", update: "updateCalendar", delete: "deleteCalendar"}
+    subscriptions: {
+      onCreate: ["onCreateCalendarAll", "onCreateCalendarBy(owner: String!)"]
+      level: on
+    }
+  )
+  @auth(rules: [
+    {allow: owner, ownerField:"owner", provider: userPools, operations:[read, create, delete]}
+    {allow: private, provider: userPools, operations:[read]}
+  ])
+  @key(fields:["calendarId"])
+{
+  calendarId: String!
+  title: String!
+  image: String
+  description: String
+}
+
+type YoteiasobiUserCalendar
+  @model (
+    queries: { get: "getUserCalendar", list: "listUserCalendar" },
+    mutations: {create: "createUserCalendar", update: null, delete: "deleteUserCalendar"}
+    subscriptions: {
+      onCreate: ["onCreateUserCalendarAll", "onCreateUserCalendarBy(owner: String!)"]
+      level: on
+    }
+  )
+  @auth(rules: [
+    {allow: owner, ownerField:"owner", provider: userPools, operations:[read, create, delete]}
+    {allow: private, provider: userPools, operations:[read]}
+  ])
+  @key(fields:["owner", "calendarId"])
+{
+  owner: String!
+  calendarId: String!
+  creator: String!
+}
+
+type Mutation
+{
+  processYoteiasobi(
+    calendarId: String!
+		content: String!
+	): YoteiasobiCalendar
+    @function(name: "yoteiasobigraphqlprocess-${env}")
+    @auth(rules: [
+      {allow: private, provider: userPools},
+    ])
+}
+
+type PrivateNote
+  @model
+  @auth(rules: [{allow: owner}])
+{
+  id: ID!
+  content: String!
+  updatedAt: String
+}

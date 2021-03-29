@@ -13,7 +13,7 @@
               <v-icon>mdi-magnify</v-icon>
             </v-btn>
             <v-btn
-              :disabled="selectedUser==null"
+              :disabled="selectedList.length==0"
               @click="onClickDetail">
               <v-icon>mdi-account-details</v-icon>
             </v-btn>
@@ -21,11 +21,12 @@
         </v-text-field>
       </v-card-title>
       <v-data-table
-        v-model="selected"
+        v-model="selectedList"
         v-if="users"
         :headers="headers" 
         :items="users"
         item-key="id"
+        select-all
         hide-default-footer
         @click:row="onClickRow"
       >
@@ -52,15 +53,13 @@ export default {
   data() {
     return {
       headers: [
-        { text: "icon", value: "imageAddress", sortable: false },
-        { text: 'name', value: 'name' },
-        { text: 'email', value: 'email' },
-        { text: 'comment', value: 'comment' },
+        { text: "Icon",   value: "imageAddress",  width: "50px", sortable: false },
+        { text: 'Name',   value: 'name',          width: "200px" },
+        { text: 'Email',  value: 'email' },
       ],
       users: null,
       search: "",
-      selectedUser: null,
-      selected: []
+      selectedList: []
     }
   },
   mounted () {
@@ -69,6 +68,9 @@ export default {
   methods: {
     async initialize() {
       this.users = await this.getUsers()
+      if (this.users.length > 0) {
+        this.selectedList = [this.users[0]]
+      }
     },
     async getUsers() {
       try {
@@ -77,32 +79,31 @@ export default {
           process.env.ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_name, 
           '/profile?count=' + count + '&search=' + this.search
         )
-        users.forEach(async (user, i) => {
+        for (let i = 0; i < users.length; i++) {
+          const user = users[i]
           user['id'] = i
           user['imageAddress'] = await this.$auth_get_picture_address_from_storage(user)
-        })
-        console.log(users)
-        
+        }
         return users
       } catch (error) {
         console.log(error)
         this.users = null
+        this.selectedList  = []
       }
     },
     async onClickSearch() {
-      this.selectedUser = null
-      this.selected = []
+      this.selectedList = []
       this.users = null
       this.users = await this.getUsers()
+      if (this.users.length > 0) {
+        this.selectedList = [this.users[0]]
+      }
     },
     onClickRow(item) {
-      this.selectedUser = item
-      this.selected = [item]
-      console.log(this.selectedUser)
+      this.selectedList = [item]
     },
     onClickDetail() {
-      console.log(this.selectedUser)
-      this.$router.push('/userProfile?username=' + this.selectedUser['username'])
+      this.$router.push('/users/' + this.selectedList[0]['username'])
     },
   }
 }

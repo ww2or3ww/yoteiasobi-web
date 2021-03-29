@@ -39,6 +39,7 @@ export default {
     ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_name: process.env.ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_name,
     ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_endpoint: process.env.ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_endpoint,
     ENVVAL_AWS_EXPORTS_aws_user_files_s3_bucket: process.env.ENVVAL_AWS_EXPORTS_aws_user_files_s3_bucket,
+    ENVVAL_AWS_EXPORTS_aws_appsync_graphqlEndpoint: process.env.ENVVAL_AWS_EXPORTS_aws_appsync_graphqlEndpoint,
     ENVVAL_STRIPE_SECRET_KEY: process.env.ENVVAL_STRIPE_SECRET_KEY,
     ENVVAL_STRIPE_PUBLIC_KEY: process.env.ENVVAL_STRIPE_PUBLIC_KEY,
   },
@@ -54,6 +55,8 @@ export default {
     '@nuxtjs/stylelint-module',
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
+    // https://momentjs.com/
+    '@nuxtjs/moment',
   ],
 
   // Modules (https://go.nuxtjs.dev/config-modules)
@@ -101,5 +104,10 @@ export default {
   stripe: {
     version: 'v3',
     publishableKey: process.env.ENVVAL_STRIPE_PUBLIC_KEY
+  },
+  
+  // Moment
+  moment: {
+    locales: ['ja']
   },
 }

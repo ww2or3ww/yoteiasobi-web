@@ -1,6 +1,6 @@
 import { Auth, Storage } from 'aws-amplify'
 
-const NEED_AUTHENTICATED_PAGES  = ['/user', '/profile', '/userManage', '/userProfile']
+const NEED_AUTHENTICATED_PAGES  = ['/user', '/profile', '/userManage', '/userProfile', '/calendarSearch']
 const NEED_ADMIN_PAGES          = ['/userManage', '/userProfile']
 
 export default async (context) => {

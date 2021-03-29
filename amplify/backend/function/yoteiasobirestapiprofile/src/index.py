@@ -23,8 +23,8 @@ def handler(event, context):
     retBody = ""
     if method == 'GET':
       retCode, retBody = get(event)
-    elif method == 'POST':
-      retCode, retBody = post(event)
+    elif method == 'PUT':
+      retCode, retBody = put(event)
     elif method == 'DELETE':
       retCode, retBody = delete(event)
     else:
@@ -129,7 +129,7 @@ def createRetUser(user):
   }
   return retUser
 
-def post(event):
+def put(event):
   body = json.loads(event['body'])
   name, comment, picture = getParamFromBody(body)
   logger.info('name={0}, comment={1}, picture={2}'.format(name, comment, picture))
@@ -139,7 +139,7 @@ def post(event):
 
   updateUserInfo(poolId, userName, name, comment, picture)
   
-  if picture and pictureOrg:
+  if picture and pictureOrg and picture != pictureOrg:
     removeOldPicture(pictureOrg)
     
   return 200, "success : {0}".format(userName)

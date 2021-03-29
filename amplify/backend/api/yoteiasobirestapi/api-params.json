@@ -28,6 +28,23 @@
                     "/DELETE"
                 ]
             }
+        },
+        {
+            "name": "/calendar",
+            "lambdaFunction": "yoteiasobirestapicalendar",
+            "privacy": {
+                "protected": true,
+                "auth": [
+                    "/POST",
+                    "/GET",
+                    "/PUT",
+                    "/PATCH",
+                    "/DELETE"
+                ],
+                "unauth": [
+                    "/GET"
+                ]
+            }
         }
     ],
     "resourceName": "yoteiasobirestapi",
@@ -38,11 +55,14 @@
         },
         {
             "lambdaFunction": "yoteiasobirestapiprofile"
+        },
+        {
+            "lambdaFunction": "yoteiasobirestapicalendar"
         }
     ],
     "privacy": {
-        "auth": 2,
-        "unauth": 0,
+        "auth": 3,
+        "unauth": 1,
         "authRoleName": "amplify-yoteiasobi-dev-52943-authRole",
         "unAuthRoleName": "amplify-yoteiasobi-dev-52943-unauthRole"
     },
@@ -62,7 +82,15 @@
                 "Name",
                 "Arn"
             ]
+        },
+        {
+            "category": "function",
+            "resourceName": "yoteiasobirestapicalendar",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
         }
     ],
-    "uuid": "13dba120"
+    "uuid": "c81aa575"
 }

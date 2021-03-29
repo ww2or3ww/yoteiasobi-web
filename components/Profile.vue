@@ -76,7 +76,7 @@
     <v-dialog v-model="isShowMessage" width="400">
       <MessageBox
         :callbackBtn="processDelete"
-        text="Delete your account. Are you sure ?"
+        :text="message"
       />
     </v-dialog>
     
@@ -111,6 +111,7 @@ export default {
       comment_org: "",
       picture: "", 
       picture_org: "",
+      selectedPicture: null,
       isFormValid: false,
       isProcessing: false,
       isCheckDelete: false,
@@ -154,6 +155,7 @@ export default {
       this.updateProcess()
     },
     onDelete() {
+      this.message = "Delete your account. Are you sure ?"
       this.isShowMessage = true
     },
     onCancel() {
@@ -166,27 +168,29 @@ export default {
       try {
         let pictureKey = null
         if (this.selectedPicture) {
-          pictureKey = this.$auth_create_picture_key(this.selectedPicture.name)
-          await this.processUploadFile(pictureKey)
+          const filename = this.selectedPicture.name
+          const ext = filename.slice(filename.lastIndexOf('.') + 1)
+          pictureKey = "public/profile/" + this.$auth_get_user_id() + "." + ext
+          await this.processUploadFile(pictureKey, this.selectedPicture)
         }
         await this.processUpdateUser(pictureKey)
 
         this.$auth_reload_user(this.dataInitialize)
       } catch (error) {
         this.isProcessing = false
-        this.message = "error occured : " + error.message
+        console.log(error)
       }
     },
-    async processUploadFile(pictureKey) {
-      const src = await imageResize.pFileReader(this.selectedPicture);
+    async processUploadFile(pictureKey, selectedPicture) {
+      const src = await imageResize.pFileReader(selectedPicture);
       const img = await imageResize.pImage(src);
       const resizedImg = await imageResize.resizeImage(img, 400, 'image/png');
-      await Storage.put(pictureKey.replace('public/', ''), resizedImg, {
+      const ret = await Storage.put(pictureKey.replace('public/', ''), resizedImg, {
           level: 'public'
       })
     },
     async processUpdateUser(pictureKey) {
-      const postdata = {
+      const data = {
         headers: {},
         body: {
           'name': this.name,
@@ -195,10 +199,10 @@ export default {
         },
         response: true,
       };
-      const response = await API.post(
+      const response = await API.put(
         process.env.ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_name, 
         '/profile', 
-        postdata
+        data
       )
     },
     async processDelete(typestr) {
@@ -216,7 +220,6 @@ export default {
       } catch (error) {
         console.log(error)
         this.isProcessing = false
-        this.message = "error occured : " + error.message
       }
       this.$auth_signout()
     },

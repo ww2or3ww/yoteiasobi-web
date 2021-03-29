@@ -33,12 +33,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "yoteiasobirestapiprocess",
+            "yoteiasobirestapicalendar",
             {
               "Fn::Join": [
                 "",
                 [
-                  "yoteiasobirestapiprocess",
+                  "yoteiasobirestapicalendar",
                   "-",
                   {
                     "Ref": "env"
@@ -69,7 +69,7 @@
         "Timeout": "25",
         "Code": {
           "S3Bucket": "amplify-yoteiasobi-dev-52943-deployment",
-          "S3Key": "amplify-builds/yoteiasobirestapiprocess-2f542b4a6d7a6839766e-build.zip"
+          "S3Key": "amplify-builds/yoteiasobirestapicalendar-6b5271443862625a7070-build.zip"
         }
       }
     },
@@ -79,12 +79,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "yoteiasobiLambdaRole8f16e69c",
+            "yoteiasobiLambdaRolea1b7f720",
             {
               "Fn::Join": [
                 "",
                 [
-                  "yoteiasobiLambdaRole8f16e69c",
+                  "yoteiasobiLambdaRolea1b7f720",
                   "-",
                   {
                     "Ref": "env"
