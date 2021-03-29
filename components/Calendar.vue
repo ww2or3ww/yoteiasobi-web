@@ -115,6 +115,14 @@
       />
     </v-dialog>
     
+    <v-dialog v-model="isShowMessage" width="400">
+      <MessageBox
+        :callbackBtn="onMessageClose"
+        :text="message"
+        :isShowCancel="false"
+      />
+    </v-dialog>
+
     <v-overlay :value="isProcessing">
       <v-progress-circular
         :size="100"
@@ -127,9 +135,11 @@
   </div>
 </template>
 <script>
-import { API } from 'aws-amplify'
+import { API, graphqlOperation } from 'aws-amplify'
+import { getCalendar } from '~/src/graphql/queries'
 import SelectableAvatarImage from '~/components/SelectableAvatarImage.vue'
 import CalendarEventRegistDialog from '~/components/CalendarEventRegistDialog.vue'
+import MessageBox from '~/components/MessageBox.vue'
 export default {
   components: {
     SelectableAvatarImage,
@@ -146,6 +156,7 @@ export default {
       isAuthed: false,
       calendarId: "",
       calendarTitle: "",
+      calendarOwner: "",
       name: "",
       dateStart: "",
       dateEnd: "",
@@ -155,6 +166,7 @@ export default {
       description: "",
       isProcessing: false,
       isShowForm: false,
+      isShowMessage: false,
       message: "",
       
       type: 'month',
@@ -179,7 +191,6 @@ export default {
   },
   mounted () {
     this.calendarId = this.id
-    this.calendarTitle = "calendar for me"
     this.email = this.$auth_get_email()
     this.initialize()
   },
@@ -192,17 +203,49 @@ export default {
   },
   methods: {
     async initialize() {
-      this.isAuthed = this.$auth_is_authed()
-      this.isShowForm = false
-      this.setToday()
-      if (this.calendarId && this.calendarId.length > 10) {
+      let isSuccessGetData = false
+      
+      try {
         this.isProcessing = true
-        this.events= await this.getItem()
+        this.isAuthed = this.$auth_is_authed()
+        this.isShowForm = false
+        this.setToday()
+        if (this.calendarId) {
+          const retItems = await this.getItem()
+          if (retItems) {
+            this.events = retItems
+            isSuccessGetData = true
+          }
+        }
+        
+        const calendar = await API.graphql(graphqlOperation(getCalendar, {
+          calendarId: this.calendarId
+        }))
+        if (calendar.data.getCalendar) {
+          this.calendarTitle = calendar.data.getCalendar["title"]
+          this.calendarOwner = calendar.data.getCalendar["owner"]
+        }
+      } catch (error) {
+        console.log(error)
+      } finally {
         this.isProcessing = false
+      }
+
+      if (!isSuccessGetData) {
+        this.isShowMessage = true
+        if (this.calendarOwner == this.$auth_get_user_id()) {
+          this.message = "Failed to retrieve calendar data.\nPlease share your calendar with the following service accounts.\n"
+          this.message = this.message + "yoteiasobi-calendar@yoteiasobi.iam.gserviceaccount.com"
+        } else {
+          this.message = "Failed to retrieve calendar data.\nPlease contact the calendar owner."
+        }
       }
     },
     onResize() {
       this.calendarHeight = window.innerHeight - 280
+    },
+    onMessageClose() {
+      this.isShowMessage = false
     },
     async getItem() {
       try {
@@ -217,6 +260,7 @@ export default {
         return calendar
       } catch (error) {
         console.log(error)
+        return null
       }
     },
     setToday () {
