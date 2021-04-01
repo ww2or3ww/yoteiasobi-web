@@ -14,7 +14,7 @@
             :rules="[rules.required, rules.minimum(calendarId, 12, 'characters')]"
           >
             <template v-slot:append>
-              <v-btn @click="onClickDetail" :disabled="isEnableBtns()">
+              <v-btn @click="onClickDetail" :disabled="isEnableBtns() || !isAuthed">
                 <v-icon>mdi-information-outline</v-icon>
               </v-btn>
               <v-btn @click="onClickCalendar" :disabled="isEnableBtns()">
