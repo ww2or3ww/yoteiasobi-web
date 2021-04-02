@@ -31,6 +31,17 @@
         </v-list-item-content>
       </v-list-item>
 
+      <v-list-item to="/about">
+        <v-list-item-action>
+          <v-icon>mdi-calendar-month</v-icon>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>
+            About
+          </v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+
       <v-divider v-if="isAdmin" />
       <v-list-item  v-if="isAdmin" to="/users">
         <v-list-item-action>
