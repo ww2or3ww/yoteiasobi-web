@@ -141,10 +141,6 @@ import SelectableAvatarImage from '~/components/SelectableAvatarImage.vue'
 import CalendarEventRegistDialog from '~/components/CalendarEventRegistDialog.vue'
 import MessageBox from '~/components/MessageBox.vue'
 export default {
-  components: {
-    SelectableAvatarImage,
-    CalendarEventRegistDialog
-  },
   props: {
     id: {
       type: String,
