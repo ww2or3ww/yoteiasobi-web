@@ -92,9 +92,6 @@ import CalendarRegistDialog from '~/components/CalendarRegistDialog'
 import MessageBox from '~/components/MessageBox.vue'
 import imageResize from '~/static/imageResize.js'
 export default {
-  components: {
-    CalendarRegistDialog
-  },
   data() {
     return {
       headers: [
@@ -137,8 +134,7 @@ export default {
     async getItems() {
       try {
         let data = []
-        const sampleID = "jvlan24bq1ctttv4pbvlchntng@group.calendar.google.com"
-
+        const sampleID = process.env.ENVVAL_GCP_CALENDAR_ID_SAMPLE
         if (!this.isAuthed) {
           const tmp = {
             calendarId: sampleID,
