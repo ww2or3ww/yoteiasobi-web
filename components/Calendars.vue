@@ -1,88 +1,94 @@
 <template>
-  <div class="main">
-    <section class="section_list">
-      <v-form
-        v-model="isFormValid"
-        ref="form"
-        lazy-validation
+  <v-flex xs12 sm12 md12>
+    <v-card>
+      <v-card-title class="common-card-title">
+        <p class="common-p-card-title" style="margin: 0;">Calendar</p>
+      </v-card-title>
+    </v-card>
+    <v-card>
+      <section class="section_list">
+        <v-form
+          v-model="isFormValid"
+          ref="form"
+          lazy-validation
+        >
+          <v-card-title>
+            <v-text-field
+              v-model="calendarId"
+              label="Calendar ID"
+              maxlength="60"
+              :rules="[rules.required, rules.minimum(calendarId, 12, 'characters')]"
+            >
+              <template v-slot:append>
+                <v-btn @click="onClickDetail" :disabled="isEnableBtns() || !isAuthed">
+                  <v-icon>mdi-information-outline</v-icon>
+                </v-btn>
+                <v-btn @click="onClickCalendar" :disabled="isEnableBtns()">
+                  <v-icon>mdi-calendar-month</v-icon>
+                </v-btn>
+              </template>
+            </v-text-field>
+          </v-card-title>
+        </v-form>
+        <v-data-table
+          v-if="calendars"
+          :headers="headers" 
+          :items="calendars"
+          item-key="id"
+          select-all
+          hide-default-footer
+          @click:row="onClickRow"
+        >
+          <template v-slot:item.imageAddress="{ item }">
+            <v-avatar tile>
+              <v-img :src="item.imageAddress"></v-img>
+            </v-avatar>
+          </template>
+        </v-data-table>
+        <v-data-table
+          v-else
+          loading
+          loading-text="Loading... Please wait"
+          hide-default-footer
+        >
+        </v-data-table>
+      </section>
+      
+      <v-btn fixed fab bottom right 
+        color="#BDBDBD88" style="bottom: 40px"
+        v-if="isAuthed"
+        @click="onClickPlus"
       >
-        <v-card-title>
-          <v-text-field
-            v-model="calendarId"
-            label="Calendar ID"
-            maxlength="60"
-            :rules="[rules.required, rules.minimum(calendarId, 12, 'characters')]"
-          >
-            <template v-slot:append>
-              <v-btn @click="onClickDetail" :disabled="isEnableBtns() || !isAuthed">
-                <v-icon>mdi-information-outline</v-icon>
-              </v-btn>
-              <v-btn @click="onClickCalendar" :disabled="isEnableBtns()">
-                <v-icon>mdi-calendar-month</v-icon>
-              </v-btn>
-            </template>
-          </v-text-field>
-        </v-card-title>
-      </v-form>
-      <v-data-table
-        v-if="calendars"
-        :headers="headers" 
-        :items="calendars"
-        item-key="id"
-        select-all
-        hide-default-footer
-        @click:row="onClickRow"
+        <v-icon color="white">mdi-plus</v-icon>
+      </v-btn>
+      <v-dialog
+        v-model="isFormShow"
+        fullscreen
+        transition="dialog-bottom-transition"
+        @keydown.esc="onFormCancel"
       >
-        <template v-slot:item.imageAddress="{ item }">
-          <v-avatar tile>
-            <v-img :src="item.imageAddress"></v-img>
-          </v-avatar>
-        </template>
-      </v-data-table>
-      <v-data-table
-        v-else
-        loading
-        loading-text="Loading... Please wait"
-        hide-default-footer
-      >
-      </v-data-table>
-    </section>
-    
-    <v-btn fixed fab bottom right 
-      color="#BDBDBD88" style="bottom: 40px"
-      v-if="isAuthed"
-      @click="onClickPlus"
-    >
-      <v-icon color="white">mdi-plus</v-icon>
-    </v-btn>
-    <v-dialog
-      v-model="isFormShow"
-      fullscreen
-      transition="dialog-bottom-transition"
-      @keydown.esc="onFormCancel"
-    >
-      <CalendarRegistDialog
-        :formTitle = "formTitle"
-        :isRegistMode = "isFormRegistMode"
-        :isOwnItem = "isOwnItem"
-        :callbackOK = "onFormOK"
-        :callbackCancel = "onFormCancel"
-        :calendarId = "calendarIdTmp"
-        :title = "titleTmp"
-        :description = "descriptionTmp"
-        :imageAddress = "imageAddressTmp"
-        :isShow = "isFormShow"
-      />
-    </v-dialog>
-    <v-dialog v-model="isShowMessage" width="400">
-      <MessageBox
-        :callbackBtn="onMessageClose"
-        :text="message"
-        :isShowCancel="false"
-      />
-    </v-dialog>
-
-  </div>
+        <CalendarRegistDialog
+          :formTitle = "formTitle"
+          :isRegistMode = "isFormRegistMode"
+          :isOwnItem = "isOwnItem"
+          :callbackOK = "onFormOK"
+          :callbackCancel = "onFormCancel"
+          :calendarId = "calendarIdTmp"
+          :title = "titleTmp"
+          :description = "descriptionTmp"
+          :imageAddress = "imageAddressTmp"
+          :isShow = "isFormShow"
+        />
+      </v-dialog>
+      <v-dialog v-model="isShowMessage" width="400">
+        <MessageBox
+          :callbackBtn="onMessageClose"
+          :text="message"
+          :isShowCancel="false"
+        />
+      </v-dialog>
+    </v-card>
+  </v-flex>
 </template>
 <script>
 import { API, Storage, graphqlOperation } from 'aws-amplify'

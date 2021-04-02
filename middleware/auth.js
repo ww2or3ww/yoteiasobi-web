@@ -4,8 +4,6 @@ const NEED_AUTHENTICATED_PAGES  = ['/profile', '/users']
 const NEED_ADMIN_PAGES          = ['/users']
 
 export default async (context) => {
-  console.log(">>>>")
-  console.log(context.route.path)
   if (context.store.state.authdata.user == null) {
     let user = await Auth.currentUserInfo()
     try {
