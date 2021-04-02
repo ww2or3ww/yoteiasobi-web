@@ -33,7 +33,7 @@
 
       <v-list-item to="/about">
         <v-list-item-action>
-          <v-icon>mdi-calendar-month</v-icon>
+          <v-icon>mdi-comment-question-outline</v-icon>
         </v-list-item-action>
         <v-list-item-content>
           <v-list-item-title>

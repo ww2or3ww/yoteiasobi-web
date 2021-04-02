@@ -28,7 +28,12 @@ export default {
 
 <style>
 .main {
-  background-color: #757575;
+  background-color: #1E1E1E;
   padding: 8px;
+}
+.common-card-title {
+  padding: 0;
+  padding-left: 16px;
+  border: 0 solid;
 }
 </style>
