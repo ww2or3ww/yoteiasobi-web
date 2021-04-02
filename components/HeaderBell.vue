@@ -57,12 +57,10 @@ export default {
   },
   methods: {
     onMenuTest() {
-      console.log("test!")
       this.message = "このベルは今は飾りです。"
       this.isShowMessage = true
     },
     onMessageClose() {
-      console.log("test!!")
       this.isShowMessage = false
     },
   }
