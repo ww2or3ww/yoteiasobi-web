@@ -15,7 +15,14 @@
         <v-list-item @click="onMenuTest">
           <v-list-item-content>
             <v-list-item-title>
-              INFORMATION
+              INFORMATION1
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item @click="onMenuTest">
+          <v-list-item-content>
+            <v-list-item-title>
+              INFORMATION2
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
@@ -24,7 +31,7 @@
         
         <v-list-item @click="onMenuTest">
           <v-list-item-content>
-            <v-list-item-title>T.B.D.</v-list-item-title>
+            <v-list-item-title>VIEW THE LIST</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         

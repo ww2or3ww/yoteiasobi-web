@@ -82,7 +82,7 @@ def getUserInfo(event):
     userName = response['Users'][0]['Username']
     attributes = response['Users'][0]['Attributes']
     name = get_value_from_attributes(attributes, 'custom:name')
-    email = get_value_from_attributes(attributes, 'custom:email')
+    email = get_value_from_attributes(attributes, 'email')
     
     logger.info("poolId = {0}, sub = {1}, userName = {2}".format(poolId, userSub, userName))
     logger.info("name = {0}, email = {1}".format(name, email))

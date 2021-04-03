@@ -122,7 +122,7 @@ def createRetUser(user):
     "username": user['Username'], 
     "name": get_value_from_attributes(attributes, 'custom:name'),
     "picture": get_value_from_attributes(attributes, 'custom:picture'),
-    "email": get_value_from_attributes(attributes, 'custom:email'),
+    "email": get_value_from_attributes(attributes, 'email'),
     "admin": get_value_from_attributes(attributes, 'custom:admin'),
     "comment": get_value_from_attributes(attributes, 'custom:comment'),
     "enabled": user['Enabled']
