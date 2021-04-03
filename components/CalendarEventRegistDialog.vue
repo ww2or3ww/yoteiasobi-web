@@ -174,10 +174,10 @@ export default {
   watch: {
     isShow (nextValue) {
       this.nameTmp = ""
-      this.dateStartTmp = ""
-      this.dateEndTmp = ""
-      this.timeStartTmp = ""
-      this.timeEndTmp = ""
+      this.dateStartTmp = this.dateStart
+      this.dateEndTmp = this.dateEnd
+      this.timeStartTmp = this.timeStart
+      this.timeEndTmp = this.timeEnd
       this.$refs.form.validate()
     },
   },

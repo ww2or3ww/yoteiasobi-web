@@ -9,7 +9,7 @@ export default {
 
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
-    titleTemplate: '%s - YOTEIASOBI',
+    titleTemplate: '%s',
     title: 'YOTEIASOBI',
     meta: [
       { charset: 'utf-8' },

@@ -63,7 +63,7 @@
 
     </v-list>
     
-    <v-card>
+    <v-card v-show="isOwnItem">
       <v-card-text>
         <p style="margin: 0;">
           登録したカレンダーの、
