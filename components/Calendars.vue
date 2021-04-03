@@ -17,7 +17,7 @@
               v-model="calendarId"
               label="Calendar ID"
               maxlength="60"
-              :rules="[rules.required, rules.minimum(calendarId, 12, 'characters')]"
+              :rules="[rules.required, rules.minimum(calendarId, 12, 'characters'), rules.mail]"
             >
               <template v-slot:append>
                 <v-btn @click="onClickDetail" :disabled="isEnableBtns() || !isAuthed">
@@ -124,6 +124,10 @@ export default {
       message: "",
       rules: {
         required: value => !!value || 'Required.',
+        mail: value => {
+          const pattern = /^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}\.[A-Za-z0-9]{1,}$/
+          return (value.length == 0 || pattern.test(value)) || 'Invalid Value.'
+        },
         minimum (value, min, unit) {
           return value.length >= min || "Too small (Need more " + min + " " + unit + ")"
         }

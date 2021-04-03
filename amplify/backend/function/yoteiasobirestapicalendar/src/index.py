@@ -94,8 +94,13 @@ def get_calendar_events(id, email):
 def convert_data(data, email):
   ret = {}
   start, end, timed = get_date_or_datetime(data)
+
+  name = "No Title"
+  if "summary" in data:
+    name = data["summary"]
+    
   ret = {
-    "name": data["summary"], 
+    "name": name, 
     "start": start, 
     "end": end, 
     "timed": timed,
