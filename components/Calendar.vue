@@ -112,10 +112,11 @@
         :description = "description"
         :callbackOK = "onFormOK"
         :callbackCancel = "onFormCancel"
+        :isShow = "isShowForm"
       />
     </v-dialog>
     
-    <v-dialog v-model="isShowMessage" width="400">
+    <v-dialog v-model="isShowMessage" width="480">
       <MessageBox
         :callbackBtn="onMessageClose"
         :text="message"
@@ -231,7 +232,7 @@ export default {
         this.isShowMessage = true
         if (this.calendarOwner == this.$auth_get_user_id()) {
           this.message = "Failed to retrieve calendar data.\nPlease share your calendar with the following service accounts.\n"
-          this.message = this.message + "yoteiasobi-calendar@yoteiasobi.iam.gserviceaccount.com"
+          this.message = this.message + process.env.ENVVAL_GCP_SERVICE_ACCOUNT
         } else {
           this.message = "Failed to retrieve calendar data.\nPlease contact the calendar owner."
         }

@@ -17,6 +17,7 @@
           dark
           color="primary"
           @click="onClickOK"
+          :disabled="!isFormValid"
         >
           <v-icon left>
             mdi-pencil
@@ -31,71 +32,81 @@
       three-line
     >
       <v-subheader>{{ selectedDate }}</v-subheader>
-      <v-list-item>
-        <v-list-item-action>
-          <v-icon>
-            mdi-subtitles-outline
-          </v-icon>
-        </v-list-item-action>
-        <v-list-item-content>
-          <v-text-field
-            v-model="nameTmp"
-            dense
-            :rules="[rules.required]"
-          />
-        </v-list-item-content>
-      </v-list-item>
       
-      <v-list-item>
-        <v-list-item-action>
-          <v-icon>
-            mdi-email
-          </v-icon>
-        </v-list-item-action>
-        <v-list-item-content>
-          <v-text-field
-            v-model="email"
-            readonly
-            dense
-          />
-        </v-list-item-content>
-      </v-list-item>
-      
-      <v-list-item>
-        <v-list-item-action>
-          <v-icon>
-            mdi-clock-time-five-outline
-          </v-icon>
-        </v-list-item-action>
-        <v-list-item-content>
-          <CalendarDatePickerDialog
-            :date="dateStartTmp"
-            :time="timeStartTmp"
-            :callbackOK="onCallbackOKStart"
-          />
-          <CalendarDatePickerDialog
-            :date="dateEndTmp"
-            :time="timeEndTmp"
-            :callbackOK="onCallbackOKEnd"
-          />
-        </v-list-item-content>
-      </v-list-item>
-      
-      <v-list-item>
-        <v-list-item-action>
-          <v-icon>
-            mdi-pencil
-          </v-icon>
-        </v-list-item-action>
-        <v-list-item-content>
-          <v-textarea
-            v-model="descriptionTmp"
-            maxlength="500"
-            counter="500"
-            dense
-          />
-        </v-list-item-content>
-      </v-list-item>
+      <v-form
+        v-model="isFormValid"
+        ref="form"
+        lazy-validation
+      >
+        <v-list-item>
+          <v-list-item-action>
+            <v-icon>
+              mdi-subtitles-outline
+            </v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-text-field
+              v-model="nameTmp"
+              dense
+              :rules="[rules.required]"
+            />
+          </v-list-item-content>
+        </v-list-item>
+        
+        <v-list-item>
+          <v-list-item-action>
+            <v-icon>
+              mdi-email
+            </v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-text-field
+              v-model="email"
+              readonly
+              dense
+            />
+            <v-card-text style="margin:0; padding:0;">
+              <p style="margin:0; padding:0;">※カレンダーオーナーにEmailが共有されます。</p>
+            </v-card-text>
+          </v-list-item-content>
+        </v-list-item>
+        
+        <v-list-item>
+          <v-list-item-action>
+            <v-icon>
+              mdi-clock-time-five-outline
+            </v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <CalendarDatePickerDialog
+              :date="dateStartTmp"
+              :time="timeStartTmp"
+              :callbackOK="onCallbackOKStart"
+            />
+            <CalendarDatePickerDialog
+              :date="dateEndTmp"
+              :time="timeEndTmp"
+              :callbackOK="onCallbackOKEnd"
+            />
+          </v-list-item-content>
+        </v-list-item>
+        
+        <v-list-item>
+          <v-list-item-action>
+            <v-icon>
+              mdi-pencil
+            </v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-textarea
+              v-model="descriptionTmp"
+              maxlength="500"
+              counter="500"
+              dense
+            />
+          </v-list-item-content>
+        </v-list-item>
+      </v-form>
       
     </v-list>
 
@@ -156,6 +167,19 @@ export default {
       type: Function, 
       required: true
     },
+    isShow: {
+      type: Boolean,
+    }
+  },
+  watch: {
+    isShow (nextValue) {
+      this.nameTmp = ""
+      this.dateStartTmp = ""
+      this.dateEndTmp = ""
+      this.timeStartTmp = ""
+      this.timeEndTmp = ""
+      this.$refs.form.validate()
+    },
   },
   data() {
     return {
@@ -167,8 +191,12 @@ export default {
       timeStartTmp: "",
       timeEndTmp: "",
       descriptionTmp: "",
+      isFormValid: false,
       rules: {
         required: value => !!value || 'Required.',
+        minimum (value, min, unit) {
+          return value.length >= min || "Too small (Need more " + min + " " + unit + ")"
+        }
       }
     }
   },
@@ -181,6 +209,7 @@ export default {
     this.timeStartTmp = this.timeStart
     this.timeEndTmp = this.timeEnd
     this.descriptionTmp = this.description
+    this.$refs.form.validate()
   },
   methods: {
     onCallbackOKStart(date, time) {

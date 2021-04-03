@@ -52,7 +52,8 @@ export default {
     ENVVAL_AWS_EXPORTS_aws_appsync_graphqlEndpoint: process.env.ENVVAL_AWS_EXPORTS_aws_appsync_graphqlEndpoint,
     ENVVAL_STRIPE_SECRET_KEY: process.env.ENVVAL_STRIPE_SECRET_KEY,
     ENVVAL_STRIPE_PUBLIC_KEY: process.env.ENVVAL_STRIPE_PUBLIC_KEY,
-    ENVVAL_GCP_CALENDAR_ID_SAMPLE: process.env.ENVVAL_GCP_CALENDAR_ID_SAMPLE
+    ENVVAL_GCP_CALENDAR_ID_SAMPLE: process.env.ENVVAL_GCP_CALENDAR_ID_SAMPLE,
+    ENVVAL_GCP_SERVICE_ACCOUNT: process.env.ENVVAL_GCP_SERVICE_ACCOUNT
   },
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
