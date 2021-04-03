@@ -9,6 +9,8 @@ logger.setLevel(logging.INFO)
 
 import boto3
 COGNITO_CLIENT = boto3.client('cognito-idp')
+S3_RES = boto3.resource('s3')
+S3_BUCKET_NAME   = os.environ['S3_BUCKET_NAME']
 
 from googleapiclient.discovery import build
 from oauth2client.service_account import ServiceAccountCredentials
@@ -159,31 +161,44 @@ def post(event):
   poolId, userName, email, isAdmin = getUserInfo(event)
   logger.info('user info = {0}, {1}, {2} (admin={3})'.format(poolId, userName, email, isAdmin))
   
-  calendar = json.loads(event['body'])
-  calendar['email'] = email
-  logger.info('calendar = {0}'.format(calendar))
+  data = json.loads(event['body'])
+  type = data['type']
+  
+  if type == 'calendar_event':
+    ret = post_calendar_event(data, email)
+  elif type == 'calendar_image':
+    ret = post_calendar_image(data)
+  
+  logger.info("insert ret = {0}".format(ret))
+  
+  return 200, "success : {0}".format(ret)
+  
+def post_calendar_event(data, email):
+  data['email'] = email
+  logger.info('data = {0}'.format(data))
   
   service = get_google_service_calendar()
   ret = service.events().insert(
-    calendarId = calendar["calendarId"],
+    calendarId = data["calendarId"],
     body= {
-        'summary': calendar["name"],
-        'description': '{0}\n{1}'.format(calendar['email'], calendar['description']),
+        'summary': data["name"],
+        'description': '{0}\n{1}'.format(data['email'], data['description']),
         'start': {
-            'dateTime': calendar["start"]
+            'dateTime': data["start"]
         },
         'end': {
-            'dateTime': calendar["end"]
+            'dateTime': data["end"]
         },
         #'attendees': [
         #  { 'email': 'ww2or3ww@gmail.com' }
         #],
     }
   ).execute()
+  return ret
   
-  logger.info("insert ret = {0}".format(ret))
-  
-  return 200, "success : {0}".format(ret)
+def post_calendar_image(data):
+  ret = S3_RES.Object(S3_BUCKET_NAME, data["destKey"]).copy_from(CopySource={'Bucket': S3_BUCKET_NAME, 'Key': data["srcKey"]})
+  return ret
 
 def get_google_service_calendar():
     key_file_dict = {

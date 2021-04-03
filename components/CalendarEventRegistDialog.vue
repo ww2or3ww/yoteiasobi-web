@@ -224,6 +224,7 @@ export default {
       try {
         this.isProcessing = true
         const data = {
+          "type": "calendar_event",
           "calendarId": this.calendarId,
           "name": this.nameTmp,
           "start": new Date(this.$moment(this.dateStartTmp + 'T' + this.timeStartTmp).format('YYYY-MM-DDTHH:mm')),

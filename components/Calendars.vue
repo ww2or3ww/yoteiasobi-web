@@ -242,6 +242,7 @@ export default {
       this.calendarIdTmp = ""
       this.titleTmp = ""
       this.descriptionTmp = ""
+      this.imageAddressTmp = this.$auth_get_picture()
       this.isFormShow = true
     },
     
@@ -253,6 +254,9 @@ export default {
     async onFormOK (isRegistMode, isDelete, data) {
       if (data["selectedImage"]) {
         const imageKey = await this.processImage(isRegistMode, data["selectedImage"], data["calendarId"])
+        data["image"] = imageKey
+      } else if (isRegistMode) {
+        const imageKey = await this.processImageCopy(data["calendarId"])
         data["image"] = imageKey
       }
       delete data["selectedImage"]
@@ -315,6 +319,33 @@ export default {
         await Storage.put(imageKey.replace('public/', ''), resizedImg, {
             level: 'public'
         })
+        return imageKey
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async processImageCopy(calendarId) {
+      try {
+        const srcKey = "public/" + this.$auth_get_picture_key()
+        const ext = srcKey.slice(srcKey.lastIndexOf('.') + 1)
+        const imageKey = "public/calendar/" + this.$auth_get_user_id() + "/" + calendarId + "." + ext
+        const data = {
+          "type": "calendar_image",
+          "calendarId": calendarId,
+          "srcKey": srcKey,
+          "destKey": imageKey,
+        }
+        const postdata = {
+          headers: {},
+          body: data,
+          response: true,
+        };
+        console.log(postdata)
+        const response = await API.post(
+          process.env.ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_name, 
+          '/calendar',
+          postdata
+        )
         return imageKey
       } catch (error) {
         console.log(error)
