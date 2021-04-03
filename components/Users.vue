@@ -28,6 +28,7 @@
         item-key="id"
         select-all
         hide-default-footer
+        :mobile-breakpoint="0"
         @click:row="onClickRow"
       >
         <template v-slot:item.imageAddress="{ item }">
@@ -41,6 +42,7 @@
         loading
         loading-text="Loading... Please wait"
         hide-default-footer
+        :mobile-breakpoint="0"
       >
       </v-data-table>
     </section>

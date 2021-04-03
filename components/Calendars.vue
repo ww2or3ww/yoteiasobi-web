@@ -37,6 +37,7 @@
           item-key="id"
           select-all
           hide-default-footer
+          :mobile-breakpoint="0"
           @click:row="onClickRow"
         >
           <template v-slot:item.imageAddress="{ item }">
@@ -50,6 +51,7 @@
           loading
           loading-text="Loading... Please wait"
           hide-default-footer
+          :mobile-breakpoint="0"
         >
         </v-data-table>
       </section>
@@ -80,7 +82,7 @@
           :isShow = "isFormShow"
         />
       </v-dialog>
-      <v-dialog v-model="isShowMessage" width="400">
+      <v-dialog v-model="isShowMessage" width="480">
         <MessageBox
           :callbackBtn="onMessageClose"
           :text="message"
@@ -102,8 +104,8 @@ export default {
     return {
       headers: [
         { text: "Icon",         value: "imageAddress",  width: "50px",  sortable: false },
-        { text: 'Calendar ID',  value: 'calendarId',    width: "200px" },
         { text: 'Title',        value: 'title' },
+        { text: 'Calendar ID',  value: 'calendarId',    width: "200px" },
       ],
       isFormValid: false,
       isAuthed: false,

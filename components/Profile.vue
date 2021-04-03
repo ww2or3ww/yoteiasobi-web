@@ -61,7 +61,7 @@
       </div>
       <div style="clear:both; height: 40px;">
         <v-btn
-          color="#F8BBD0"
+          color="#FF6666"
           @click="onDelete"
           :disabled="isProcessing"
           v-show="isCheckDelete"
@@ -73,7 +73,7 @@
       </div>
     </section>
 
-    <v-dialog v-model="isShowMessage" width="400">
+    <v-dialog v-model="isShowMessage" width="480">
       <MessageBox
         :callbackBtn="processDelete"
         :text="message"

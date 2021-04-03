@@ -33,7 +33,7 @@
         <v-text-field
           v-model="calendarIdTmp"
           label="Calendar ID*"
-          :rules="[rules.required, rules.minimum(calendarIdTmp, 12, 'characters')]"
+          :rules="[rules.required, rules.minimum(calendarIdTmp, 12, 'characters'), rules.mail]"
           counter="60"
           maxlength="60"
           dense
@@ -62,6 +62,26 @@
       </v-form>
 
     </v-list>
+    
+    <v-card>
+      <v-card-text>
+        <p style="margin: 0;">
+          登録したカレンダーの、
+        </p>
+        <p style="margin: 0;">
+          [ カレンダーの設定 > 特定のユーザーとの共有] へ 
+        </p>
+        <p style="margin: 0;">
+          以下のサービスアカウントを追加してください。
+        </p>
+        <p style="margin: 0;">
+          (「変更および共有の管理権限」としてください)
+        </p>
+        <p style="margin: 8px 0 32px 0;">
+          {{ serviceAccount }}
+        </p>
+      </v-card-text>
+    </v-card>
     
     <section style="margin-left: 16px;">
       <v-btn
@@ -102,14 +122,14 @@
       </div>
       <div style="height: 40px;">
         <v-btn
-          color="#F8BBD0"
+          color="#FF6666"
           @click="onDelete"
           :disabled="isProcessing"
           v-show="isCheckDelete"
           small
         >
           Delete
-          <v-icon right dark>mdi-account-off-outline</v-icon>
+          <v-icon right dark>mdi-delete-forever</v-icon>
         </v-btn>
       </div>
     </section>
@@ -122,10 +142,18 @@
         indeterminate
       />
     </v-overlay>
+
+    <v-dialog v-model="isShowMessage" width="480">
+      <MessageBox
+        :callbackBtn="processDelete"
+        :text="message"
+      />
+    </v-dialog>
     
   </v-card>
 </template>
 <script>
+import MessageBox from '~/components/MessageBox.vue'
 export default {
   props: {
     formTitle: {
@@ -196,9 +224,11 @@ export default {
     this.descriptionTmp = this.description
     this.imageAddressTmp = this.imageAddress
     this.$refs.form.validate()
+    this.serviceAccount = process.env.ENVVAL_GCP_SERVICE_ACCOUNT
   },
   data() {
     return {
+      serviceAccount: "",
       isFormValid: false,
       imageAddressTmp: "", 
       selectedImage: null,
@@ -207,11 +237,17 @@ export default {
       descriptionTmp: "",
       isProcessing: false,
       isCheckDelete: false,
+      isShowMessage: false,
+      message: "",
       rules: {
         required: value => !!value || 'Required.',
         tel: value => {
           const pattern = /^[0-9]{10,11}$/
           return (value.length == 0 || pattern.test(value)) || 'Invalid TEL.'
+        },
+        mail: value => {
+          const pattern = /^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}\.[A-Za-z0-9]{1,}$/
+          return (value.length == 0 || pattern.test(value)) || 'Invalid Value.'
         },
         minimum (value, min, unit) {
           return value.length >= min || "Too small (Need more " + min + " " + unit + ")"
@@ -245,10 +281,18 @@ export default {
     onClickCancel() {
       this.callbackCancel()
     },
-    async onDelete() {
+    onDelete() {
+      this.message = "Delete your calendar. Are you sure ?"
+      this.isShowMessage = true
+    },
+    async processDelete(typestr) {
+      this.isShowMessage = false
+      if (typestr == "cancel") {
+        return
+      }
+      this.isProcessing = true
       try {
         const isDelete = true
-        this.isProcessing = true
         const data = {
           calendarId: this.calendarId,
         }

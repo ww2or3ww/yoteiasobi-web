@@ -9,7 +9,7 @@
           YOTEI DE ASOBOU !!
         </v-card-subtitle>
         <v-card-text>
-          YOTEIASOBI は Googleカレンダー を ゆるく共有できる サーバーレスWebアプリです。
+          YOTEIASOBI は Googleカレンダー を "ゆるっと共有" できる サーバーレスWebアプリです。
         </v-card-text>
       </v-card>
     </v-col>

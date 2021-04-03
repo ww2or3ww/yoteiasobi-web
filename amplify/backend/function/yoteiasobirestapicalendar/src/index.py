@@ -61,14 +61,14 @@ def get(event):
   poolId, userName, email, isAdmin = getUserInfo(event)
   logger.info('user info = {0}, {1}, {2} (admin={3})'.format(poolId, userName, email, isAdmin))
   logger.info('calendarID={0}'.format(id))
-  result = get_calender_events(id, email)
+  result = get_calendar_events(id, email)
   return 200, json.dumps(result, ensure_ascii=False, indent=2, default=json_serial)
 
 def getPathParameter(event):
   pathParameters = event['pathParameters']
   return pathParameters['proxy']
   
-def get_calender_events(id, email):
+def get_calendar_events(id, email):
 
     service = get_google_service_calendar()
     calendar_id = id

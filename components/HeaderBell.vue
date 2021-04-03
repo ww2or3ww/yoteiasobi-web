@@ -39,7 +39,7 @@
   
     </v-menu>
 
-    <v-dialog v-model="isShowMessage" width="400">
+    <v-dialog v-model="isShowMessage" width="480">
       <MessageBox
         :callbackBtn="onMessageClose"
         :text="message"
