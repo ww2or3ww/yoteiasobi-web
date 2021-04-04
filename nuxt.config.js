@@ -53,7 +53,8 @@ export default {
     ENVVAL_STRIPE_SECRET_KEY: process.env.ENVVAL_STRIPE_SECRET_KEY,
     ENVVAL_STRIPE_PUBLIC_KEY: process.env.ENVVAL_STRIPE_PUBLIC_KEY,
     ENVVAL_GCP_CALENDAR_ID_SAMPLE: process.env.ENVVAL_GCP_CALENDAR_ID_SAMPLE,
-    ENVVAL_GCP_SERVICE_ACCOUNT: process.env.ENVVAL_GCP_SERVICE_ACCOUNT
+    ENVVAL_GCP_SERVICE_ACCOUNT: process.env.ENVVAL_GCP_SERVICE_ACCOUNT,
+    ENVVAL_GOOGLE_ANALYTICS_ID: process.env.ENVVAL_GOOGLE_ANALYTICS_ID
   },
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
@@ -79,6 +80,12 @@ export default {
     '@nuxtjs/pwa',
     '@nuxtjs/dotenv',
     'cookie-universal-nuxt',
+    [
+      '@nuxtjs/google-analytics',
+      {
+        id: process.env.ENVVAL_GOOGLE_ANALYTICS_ID
+      }
+    ],
   ],
   
   router: {
