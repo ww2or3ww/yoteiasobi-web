@@ -46,7 +46,7 @@ export default {
       {
         hid: 'og:image',
         property: 'og:image',
-        content: '/img/yoteiasobi-ogp.png'
+        content: 'https://near-near-map.s3-ap-northeast-1.amazonaws.com/images/resources/yoteiasobi-ogp.png'
       }
     ],
     link: [
