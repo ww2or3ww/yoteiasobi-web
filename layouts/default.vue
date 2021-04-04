@@ -36,4 +36,12 @@ export default {
   padding-left: 16px;
   border: 0 solid;
 }
+.common-p-card-title {
+  font-size: 20px;
+  font-weight: bold;
+}
+.common-p-card-subtitle {
+  font-size: 16px;
+  font-weight: bold;
+}
 </style>

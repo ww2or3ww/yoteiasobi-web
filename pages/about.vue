@@ -21,7 +21,7 @@
           </v-card-text>
     
           <v-card-title class="common-card-title">
-            <p class="common-p-card-title" style="margin: 0;">
+            <p class="common-p-card-subtitle" style="margin: 0;">
               プライバシーポリシー
             </p>
           </v-card-title>
@@ -43,7 +43,7 @@
           </v-card-text>
     
           <v-card-title class="common-card-title">
-            <p class="common-p-card-title" style="margin: 0;">テクニカル</p>
+            <p class="common-p-card-subtitle" style="margin: 0;">テクニカル</p>
           </v-card-title>
           <v-card-text class="card-text">
             <p class="font-card-text" style="margin: 0;">

@@ -164,10 +164,11 @@ def update_event_data(data, isOwnCalendar, email):
     data["isProtected"] = True
     isVisible= True
 
-  index = description.find(email)
-  if index >= 0:
-    data["isMine"] = True
-    isVisible = True
+  if email:
+    index = description.find(email)
+    if index >= 0:
+      data["isMine"] = True
+      isVisible = True
     
   if isVisible == False:
     data = update_to_mask_data(data)
