@@ -14,13 +14,43 @@ export default {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' },
+      {
+        hid: 'description',
+        name: 'description',
+        content: 'よてい で あそぼう！YOTEIASOBI は Googleカレンダーを ゆるっと共有 できる サーバーレスWebアプリです。'
+      },
+      {
+        hid: 'og:site_name',
+        property: 'og:site_name',
+        content: 'YOTEIASOBI'
+      },
+      { hid: 'og:type', property: 'og:type', content: 'website' },
+      {
+        hid: 'og:url',
+        property: 'og:url',
+        content: 'https://yoteiasobi.w2or3w.com'
+      },
+      {
+        hid: 'og:title',
+        property: 'og:title',
+        content: 'YOTEIASOBI'
+      },
+      {
+        hid: 'og:description',
+        property: 'og:description',
+        content: 'よてい で あそぼう！'
+      },
+      {
+        hid: 'og:image',
+        property: 'og:image',
+        content: '/img/yoteiasobi-ogp.png'
+      }
     ],
     link: [
-      {
+      { 
         rel: 'icon', 
         type: 'image/x-icon', 
-        href: '/favicon.ico'
+        href: '/img/favicon.png'
       },
       {
         rel: 'stylesheet', 
@@ -85,6 +115,21 @@ export default {
       }
     ],
   ],
+  manifest: {
+    name: 'YOTEIASOBI',
+    description: 'よてい で あそぼう！',
+    theme_color: '#FF8080',
+    background_color: '#272727',
+    display: 'standalone',
+    Scope: '/',
+    start_url: '/',
+    splash_pages: null
+  },
+  pwa: {
+    icon: {
+      iconSrc: 'static/img/pwaicon.png'
+    }
+  },
   
   router: {
     middleware: [

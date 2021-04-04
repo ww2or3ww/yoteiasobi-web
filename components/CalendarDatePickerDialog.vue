@@ -17,6 +17,7 @@
           <v-date-picker
             v-model="dateTmp"
             scrollable
+            v-show="!readonly"
           >
             <v-spacer></v-spacer>
             <v-btn
@@ -55,6 +56,7 @@
             full-width
             :allowed-minutes="allowedStep"
             format="24hr"
+            v-show="!readonly"
           >
             <v-spacer></v-spacer>
             <v-btn
@@ -92,6 +94,9 @@ export default {
       type: Function, 
       required: true
     },
+    readonly: {
+      type: Boolean
+    }
   },
   watch: {
     time (nextValue) {

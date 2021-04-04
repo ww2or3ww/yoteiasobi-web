@@ -12,7 +12,7 @@
         {{ formTitle }}
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-toolbar-items>
+      <v-toolbar-items v-show="isRegistMode">
         <v-btn
           dark
           color="primary"
@@ -48,12 +48,15 @@
             <v-text-field
               v-model="nameTmp"
               dense
-              :rules="[rules.required]"
+              :rules="[rules.required, rules.minimum(nameTmp, 3, 'characters')]"
+              counter="50"
+              maxlength="50"
+              :readonly="!isRegistMode"
             />
           </v-list-item-content>
         </v-list-item>
         
-        <v-list-item>
+        <v-list-item v-show="isRegistMode">
           <v-list-item-action>
             <v-icon>
               mdi-email
@@ -82,11 +85,13 @@
               :date="dateStartTmp"
               :time="timeStartTmp"
               :callbackOK="onCallbackOKStart"
+              :readonly="!isRegistMode"
             />
             <CalendarDatePickerDialog
               :date="dateEndTmp"
               :time="timeEndTmp"
               :callbackOK="onCallbackOKEnd"
+              :readonly="!isRegistMode"
             />
           </v-list-item-content>
         </v-list-item>
@@ -103,6 +108,7 @@
               maxlength="500"
               counter="500"
               dense
+              :readonly="!isRegistMode"
             />
           </v-list-item-content>
         </v-list-item>
@@ -128,6 +134,10 @@ export default {
   props: {
     formTitle: {
       type: String,
+      required: true
+    },
+    isRegistMode: {
+      type: Boolean,
       required: true
     },
     selectedDate: {
@@ -173,7 +183,13 @@ export default {
   },
   watch: {
     isShow (nextValue) {
-      this.nameTmp = ""
+      if (this.isRegistMode) {
+        this.nameTmp = ""
+        this.descriptionTmp = ""
+      } else {
+        this.nameTmp = this.name
+        this.descriptionTmp = this.description
+      }
       this.dateStartTmp = this.dateStart
       this.dateEndTmp = this.dateEnd
       this.timeStartTmp = this.timeStart
