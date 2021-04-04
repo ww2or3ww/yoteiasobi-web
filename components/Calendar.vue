@@ -273,10 +273,10 @@ export default {
         return '#757575'
       } else if (event['isMine']) {
         return 'orange'
-      } else if (event['isPublic']) {
-        return 'blue'
       } else if (event['isProtected']) {
         return 'green'
+      } else if (event['isPublic']) {
+        return 'blue'
       }
       return '#455A64'
     },
