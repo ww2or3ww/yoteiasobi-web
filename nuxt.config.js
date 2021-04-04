@@ -17,7 +17,7 @@ export default {
       {
         hid: 'description',
         name: 'description',
-        content: 'よてい で あそぼう！YOTEIASOBI は Googleカレンダーを ゆるっと共有 できる サーバーレスWebアプリです。'
+        content: 'よてい で あそぼ！YOTEIASOBI は Googleカレンダーを ゆるっと共有 できる サーバーレスWebアプリです。'
       },
       {
         hid: 'og:site_name',
@@ -38,7 +38,7 @@ export default {
       {
         hid: 'og:description',
         property: 'og:description',
-        content: 'よてい で あそぼう！'
+        content: 'よてい で あそぼ！'
       },
       {
         hid: 'og:image',
@@ -117,7 +117,7 @@ export default {
   ],
   manifest: {
     name: 'YOTEIASOBI',
-    description: 'よてい で あそぼう！',
+    description: 'よてい で あそぼ！',
     theme_color: '#FF8080',
     background_color: '#272727',
     display: 'standalone',
@@ -127,7 +127,7 @@ export default {
   },
   pwa: {
     icon: {
-      iconSrc: 'static/img/pwaicon.png'
+      iconSrc: '/img/pwaicon.png'
     }
   },
   
