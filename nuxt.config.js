@@ -50,8 +50,6 @@ export default {
     ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_endpoint: process.env.ENVVAL_AWS_EXPORTS_aws_cloud_logic_custom_0_endpoint,
     ENVVAL_AWS_EXPORTS_aws_user_files_s3_bucket: process.env.ENVVAL_AWS_EXPORTS_aws_user_files_s3_bucket,
     ENVVAL_AWS_EXPORTS_aws_appsync_graphqlEndpoint: process.env.ENVVAL_AWS_EXPORTS_aws_appsync_graphqlEndpoint,
-    ENVVAL_STRIPE_SECRET_KEY: process.env.ENVVAL_STRIPE_SECRET_KEY,
-    ENVVAL_STRIPE_PUBLIC_KEY: process.env.ENVVAL_STRIPE_PUBLIC_KEY,
     ENVVAL_GCP_CALENDAR_ID_SAMPLE: process.env.ENVVAL_GCP_CALENDAR_ID_SAMPLE,
     ENVVAL_GCP_SERVICE_ACCOUNT: process.env.ENVVAL_GCP_SERVICE_ACCOUNT,
     ENVVAL_GOOGLE_ANALYTICS_ID: process.env.ENVVAL_GOOGLE_ANALYTICS_ID
@@ -118,12 +116,6 @@ export default {
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: { },
-  
-  // stripe
-  stripe: {
-    version: 'v3',
-    publishableKey: process.env.ENVVAL_STRIPE_PUBLIC_KEY
-  },
   
   // Moment
   moment: {
