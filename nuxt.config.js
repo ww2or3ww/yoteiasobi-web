@@ -134,11 +134,6 @@ export default {
     start_url: '/',
     splash_pages: null
   },
-  pwa: {
-    icon: {
-      iconSrc: 'static/img/pwaicon.png'
-    }
-  },
   
   router: {
     middleware: [
