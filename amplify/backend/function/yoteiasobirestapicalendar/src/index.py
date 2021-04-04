@@ -11,6 +11,9 @@ import boto3
 COGNITO_CLIENT = boto3.client('cognito-idp')
 S3_RES = boto3.resource('s3')
 S3_BUCKET_NAME   = os.environ['S3_BUCKET_NAME']
+from boto3.dynamodb.conditions import Key
+DYNAMODB = boto3.resource('dynamodb')
+DYNAMODB_TABLE_NAME   = os.environ['DYNAMODB_TABLE_NAME']
 
 from googleapiclient.discovery import build
 from oauth2client.service_account import ServiceAccountCredentials
@@ -59,21 +62,20 @@ def handler(event, context):
       }
 
 def get(event):
-  id = getPathParameter(event)
+  calendar_id = getPathParameter(event)
   poolId, userName, email, isAdmin = getUserInfo(event)
   logger.info('user info = {0}, {1}, {2} (admin={3})'.format(poolId, userName, email, isAdmin))
-  logger.info('calendarID={0}'.format(id))
-  result = get_calendar_events(id, email)
+  logger.info('calendarID={0}'.format(calendar_id))
+  result = get_calendar_events(calendar_id, userName, email)
   return 200, json.dumps(result, ensure_ascii=False, indent=2, default=json_serial)
 
 def getPathParameter(event):
   pathParameters = event['pathParameters']
   return pathParameters['proxy']
   
-def get_calendar_events(id, email):
+def get_calendar_events(calendar_id, userName, email):
 
     service = get_google_service_calendar()
-    calendar_id = id
     
     dt_now = datetime.utcnow()
     dt_from = dt_now + timedelta(weeks=(-1*4*3))
@@ -89,11 +91,27 @@ def get_calendar_events(id, email):
       ).execute()
     items = events_result.get("items", [])
     # logger.info(json.dumps(items, ensure_ascii=False, indent=2, default=json_serial))
-    emails = [email] * len(items)
-    result = list(map(convert_data, items, emails))
-    return result
     
-def convert_data(data, email):
+    option = {
+      "email": email, 
+      "isOwnCalendar": check_is_own_calendar(calendar_id, userName)
+    }
+    options = [option] * len(items)
+    result = list(map(convert_data, items, options))
+    return result
+
+def check_is_own_calendar(calendar_id, userName):
+  DYNAMODB_TABLE = DYNAMODB.Table(DYNAMODB_TABLE_NAME)
+  response = DYNAMODB_TABLE.query(
+    KeyConditionExpression=Key('calendarId').eq(calendar_id)
+  )
+  ret_data = response['Items']
+  owner = ret_data[0]["owner"]
+  return owner == userName
+
+def convert_data(data, option):
+  email = option["email"]
+  isOwnCalendar = option["isOwnCalendar"]
   ret = {}
   start, end, timed = get_date_or_datetime(data)
 
@@ -107,12 +125,17 @@ def convert_data(data, email):
     "end": end, 
     "timed": timed,
     "isPublic": False,
+    "isProtected": False,
     "isMine": False,
     "isMasked": False,
   }
 
   if "description" in data:
     ret["description"] = data["description"]
+
+  if isOwnCalendar:
+    ret["isPublic"] = True
+  elif "description" in ret:
     ret = update_event_data(ret, email)
   else:
     ret = update_to_mask_data(ret)
@@ -120,28 +143,36 @@ def convert_data(data, email):
   return ret
 
 def update_event_data(data, email):
-  if email == None:
-    return update_to_mask_data(data)
-    
-  description = data["description"]
-
-  index = description.find("\n")
-  if index >= 0:
-    description = description[:index]
-  else:
-    index = description.lower().find("<br>")
+  description = ""
+  if "description" in data:
+    description = data["description"].lower()
+    index = description.find("\n")
     if index >= 0:
       description = description[:index]
+    else:
+      index = description.lower().find("<br>")
+      if index >= 0:
+        description = description[:index]
+
+  isVisible = False
 
   index = description.find("public")
   if index >= 0:
     data["isPublic"] = True
-  else:
-    index = description.find(email)
-    if index >= 0:
-      data["isMine"] = True
-    else:
-      data = update_to_mask_data(data)
+    isVisible= True
+
+  index = description.find("protected")
+  if index >= 0 and email != None:
+    data["isProtected"] = True
+    isVisible= True
+
+  index = description.find(email)
+  if index >= 0:
+    data["isMine"] = True
+    isVisible = True
+    
+  if isVisible == False:
+    data = update_to_mask_data(data)
 
   return data
 
