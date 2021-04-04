@@ -6,7 +6,7 @@
           Welcome to YOTEIASOBI
         </v-card-title>
         <v-card-subtitle>
-          YOTEI DE ASOBOU !!
+          よてい で あそぼう！
         </v-card-subtitle>
         <v-card-text>
           YOTEIASOBI は Googleカレンダー を "ゆるっと共有" できる サーバーレスWebアプリです。

@@ -104,7 +104,8 @@
       transition="dialog-bottom-transition"
     >
       <CalendarEventRegistDialog
-        formTitle = "Regist Event"
+        :formTitle = "formTitle"
+        :isRegistMode = "isFormRegistMode"
         :calendarId = "calendarId"
         :name = "name"
         :dateStart = "dateStart"
@@ -158,6 +159,8 @@ export default {
       calendarId: "",
       calendarTitle: "",
       calendarOwner: "",
+      formTitle: "",
+      isFormRegistMode: false,
       name: "",
       dateStart: "",
       dateEnd: "",
@@ -299,15 +302,20 @@ export default {
         ("00" + date.getMinutes()).slice(-2)
     },
     onClickEvent (data) {
+      console.log(data)
       const event = data["event"]
       const dateStart = new Date(event["start"])
       const dateEnd = new Date(event["end"])
 
+      this.name = event["name"]
+      this.description = event["description"]
       this.dateStart = this.convertToDate(dateStart)
       this.dateEnd = this.convertToDate(dateEnd)
       this.timeStart = this.convertToTime(dateStart)
       this.timeEnd = this.convertToTime(dateEnd)
 
+      this.formTitle = "Event Information"
+      this.isFormRegistMode = false
       this.isShowForm = true
     },
     onClickPlus () {
@@ -319,6 +327,8 @@ export default {
       this.timeStart = this.convertToTime(dateNow)
       this.timeEnd = this.convertToTime(dateNow)
       
+      this.formTitle = "Event Registration"
+      this.isFormRegistMode = true
       this.isShowForm = true
     },
     async onFormOK (data) {
