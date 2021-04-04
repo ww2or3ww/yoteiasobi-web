@@ -125,6 +125,7 @@ export default {
   ],
   manifest: {
     name: 'YOTEIASOBI',
+    lang: 'ja',
     description: 'よてい で あそぼ！',
     theme_color: '#FF8080',
     background_color: '#272727',
@@ -132,11 +133,6 @@ export default {
     Scope: '/',
     start_url: '/',
     splash_pages: null
-  },
-  pwa: {
-    icon: {
-      iconSrc: 'static/img/pwaicon.png'
-    }
   },
   
   router: {

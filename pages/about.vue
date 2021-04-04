@@ -47,17 +47,17 @@
           </v-card-title>
           <v-card-text class="card-text">
             <p class="font-card-text" style="margin: 0;">
-              以下の技術を利用しています。学習しながら。
+              以下の技術を利用しています。
             </p>
             <ul>
               <li class="font-card-text">
                 Nuxt.js, Vuetify
               </li>
               <li class="font-card-text">
-                Google Calendar API, Google OAuth
+                AWS Amplify, Cognito, API Gateway, Lambda(Python), AppSync, DynamoDB, S3
               </li>
               <li class="font-card-text">
-                AWS Amplify, Cognito, API Gateway, Lambda(Python), AppSync, DynamoDB, S3
+                Google Calendar API, Google OAuth
               </li>
             </ul>
             <p></p>
