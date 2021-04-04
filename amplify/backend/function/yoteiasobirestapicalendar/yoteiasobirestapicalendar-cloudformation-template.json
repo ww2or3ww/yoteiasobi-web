@@ -68,8 +68,8 @@
         "Layers": [],
         "Timeout": "25",
         "Code": {
-          "S3Bucket": "amplify-yoteiasobi-dev-52943-deployment",
-          "S3Key": "amplify-builds/yoteiasobirestapicalendar-6a376338437a71386a7a-build.zip"
+          "S3Bucket": "amplify-yoteiasobi-prod-10453-deployment",
+          "S3Key": "amplify-builds/yoteiasobirestapicalendar-4933686e473942367668-build.zip"
         }
       }
     },

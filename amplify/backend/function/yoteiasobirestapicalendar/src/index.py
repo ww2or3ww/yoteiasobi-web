@@ -133,16 +133,14 @@ def convert_data(data, option):
   if "description" in data:
     ret["description"] = data["description"]
 
-  if isOwnCalendar:
-    ret["isPublic"] = True
-  elif "description" in ret:
-    ret = update_event_data(ret, email)
+  if isOwnCalendar or "description" in ret:
+    ret = update_event_data(ret, isOwnCalendar, email)
   else:
     ret = update_to_mask_data(ret)
   
   return ret
 
-def update_event_data(data, email):
+def update_event_data(data, isOwnCalendar, email):
   description = ""
   if "description" in data:
     description = data["description"].lower()
@@ -154,7 +152,7 @@ def update_event_data(data, email):
       if index >= 0:
         description = description[:index]
 
-  isVisible = False
+  isVisible = isOwnCalendar
 
   index = description.find("public")
   if index >= 0:
