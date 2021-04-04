@@ -32,6 +32,7 @@
         </v-form>
         <v-data-table
           v-if="calendars"
+          v-model="selectedList"
           :headers="headers" 
           :items="calendars"
           item-key="id"
@@ -105,8 +106,9 @@ export default {
       headers: [
         { text: "Icon",         value: "imageAddress",  width: "50px",  sortable: false },
         { text: 'Title',        value: 'title' },
-        { text: 'Calendar ID',  value: 'calendarId',    width: "200px" },
+        { text: 'Calendar ID',  value: 'calendarId' },
       ],
+      selectedList: [],
       isFormValid: false,
       isAuthed: false,
       calendars: null,
@@ -142,6 +144,9 @@ export default {
       this.isFormShow = false
       this.isAuthed = this.$auth_is_authed()
       this.calendars = await this.getItems()
+      if (this.calendars.length > 0) {
+        this.selectedList = [this.calendars[0]]
+      }
     },
     async getItems() {
       try {
@@ -175,6 +180,7 @@ export default {
             calendarId: data[i]["calendarId"]
           }))
           if (calendar.data.getCalendar) {
+            data[i]['id'] = i
             data[i]["title"] = calendar.data.getCalendar["title"]
             data[i]["description"] = calendar.data.getCalendar["description"]
             data[i]["image"] = calendar.data.getCalendar["image"]
@@ -185,12 +191,14 @@ export default {
         return data
       } catch (error) {
         console.log(error)
-        this.users = null
+        this.calendars = null
+        this.selectedList  = []
       }
     },
     
     onClickRow(item) {
       this.selectedItem = item
+      this.selectedList = [item]
       this.calendarId = item["calendarId"]
     },
     

@@ -69,7 +69,7 @@
         "Timeout": "25",
         "Code": {
           "S3Bucket": "amplify-yoteiasobi-prod-10453-deployment",
-          "S3Key": "amplify-builds/yoteiasobirestapiprofile-6c6e664535554f46594d-build.zip"
+          "S3Key": "amplify-builds/yoteiasobirestapiprofile-3572625a684e434f4451-build.zip"
         }
       }
     },

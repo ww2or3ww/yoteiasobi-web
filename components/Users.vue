@@ -21,8 +21,8 @@
         </v-text-field>
       </v-card-title>
       <v-data-table
-        v-model="selectedList"
         v-if="users"
+        v-model="selectedList"
         :headers="headers" 
         :items="users"
         item-key="id"
@@ -56,7 +56,7 @@ export default {
     return {
       headers: [
         { text: "Icon",   value: "imageAddress",  width: "50px", sortable: false },
-        { text: 'Name',   value: 'name',          width: "200px" },
+        { text: 'Name',   value: 'name' },
         { text: 'Email',  value: 'email' },
       ],
       users: null,
