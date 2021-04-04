@@ -127,7 +127,7 @@ export default {
   },
   pwa: {
     icon: {
-      iconSrc: '/img/pwaicon.png'
+      iconSrc: 'static/img/pwaicon.png'
     }
   },
   
