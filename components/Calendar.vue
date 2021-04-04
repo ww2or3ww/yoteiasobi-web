@@ -78,11 +78,15 @@
       <v-calendar
         ref="calendar"
         v-model="focus"
+        :now="focus"
         :weekdays="weekday"
         :type="type"
         :events="events"
         :event-color="getEventColor"
-        @click:date="viewDay"
+        @click:event="onClickEvent"
+        @click:more="onClickDate"
+        @click:date="onClickDate"
+        color="primary"
       ></v-calendar>
     </v-sheet>
     
@@ -107,7 +111,7 @@
         :dateEnd = "dateEnd"
         :timeStart = "timeStart"
         :timeEnd = "timeEnd"
-        :selectedDate = "focus"
+        :selectedDate = "selectedDate"
         :email = "email"
         :description = "description"
         :callbackOK = "onFormOK"
@@ -181,7 +185,8 @@ export default {
         { text: 'Mon - Fri', value: [1, 2, 3, 4, 5] },
         { text: 'Mon, Wed, Fri', value: [1, 3, 5] },
       ],
-      focus: '',
+      focus: null,
+      selectedDate: '',
       events: [],
       calendarHeight: 600,
     }
@@ -189,6 +194,7 @@ export default {
   mounted () {
     this.calendarId = this.id
     this.email = this.$auth_get_email()
+    this.focus = this.convertToDate(new Date())
     this.initialize()
   },
   created() {
@@ -260,14 +266,6 @@ export default {
         return null
       }
     },
-    setToday () {
-      this.focus = this.$moment().format('YYYY-MM-DD')
-    },
-    viewDay ({ date }) {
-      this.focus = date
-      this.type = 'day'
-      console.log(this.focus)
-    },
     getEventColor (event) {
       if (event['isMasked']) {
         return '#757575'
@@ -280,11 +278,47 @@ export default {
       }
       return '#455A64'
     },
+    setToday () {
+      this.focus = this.$moment().format('YYYY-MM-DD')
+      this.selectedDate = this.focus
+    },
+    onClickDate (data) {
+      if(this.selectedDate == data["date"]) {
+        this.type = 'day'
+      }
+      this.focus = data["date"]
+      this.selectedDate = this.focus
+    },
+    convertToDate (date) {
+      return date.getFullYear() + "-" + 
+        ("00" + (date.getMonth() + 1)).slice(-2) + "-" + 
+        ("00" + date.getDate()).slice(-2)
+    },
+    convertToTime (date) {
+      return ("00" + date.getHours()).slice(-2) + ":" + 
+        ("00" + date.getMinutes()).slice(-2)
+    },
+    onClickEvent (data) {
+      const event = data["event"]
+      const dateStart = new Date(event["start"])
+      const dateEnd = new Date(event["end"])
+
+      this.dateStart = this.convertToDate(dateStart)
+      this.dateEnd = this.convertToDate(dateEnd)
+      this.timeStart = this.convertToTime(dateStart)
+      this.timeEnd = this.convertToTime(dateEnd)
+
+      this.isShowForm = true
+    },
     onClickPlus () {
       this.dateStart = this.focus
       this.dateEnd = this.focus
-      this.timeStart = '00:00'
-      this.timeEnd = '00:00'
+      
+      const dateNow = new Date()
+      dateNow.setMinutes(0)
+      this.timeStart = this.convertToTime(dateNow)
+      this.timeEnd = this.convertToTime(dateNow)
+      
       this.isShowForm = true
     },
     async onFormOK (data) {

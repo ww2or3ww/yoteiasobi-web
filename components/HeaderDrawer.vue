@@ -54,18 +54,6 @@
         </v-list-item-content>
       </v-list-item>
 
-      <v-divider  v-if="false" />
-      <v-list-item to="/support" v-if="false">
-        <v-list-item-action>
-          <v-icon>mdi-hand-heart-outline</v-icon>
-        </v-list-item-action>
-        <v-list-item-content>
-          <v-list-item-title>
-            Support
-          </v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-
     </v-list>
   </v-card>
 </template>
