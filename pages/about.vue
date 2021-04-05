@@ -61,9 +61,24 @@
               </li>
             </ul>
             <p></p>
-  
+            
+            <p class="font-card-text" style="margin: 0;">
+              アーキテクチャは以下のような感じ。
+            </p>
+            <v-img
+              src="https://near-near-map.s3-ap-northeast-1.amazonaws.com/resource/image/yoteiasobi-architecture.png"
+              width="50%"
+              max-width="160px"
+              @click.stop="showArchitecture = true"
+            ></v-img>
+            <v-dialog v-model="showArchitecture" max-width="85vw">
+              <img
+                src="https://near-near-map.s3-ap-northeast-1.amazonaws.com/resource/image/yoteiasobi-architecture.png"
+                width="100%"
+                @click.stop="showArchitecture = false"
+              />
+            </v-dialog>
           </v-card-text>
-    
   
           <v-card-text class="card-text">
             <p class="font-card-text" style="margin: 0;">
@@ -124,3 +139,12 @@
     </v-col>
   </v-row>
 </template>
+<script>
+export default {
+  data() {
+    return {
+      showArchitecture: false
+    }
+  }
+}
+</script>
