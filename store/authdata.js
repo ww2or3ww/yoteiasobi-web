@@ -7,6 +7,9 @@ export const state = () => ({
 export const getters = {
   picture(state) {
     return state.picture
+  },
+  user(state) {
+    return state.user
   }
 }
 

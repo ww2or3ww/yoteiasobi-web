@@ -224,13 +224,16 @@ def updateUserInfo(poolId, userName, name, comment, picture):
         'Value': name
       }
     ]
-    if comment:
-      update_attributes.append(
-        {
-          'Name': 'custom:comment',
-          'Value': comment
-        }
-      )
+
+    if comment == None:
+      comment = ''
+    update_attributes.append(
+      {
+        'Name': 'custom:comment',
+        'Value': comment
+      }
+    )
+
     if picture:
       update_attributes.append(
         {
@@ -238,11 +241,13 @@ def updateUserInfo(poolId, userName, name, comment, picture):
           'Value': picture
         }
       )
+      
     COGNITO_CLIENT.admin_update_user_attributes(
         UserPoolId = poolId,
         Username = userName, 
         UserAttributes = update_attributes
       )
+      
   except Exception as e:
     logger.exception(e)
     raise

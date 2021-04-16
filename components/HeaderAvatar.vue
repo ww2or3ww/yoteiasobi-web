@@ -79,6 +79,11 @@ export default {
           this.pictureAddress = newValue
         }
       )
+      this.$store.watch ((state, getters) => getters["authdata/user"],
+        (newValue) => {
+          this.name = newValue["attributes"]["custom:name"]
+        }
+      )
     }
   },
   methods: {
