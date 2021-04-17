@@ -106,6 +106,8 @@
       <CalendarEventRegistDialog
         :formTitle = "formTitle"
         :isRegistMode = "isFormRegistMode"
+        :isMasked = "isMasked"
+        :isMine = "isMine"
         :calendarId = "calendarId"
         :name = "name"
         :dateStart = "dateStart"
@@ -115,6 +117,7 @@
         :selectedDate = "selectedDate"
         :email = "email"
         :description = "description"
+        :scopeLv = "scopeLv"
         :callbackOK = "onFormOK"
         :callbackCancel = "onFormCancel"
         :isShow = "isShowForm"
@@ -161,6 +164,8 @@ export default {
       calendarOwner: "",
       formTitle: "",
       isFormRegistMode: false,
+      isMasked: false,
+      isMine: false,
       name: "",
       dateStart: "",
       dateEnd: "",
@@ -168,6 +173,7 @@ export default {
       timeEnd: "",
       email: "",
       description: "",
+      scopeLv: "Private",
       isProcessing: false,
       isShowForm: false,
       isShowMessage: false,
@@ -309,10 +315,20 @@ export default {
 
       this.name = event["name"]
       this.description = event["description"]
+      this.isMasked = event["isMasked"]
+      this.isMine = event['isMine']
       this.dateStart = this.convertToDate(dateStart)
       this.dateEnd = this.convertToDate(dateEnd)
       this.timeStart = this.convertToTime(dateStart)
       this.timeEnd = this.convertToTime(dateEnd)
+      
+      if(event["isProtected"]) {
+        this.scopeLv = "Protected"
+      } else if(event["isPublic"]) {
+        this.scopeLv = "Public"
+      } else {
+        this.scopeLv = "Private"
+      }
 
       this.formTitle = "Event Information"
       this.isFormRegistMode = false
@@ -326,7 +342,9 @@ export default {
       dateNow.setMinutes(0)
       this.timeStart = this.convertToTime(dateNow)
       this.timeEnd = this.convertToTime(dateNow)
-      
+      this.isMasked = false
+      this.isMine = true
+      this.scopeLv = "Private"
       this.formTitle = "Event Registration"
       this.isFormRegistMode = true
       this.isShowForm = true
