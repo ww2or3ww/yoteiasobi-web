@@ -106,6 +106,8 @@
       <CalendarEventRegistDialog
         :formTitle = "formTitle"
         :isRegistMode = "isFormRegistMode"
+        :isMasked = "isMasked"
+        :isMine = "isMine"
         :calendarId = "calendarId"
         :name = "name"
         :dateStart = "dateStart"
@@ -115,6 +117,7 @@
         :selectedDate = "selectedDate"
         :email = "email"
         :description = "description"
+        :scopeLv = "scopeLv"
         :callbackOK = "onFormOK"
         :callbackCancel = "onFormCancel"
         :isShow = "isShowForm"
@@ -161,6 +164,8 @@ export default {
       calendarOwner: "",
       formTitle: "",
       isFormRegistMode: false,
+      isMasked: false,
+      isMine: false,
       name: "",
       dateStart: "",
       dateEnd: "",
@@ -168,6 +173,7 @@ export default {
       timeEnd: "",
       email: "",
       description: "",
+      scopeLv: "private",
       isProcessing: false,
       isShowForm: false,
       isShowMessage: false,
@@ -272,11 +278,11 @@ export default {
     getEventColor (event) {
       if (event['isMasked']) {
         return '#757575'
-      } else if (event['isMine']) {
+      } else if (event['isMember']) {
         return 'orange'
-      } else if (event['isProtected']) {
+      } else if (event["scopeLv"] == "protected") {
         return 'green'
-      } else if (event['isPublic']) {
+      } else if (event["scopeLv"] == "public") {
         return 'blue'
       }
       return '#455A64'
@@ -302,18 +308,19 @@ export default {
         ("00" + date.getMinutes()).slice(-2)
     },
     onClickEvent (data) {
-      console.log(data)
       const event = data["event"]
       const dateStart = new Date(event["start"])
       const dateEnd = new Date(event["end"])
 
       this.name = event["name"]
       this.description = event["description"]
+      this.isMasked = event["isMasked"]
+      this.isMine = event['isMine']
       this.dateStart = this.convertToDate(dateStart)
       this.dateEnd = this.convertToDate(dateEnd)
       this.timeStart = this.convertToTime(dateStart)
       this.timeEnd = this.convertToTime(dateEnd)
-
+      this.scopeLv = event["scopeLv"]
       this.formTitle = "Event Information"
       this.isFormRegistMode = false
       this.isShowForm = true
@@ -326,7 +333,9 @@ export default {
       dateNow.setMinutes(0)
       this.timeStart = this.convertToTime(dateNow)
       this.timeEnd = this.convertToTime(dateNow)
-      
+      this.isMasked = false
+      this.isMine = true
+      this.scopeLv = "private"
       this.formTitle = "Event Registration"
       this.isFormRegistMode = true
       this.isShowForm = true

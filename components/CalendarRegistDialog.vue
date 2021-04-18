@@ -14,7 +14,7 @@
     </v-toolbar>
 
     <v-divider></v-divider>
-    <section style="margin: 24px;">
+    <section style="margin: 24px 24px 4px 24px;">
       <SelectableAvatarImage
         :propsImageSrc="imageAddressTmp"
         :callbackSelectedPicture="onSelectedPicture"
@@ -22,9 +22,7 @@
         :readonly="!isOwnItem"
       />
     </section>
-    <v-list
-      three-line
-    >
+    <v-list>
       <v-form
         v-model="isFormValid"
         ref="form"
@@ -55,6 +53,7 @@
           label="Description"
           counter="300"
           maxlength="300"
+          rows="3"
           dense
           :readonly="!isOwnItem"
           class="text_field text-white"
@@ -64,7 +63,7 @@
     </v-list>
     
     <v-card v-show="isOwnItem">
-      <v-card-text>
+      <v-card-text style="padding-top: 0;">
         <p style="margin: 0;">
           登録したカレンダーの、
         </p>
@@ -77,7 +76,7 @@
         <p style="margin: 0;">
           (「変更および共有の管理権限」としてください)
         </p>
-        <p style="margin: 8px 0 32px 0;">
+        <p style="margin: 8px 0 8px 0;">
           {{ serviceAccount }}
         </p>
       </v-card-text>

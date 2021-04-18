@@ -108,10 +108,40 @@
               maxlength="500"
               counter="500"
               dense
+              rows="3"
               :readonly="!isRegistMode"
             />
           </v-list-item-content>
         </v-list-item>
+      
+        <v-list-item v-show="!isMasked">
+          <v-list-item-action style="padding-top: 16px;">
+            <v-icon>
+              mdi-lock-check-outline
+            </v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-radio-group
+              :readonly="!isMine"
+              v-model="scopeLvTmp"
+              row
+            >
+              <v-radio
+                label="Private"
+                value="private"
+              ></v-radio>
+              <v-radio
+                label="Protected"
+                value="protected"
+              ></v-radio>
+              <v-radio
+                label="Public"
+                value="public"
+              ></v-radio>
+            </v-radio-group>
+          </v-list-item-content>
+        </v-list-item>
+    
       </v-form>
       
     </v-list>
@@ -139,6 +169,12 @@ export default {
     isRegistMode: {
       type: Boolean,
       required: true
+    },
+    isMasked: {
+      type: Boolean
+    },
+    isMine: {
+      type: Boolean
     },
     selectedDate: {
       type: String,
@@ -169,6 +205,9 @@ export default {
     description: {
       type: String
     },
+    scopeLv: {
+      type: String
+    },
     callbackOK: {
       type: Function, 
       required: true
@@ -186,9 +225,11 @@ export default {
       if (this.isRegistMode) {
         this.nameTmp = ""
         this.descriptionTmp = ""
+        this.scopeLvTmp = "private"
       } else {
         this.nameTmp = this.name
         this.descriptionTmp = this.description
+        this.scopeLvTmp = this.scopeLv
       }
       this.dateStartTmp = this.dateStart
       this.dateEndTmp = this.dateEnd
@@ -207,6 +248,7 @@ export default {
       timeStartTmp: "",
       timeEndTmp: "",
       descriptionTmp: "",
+      scopeLvTmp: "Private",
       isFormValid: false,
       rules: {
         required: value => !!value || 'Required.',
@@ -225,6 +267,7 @@ export default {
     this.timeStartTmp = this.timeStart
     this.timeEndTmp = this.timeEnd
     this.descriptionTmp = this.description
+    this.scopeLvTmp = this.scopeLv
     this.$refs.form.validate()
   },
   methods: {
@@ -246,7 +289,10 @@ export default {
           "start": new Date(this.$moment(this.dateStartTmp + 'T' + this.timeStartTmp).format('YYYY-MM-DDTHH:mm')),
           "end": new Date(this.$moment(this.dateEndTmp + 'T' + this.timeEndTmp).format('YYYY-MM-DDTHH:mm')),
           "description": this.descriptionTmp,
+          "scopeLv": this.scopeLvTmp,
           "timed": true,
+          "isMasked": false, 
+          "isMember": true,
         }
         await this.callbackOK(data)
       } catch (error) {
