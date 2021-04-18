@@ -126,6 +126,7 @@ def convert_data(data, option):
     "timed": timed,
     "scopeLv": "Private",
     "isMasked": False,
+    "isOwner": isOwnCalendar,
   }
 
   if "description" in data:
@@ -144,23 +145,28 @@ def getDescriptionFirstLine(data):
     descriptionFirstLine = data["description"].lower()
     index = descriptionFirstLine.find("\n")
     if index >= 0:
-      descriptionFirstLine = descriptionFirstLine[:index]
+      descriptionFirstLine = descriptionFirstLine[:index + 1]
     else:
       index = descriptionFirstLine.find("<br>")
       if index >= 0:
-        descriptionFirstLine = descriptionFirstLine[:index]
+        descriptionFirstLine = descriptionFirstLine[:index + 4]
   
   return descriptionFirstLine
   
 def getScopeLv(descriptionFirstLine):
   descriptionFirstLine = descriptionFirstLine.lower()
   scopeLv = "private"
-  if descriptionFirstLine.find("protected:") >= 0:
+  isScopeLv = False
+  if descriptionFirstLine.find("private:") >= 0:
+    isScopeLv = True
+  elif descriptionFirstLine.find("protected:") >= 0:
     scopeLv = "protected"
+    isScopeLv = True
   elif descriptionFirstLine.find("public:") >= 0:
     scopeLv = "public"
+    isScopeLv = True
     
-  return scopeLv  
+  return scopeLv, isScopeLv
   
 def getAccessibleData(descriptionFirstLine, email, scopeLv, isOwnCalendar):
   isVisible = isOwnCalendar
@@ -177,12 +183,13 @@ def getAccessibleData(descriptionFirstLine, email, scopeLv, isOwnCalendar):
 def update_event_data(data, isOwnCalendar, email):
   descriptionFirstLine = getDescriptionFirstLine(data)
 
-  data["scopeLv"] = getScopeLv(descriptionFirstLine)
-  isVisible, isMember = getAccessibleData(descriptionFirstLine, email, data["scopeLv"], isOwnCalendar)
-  data["isMember"] = isMember
+  data["scopeLv"], data["isScopeLv"] = getScopeLv(descriptionFirstLine)
+  data["isVisible"], data["isMember"] = getAccessibleData(descriptionFirstLine, email, data["scopeLv"], isOwnCalendar)
 
-  if isVisible == False:
+  if data["isVisible"] == False:
     data = update_to_mask_data(data)
+  elif data["isScopeLv"]:
+    data["description"] = data["description"].replace(descriptionFirstLine, "")
 
   return data
 
