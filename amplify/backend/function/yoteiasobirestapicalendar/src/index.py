@@ -156,7 +156,7 @@ def getScopeLv(descriptionFirstLine):
   descriptionFirstLine = descriptionFirstLine.lower()
   scopeLv = "private"
   if descriptionFirstLine.find("protected:") >= 0:
-    scopeLv = "Protected"
+    scopeLv = "protected"
   elif descriptionFirstLine.find("public:") >= 0:
     scopeLv = "public"
     
