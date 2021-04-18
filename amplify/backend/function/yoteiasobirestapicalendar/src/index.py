@@ -124,9 +124,7 @@ def convert_data(data, option):
     "start": start, 
     "end": end, 
     "timed": timed,
-    "isPublic": False,
-    "isProtected": False,
-    "isMine": False,
+    "scopeLv": "Private",
     "isMasked": False,
   }
 
@@ -140,36 +138,49 @@ def convert_data(data, option):
   
   return ret
 
-def update_event_data(data, isOwnCalendar, email):
-  description = ""
+def getDescriptionFirstLine(data):
+  descriptionFirstLine = ""
   if "description" in data:
-    description = data["description"].lower()
-    index = description.find("\n")
+    descriptionFirstLine = data["description"].lower()
+    index = descriptionFirstLine.find("\n")
     if index >= 0:
-      description = description[:index]
+      descriptionFirstLine = descriptionFirstLine[:index]
     else:
-      index = description.lower().find("<br>")
+      index = descriptionFirstLine.find("<br>")
       if index >= 0:
-        description = description[:index]
-
-  isVisible = isOwnCalendar
-
-  index = description.find("public")
-  if index >= 0:
-    data["isPublic"] = True
-    isVisible= True
-
-  index = description.find("protected")
-  if index >= 0 and email != None:
-    data["isProtected"] = True
-    isVisible= True
-
-  if email:
-    index = description.find(email)
-    if index >= 0:
-      data["isMine"] = True
-      isVisible = True
+        descriptionFirstLine = descriptionFirstLine[:index]
+  
+  return descriptionFirstLine
+  
+def getScopeLv(descriptionFirstLine):
+  descriptionFirstLine = descriptionFirstLine.lower()
+  scopeLv = "private"
+  if descriptionFirstLine.find("protected:") >= 0:
+    scopeLv = "Protected"
+  elif descriptionFirstLine.find("public:") >= 0:
+    scopeLv = "public"
     
+  return scopeLv  
+  
+def getAccessibleData(descriptionFirstLine, email, scopeLv, isOwnCalendar):
+  isVisible = isOwnCalendar
+  isMember = email and descriptionFirstLine.find(email) >= 0
+  if scopeLv == "public":
+    isVisible = True
+  elif scopeLv == "protected" and email:
+    isVisible = True
+  elif email and isMember:
+    isVisible = True
+
+  return isVisible, isMember
+  
+def update_event_data(data, isOwnCalendar, email):
+  descriptionFirstLine = getDescriptionFirstLine(data)
+
+  data["scopeLv"] = getScopeLv(descriptionFirstLine)
+  isVisible, isMember = getAccessibleData(descriptionFirstLine, email, data["scopeLv"], isOwnCalendar)
+  data["isMember"] = isMember
+
   if isVisible == False:
     data = update_to_mask_data(data)
 
@@ -212,7 +223,7 @@ def post_calendar_event(data, email):
     calendarId = data["calendarId"],
     body= {
         'summary': data["name"],
-        'description': '{0}\n{1}'.format(data['email'], data['description']),
+        'description': '{0}: {1}\n{2}'.format(data['scopeLv'], data['email'], data['description']),
         'start': {
             'dateTime': data["start"]
         },

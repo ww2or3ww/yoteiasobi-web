@@ -128,15 +128,15 @@
             >
               <v-radio
                 label="Private"
-                value="Private"
+                value="private"
               ></v-radio>
               <v-radio
                 label="Protected"
-                value="Protected"
+                value="protected"
               ></v-radio>
               <v-radio
                 label="Public"
-                value="Public"
+                value="public"
               ></v-radio>
             </v-radio-group>
           </v-list-item-content>
@@ -225,7 +225,7 @@ export default {
       if (this.isRegistMode) {
         this.nameTmp = ""
         this.descriptionTmp = ""
-        this.scopeLvTmp = "Private"
+        this.scopeLvTmp = "private"
       } else {
         this.nameTmp = this.name
         this.descriptionTmp = this.description
@@ -289,7 +289,10 @@ export default {
           "start": new Date(this.$moment(this.dateStartTmp + 'T' + this.timeStartTmp).format('YYYY-MM-DDTHH:mm')),
           "end": new Date(this.$moment(this.dateEndTmp + 'T' + this.timeEndTmp).format('YYYY-MM-DDTHH:mm')),
           "description": this.descriptionTmp,
+          "scopeLv": this.scopeLvTmp,
           "timed": true,
+          "isMasked": false, 
+          "isMember": true,
         }
         await this.callbackOK(data)
       } catch (error) {

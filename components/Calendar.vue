@@ -173,7 +173,7 @@ export default {
       timeEnd: "",
       email: "",
       description: "",
-      scopeLv: "Private",
+      scopeLv: "private",
       isProcessing: false,
       isShowForm: false,
       isShowMessage: false,
@@ -278,11 +278,11 @@ export default {
     getEventColor (event) {
       if (event['isMasked']) {
         return '#757575'
-      } else if (event['isMine']) {
+      } else if (event['isMember']) {
         return 'orange'
-      } else if (event['isProtected']) {
+      } else if (event["scopeLv"] == "protected") {
         return 'green'
-      } else if (event['isPublic']) {
+      } else if (event["scopeLv"] == "public") {
         return 'blue'
       }
       return '#455A64'
@@ -308,7 +308,6 @@ export default {
         ("00" + date.getMinutes()).slice(-2)
     },
     onClickEvent (data) {
-      console.log(data)
       const event = data["event"]
       const dateStart = new Date(event["start"])
       const dateEnd = new Date(event["end"])
@@ -321,15 +320,7 @@ export default {
       this.dateEnd = this.convertToDate(dateEnd)
       this.timeStart = this.convertToTime(dateStart)
       this.timeEnd = this.convertToTime(dateEnd)
-      
-      if(event["isProtected"]) {
-        this.scopeLv = "Protected"
-      } else if(event["isPublic"]) {
-        this.scopeLv = "Public"
-      } else {
-        this.scopeLv = "Private"
-      }
-
+      this.scopeLv = event["scopeLv"]
       this.formTitle = "Event Information"
       this.isFormRegistMode = false
       this.isShowForm = true
@@ -344,7 +335,7 @@ export default {
       this.timeEnd = this.convertToTime(dateNow)
       this.isMasked = false
       this.isMine = true
-      this.scopeLv = "Private"
+      this.scopeLv = "private"
       this.formTitle = "Event Registration"
       this.isFormRegistMode = true
       this.isShowForm = true
