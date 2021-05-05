@@ -13,6 +13,9 @@ export default {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      { hid: 'og:type', property: 'og:type', content: 'website' },
+      { hid: 'twitter:card', name: 'twitter:card', content: 'summary_large_image' },
+      { hid: 'twitter:site', name: 'twitter:site', content: '@w2or3w' },
       {
         hid: 'description',
         name: 'description',
@@ -23,7 +26,6 @@ export default {
         property: 'og:site_name',
         content: 'YOTEIASOBI'
       },
-      { hid: 'og:type', property: 'og:type', content: 'website' },
       {
         hid: 'og:url',
         property: 'og:url',
@@ -43,7 +45,7 @@ export default {
         hid: 'og:image',
         property: 'og:image',
         content: 'https://near-near-map.s3-ap-northeast-1.amazonaws.com/images/resources/yoteiasobi-ogp.png'
-      }
+      },
     ],
     link: [
       { 
